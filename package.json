@@ -1,0 +1,54 @@
+{
+  "name": "fractal-sdk",
+  "version": "0.1.0",
+  "description": "Fractal Client SDK to install Fractal Wallet and access Fractal SDKs/APIs.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
+    "prepare": "husky install",
+    "build": "tsc",
+    "lint": "eslint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fractalwagmi/fractal-sdk.git"
+  },
+  "keywords": [
+    "fractal",
+    "sdk",
+    "api",
+    "wallet"
+  ],
+  "bugs": {
+    "url": "https://github.com/fractalwagmi/fractal-sdk/issues"
+  },
+  "homepage": "https://github.com/fractalwagmi/fractal-sdk#readme",
+  "dependencies": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@types/react": "17.0.39",
+    "@types/react-dom": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "eslint": "8.9.0",
+    "eslint-config-next": "12.1.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-sort-destructure-keys": "^1.4.0",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
+    "eslint-plugin-typescript-sort-keys": "^2.1.0",
+    "eslint-plugin-unicorn": "^41.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4",
+    "prettier": "^2.5.1",
+    "prettier-plugin-jsdoc": "^0.3.30",
+    "typescript": "^4.6.3"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": "eslint --fix"
+  }
+}
