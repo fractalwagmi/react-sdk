@@ -1,0 +1,100 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "tsconfigRootDir": "./",
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "prettier",
+    "unicorn",
+    "typescript-sort-keys",
+    "sort-keys-fix",
+    "sort-destructure-keys"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "plugin:typescript-sort-keys/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "curly": "error",
+    // Prettier config
+    "prettier/prettier": "error",
+    // Standard rules
+    "no-multiple-empty-lines": "error",
+    "no-console": "warn",
+    // Unicorn rules
+    "unicorn/import-index": "error",
+    "unicorn/filename-case": "error",
+    // Sort keys
+    "sort-keys-fix/sort-keys-fix": "error",
+    "typescript-sort-keys/string-enum": "off",
+    "sort-destructure-keys/sort-destructure-keys": "error",
+    // Import rules
+    "import/no-relative-packages": "error",
+    "import/order": [
+      "error",
+      {
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always"
+      }
+    ],
+    // Typescript rules
+    "@typescript-eslint/naming-convention": ["error", 
+      {
+        "selector": "objectLiteralProperty",
+        "format": ["camelCase", "PascalCase"],
+        "leadingUnderscore": "allowDouble"
+      }
+    ],
+    "@typescript-eslint/no-confusing-void-expression": [
+      "error",
+      { "ignoreArrowShorthand": true }
+    ],
+    "@typescript-eslint/no-dynamic-delete": "error",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-implicit-any-catch": "error",
+    "@typescript-eslint/no-require-imports": "error",
+    "@typescript-eslint/prefer-nullish-coalescing": "error",
+    "@typescript-eslint/prefer-optional-chain": "error",
+    "@typescript-eslint/promise-function-async": "error",
+    // Turn off eslint to avoid conflicts
+    "brace-style": "off",
+    "@typescript-eslint/brace-style": "error",
+    // Turn off eslint to avoid conflicts
+    "dot-notation": "off",
+    "@typescript-eslint/dot-notation": "error",
+    // Turn off eslint to avoid conflicts
+    "no-duplicate-imports": "off",
+    "@typescript-eslint/no-duplicate-imports": "error",
+    // Turn off eslint to avoid conflicts
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
+    // Turn off eslint to avoid conflicts
+    "no-restricted-imports": "off",
+    "@typescript-eslint/no-restricted-imports": ["error", {
+      "patterns": [
+        {
+          "group": [".*"],
+          "message": "Usage of relative imports is not allowed."
+        }
+      ]
+    }],
+    "@typescript-eslint/prefer-includes": "warn"
+  }
+}
