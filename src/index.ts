@@ -1,7 +1,8 @@
+export { Wallet as FractalWallet } from 'components/wallet';
 export type {
-  Wallet as FractalWallet,
   FractalUser,
   WalletProps as FractalWalletProps,
 } from 'components/wallet';
 export { useFractalUser } from 'hooks/user';
-export type { useSolBalance, BalanceResponse } from 'hooks/balance';
+export { useSolBalance } from 'hooks/balance';
+export type { BalanceResponse } from 'hooks/balance';
