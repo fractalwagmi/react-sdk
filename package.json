@@ -25,8 +25,11 @@
   },
   "homepage": "https://github.com/fractalwagmi/fractal-sdk#readme",
   "dependencies": {
+    "@solana/wallet-adapter-react": "^0.15.4",
+    "@solana/web3.js": "^1.37.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "swr": "^1.3.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
