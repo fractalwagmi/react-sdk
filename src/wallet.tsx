@@ -7,23 +7,31 @@ export interface FractalUser {
 }
 
 export interface WalletProps {
-  loggedIn: (user: FractalUser) => void;
-  loggedOut: () => void;
+  onLogin: (user: FractalUser) => void;
+  onLogout: () => void;
   ready: () => void;
 }
 
 enum Events {
-  READY = 'ready',
-  LOGGED_IN = 'loggedIn',
-  LOGGED_OUT = 'loggedOut',
+  READY = 'READY',
+  LOGGED_IN = 'LOGGED_IN',
+  LOGGED_OUT = 'LOGGED_OUT',
 }
 
-export function Wallet({ loggedIn, loggedOut, ready }: WalletProps) {
+const FRAME_SRC = 'https://fractal.is/iframe';
+const FRAME_WIDTH = 280;
+const FRAME_HEIGHT = 40;
+
+export function Wallet({ onLogin, onLogout, ready }: WalletProps) {
   const ref = useRef<HTMLIFrameElement>(null);
   const [_, setUser] = useState<FractalUser>();
 
   useEffect(() => {
     window.addEventListener('message', event => {
+      if (ref.current?.src.indexOf(event.origin) !== 0) {
+        return;
+      }
+
       if (event.data.event === Events.READY) {
         ready();
       }
@@ -34,22 +42,28 @@ export function Wallet({ loggedIn, loggedOut, ready }: WalletProps) {
           username: event.data.username,
         };
         setUser(incomingUser);
-        loggedIn(incomingUser);
+        onLogin(incomingUser);
       }
       if (event.data.event === Events.LOGGED_OUT) {
         setUser(undefined);
-        loggedOut();
+        onLogout();
       }
     });
+
+    return () => {
+      window.removeEventListener('message', () => {
+        console.info('Fractal Wallet disconnected.');
+      });
+    };
   }, []);
 
   return (
     <iframe
       ref={ref}
-      src="https://fractal.is/iframe"
+      src={FRAME_SRC}
       frameBorder={0}
-      width={280}
-      height={40}
+      width={FRAME_WIDTH}
+      height={FRAME_HEIGHT}
     />
   );
 }
