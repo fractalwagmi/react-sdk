@@ -1,8 +1,7 @@
 import { useConnection } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { UserContext } from 'components/wallet';
 import { ENDPOINTS } from 'core/endpoints';
-import { useContext } from 'react';
+import { useFractalUser } from 'hooks/user';
 import useSWR from 'swr';
 
 export interface BalanceResponse {
@@ -13,14 +12,17 @@ export interface BalanceResponse {
 }
 
 export const useSolBalance = (): BalanceResponse | undefined => {
-  const user = useContext(UserContext);
+  const user = useFractalUser();
   const { connection } = useConnection();
-  const { data: balance, error } = useSWR(ENDPOINTS.SOL_BALANCE, () => {
-    if (!user) {
-      return;
-    }
-    return getSolBalance(connection, new PublicKey(user.publicKey));
-  });
+  const { data: balance, error } = useSWR(
+    [user?.userId, ENDPOINTS.SOL_BALANCE],
+    () => {
+      if (!user) {
+        return;
+      }
+      return getSolBalance(connection, new PublicKey(user.publicKey));
+    },
+  );
 
   if (!user) {
     return;

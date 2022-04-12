@@ -1,13 +1,17 @@
 {
   "name": "@fractalwagmi/fractal-sdk",
-  "version": "0.1.0",
+  "version": "0.1.23",
   "description": "Fractal Client SDK to install Fractal Wallet and access Fractal SDKs/APIs.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
-    "prepare": "husky install",
-    "build": "tsc",
+    "prepare": "husky install && ts-patch install",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
+    "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > dist/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > dist/esm/package.json",
     "lint": "eslint --fix"
   },
   "repository": {
@@ -49,7 +53,9 @@
     "lint-staged": "^12.3.4",
     "prettier": "^2.5.1",
     "prettier-plugin-jsdoc": "^0.3.30",
-    "typescript": "^4.6.3"
+    "ts-patch": "^2.0.1",
+    "typescript": "^4.6.3",
+    "typescript-transform-paths": "^3.3.1"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": "eslint --fix"
