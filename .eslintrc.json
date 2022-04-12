@@ -21,6 +21,7 @@
     "prettier"
   ],
   "rules": {
+    "curly": "error",
     // Prettier config
     "prettier/prettier": "error",
     // Standard rules
