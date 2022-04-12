@@ -1,5 +1,5 @@
 {
-  "name": "fractal-sdk",
+  "name": "@fractalwagmi/fractal-sdk",
   "version": "0.1.0",
   "description": "Fractal Client SDK to install Fractal Wallet and access Fractal SDKs/APIs.",
   "main": "dist/index.js",
