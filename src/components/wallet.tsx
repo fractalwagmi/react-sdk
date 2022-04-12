@@ -1,5 +1,5 @@
 import { ConnectionProvider } from '@solana/wallet-adapter-react';
-import {
+import React, {
   createContext,
   ReactNode,
   useContext,

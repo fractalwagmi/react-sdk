@@ -1,6 +1,6 @@
 {
   "name": "@fractalwagmi/fractal-sdk",
-  "version": "0.1.23",
+  "version": "0.1.27",
   "description": "Fractal Client SDK to install Fractal Wallet and access Fractal SDKs/APIs.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -9,10 +9,16 @@
     "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
     "prepare": "husky install && ts-patch install",
     "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc",
+    "build:esm": "tsc-esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
     "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > dist/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > dist/esm/package.json",
     "lint": "eslint --fix"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
   },
   "repository": {
     "type": "git",
@@ -36,6 +42,7 @@
     "swr": "^1.3.0"
   },
   "devDependencies": {
+    "@digitak/tsc-esm": "^3.1.2",
     "@types/node": "^17.0.23",
     "@types/react": "17.0.39",
     "@types/react-dom": "^18.0.0",
