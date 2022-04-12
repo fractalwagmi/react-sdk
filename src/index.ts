@@ -1,4 +1,7 @@
-export { Wallet as FractalWallet } from 'components/wallet';
+export {
+  Wallet as FractalWallet,
+  WalletContextProvider as WalletProvider,
+} from 'components/wallet';
 export type {
   FractalUser,
   WalletProps as FractalWalletProps,
