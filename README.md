@@ -8,7 +8,7 @@ npm install @fractalwagmi/fractal-sdk
 
 ### Usage
 
-1. Setup the provider one level above whatever level you will need data from the wallet.
+1. Setup the provider above any components that need access to the wallet.
 ```tsx
 import { WalletProvider } from '@fractalwagmi/fractal-sdk';
 
