@@ -12,10 +12,13 @@ npm install @fractalwagmi/fractal-sdk
 ### Usage
 
 1. Setup the provider above any components that need access to the wallet.
+
+_Note: endpoint defaults to `https://api.mainnet-beta.solana.com`_
+
 ```tsx
 import { WalletProvider } from '@fractalwagmi/fractal-sdk';
 
-<WalletProvider>
+<WalletProvider endpoint={'https://optional-rpc-provider.com'}>
   ...
 </WalletProvider>
 ```
