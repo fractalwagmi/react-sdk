@@ -6,6 +6,9 @@
 npm install @fractalwagmi/fractal-sdk
 ```
 
+### Example
+[SDK Demo Preview](https://sdk-demo.fractalpreview.com/)
+
 ### Usage
 
 1. Setup the provider above any components that need access to the wallet.

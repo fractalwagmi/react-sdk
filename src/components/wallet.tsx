@@ -48,10 +48,12 @@ export const UserContext = createContext<UserContextState>({
 
 export interface WalletContextProviderProps {
   children: ReactNode;
+  endpoint?: string;
 }
 
 export function WalletContextProvider({
   children,
+  endpoint,
 }: WalletContextProviderProps) {
   const [user, setUser] = useState<FractalUser | undefined>(undefined);
 
@@ -61,7 +63,7 @@ export function WalletContextProvider({
         confirmTransactionInitialTimeout:
           CONNECTION_INITIAL_TRANSACTION_TIMEOUT_MS,
       }}
-      endpoint={ENDPOINT}
+      endpoint={endpoint ?? ENDPOINT}
     >
       <UserContext.Provider value={{ setUser, user }}>
         {children}
