@@ -1,3 +1,3 @@
-export enum ENDPOINTS {
+export enum Endpoints {
   SOL_BALANCE = 'SOL_BALANCE',
 }

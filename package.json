@@ -8,10 +8,14 @@
   "scripts": {
     "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
     "prepare": "husky install && ts-patch install",
+    "prebuild": "npm run prebuild:local",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc-esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
     "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > dist/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > dist/esm/package.json",
+    "prebuild:local": "[ ! -d node_modules/react.disabled ] || mv node_modules/react.disabled node_modules/react;",
+    "build:local": "npm run build",
+    "postbuild:local": "[ ! -d node_modules/react ] || mv node_modules/react node_modules/react.disabled",
     "lint": "eslint --fix"
   },
   "exports": {
@@ -37,10 +41,12 @@
     "url": "https://github.com/fractalwagmi/fractal-sdk/issues"
   },
   "homepage": "https://github.com/fractalwagmi/fractal-sdk#readme",
+  "peerDependencies": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
   "dependencies": {
     "@fractalwagmi/fractal-auth-api": "^0.0.9",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
     "swr": "^1.3.0"
   },
   "devDependencies": {
