@@ -111,7 +111,6 @@ export function SignIn({ clientId, onError, onSuccess }: SignInProps) {
   }, [code]);
 
   const signIn = async () => {
-    console.log('SIGN IN CALLED');
     const width = 400;
     const height = 600;
     const left = window.screenX + (window.innerWidth - width) / 2;
