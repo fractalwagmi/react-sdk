@@ -7,6 +7,7 @@ npm install @fractalwagmi/fractal-sdk
 ```
 
 ### Example
+
 [SDK Demo Preview](https://sdk-demo.fractalpreview.com/)
 
 ### Usage
@@ -18,14 +19,23 @@ _Note: endpoint defaults to `https://api.mainnet-beta.solana.com`_
 ```tsx
 import { WalletProvider } from '@fractalwagmi/fractal-sdk';
 
-<WalletProvider endpoint={'https://optional-rpc-provider.com'}>
-  ...
-</WalletProvider>
+const App = () => {
+  return (
+    <WalletProvider endpoint={'https://optional-rpc-provider.com'}>
+      ...
+    </WalletProvider>
+  );
+};
 ```
 
 2. Use the wallet and related hooks.
+
 ```tsx
-import { FractalWallet, useFractalUser, useSolBalance } from '@fractalwagmi/fractal-sdk';
+import {
+  FractalWallet,
+  useFractalUser,
+  useSolBalance,
+} from '@fractalwagmi/fractal-sdk';
 
 export function YourWalletComponent() {
   // Hook returns userId, publicKey, and username
@@ -55,5 +65,4 @@ export function YourWalletComponent() {
     </>
   );
 }
-
 ```

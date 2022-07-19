@@ -54,7 +54,13 @@ export function SignIn({ clientId, onError, onSuccess }: SignInProps) {
   useEffect(() => {
     const getUrl = async () => {
       try {
-        const urlInfo = (await authApiClient.v2.getUrl({ clientId })).data;
+        const urlInfo = (
+          await authApiClient.v2.getUrl({
+            clientId,
+            // TODO(Kan): Allow configuring these permissions.
+            scope: ['items:read', 'coins:read', 'identify'],
+          })
+        ).data;
         setUrl(urlInfo.url);
         setCode(urlInfo.code);
       } catch {
