@@ -2,7 +2,7 @@ import { THREE_SECONDS_MS } from 'constants/time';
 
 import { authApiClient } from 'core/api/client';
 import { Events, FRACTAL_DOMAIN } from 'core/messaging';
-import { verifyScopes } from 'core/scope';
+import { useAuthUrl } from 'hooks/use-auth-url';
 import { isHttpResponse } from 'lib/fetch/is-http-response';
 import React, {
   createContext,
@@ -12,8 +12,6 @@ import React, {
   useState,
 } from 'react';
 import { Scope } from 'types/scope';
-
-const DEFAULT_SCOPE = [Scope.IDENTIFY];
 
 export interface SignInProps {
   clientId: string;
@@ -25,7 +23,7 @@ export interface SignInProps {
    *
    * See src/types/scope.ts for a list of available scopes.
    */
-  scope?: Scope[];
+  scopes?: Scope[];
 }
 
 export interface FractalUser {
@@ -59,41 +57,24 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   );
 }
 
-export function SignIn({
-  clientId,
-  onError,
-  onSuccess,
-  scope = DEFAULT_SCOPE,
-}: SignInProps) {
-  const { setUser, user } = useContext(UserContext);
-  const [url, setUrl] = useState<string | undefined>();
-  const [code, setCode] = useState<string | undefined>();
+export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
+  const { setUser } = useContext(UserContext);
 
-  if (!verifyScopes(scope)) {
-    console.error(
-      'Invalid scopes. Be sure to pass in at least one of the values from ' +
-        'types/scope.ts. Defaulting to `[Scope.IDENTIFY]`.',
-    );
-    scope = DEFAULT_SCOPE;
-  }
+  const signedIn = (user: FractalUser) => {
+    if (!onSuccess) {
+      return;
+    }
+    onSuccess(user);
+  };
 
-  useEffect(() => {
-    const getUrl = async () => {
-      try {
-        const urlInfo = (
-          await authApiClient.v2.getUrl({
-            clientId,
-            scope,
-          })
-        ).data;
-        setUrl(urlInfo.url);
-        setCode(urlInfo.code);
-      } catch {
-        doError();
-      }
-    };
-    getUrl();
-  }, []);
+  const doError = () => {
+    if (!onError) {
+      return;
+    }
+    onError();
+  };
+
+  const { code, url } = useAuthUrl({ clientId, onError: doError, scopes });
 
   useEffect(() => {
     const pollForApproval = async () => {
@@ -159,20 +140,6 @@ export function SignIn({
       });
     }
   };
-
-  const signedIn = (user: FractalUser) => {
-    if (onSuccess) {
-      onSuccess(user);
-    }
-  };
-
-  const doError = () => {
-    if (onError) {
-      onError();
-    }
-  };
-
-  console.log(user);
 
   return <button onClick={signIn}>Sign in with Fractal</button>;
 }
