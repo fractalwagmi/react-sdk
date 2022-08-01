@@ -1,16 +1,6 @@
-import { THREE_SECONDS_MS } from 'constants/time';
-
-import { authApiClient } from 'core/api/client';
 import { Events, FRACTAL_DOMAIN } from 'core/messaging';
 import { useAuthUrl } from 'hooks/use-auth-url';
-import { isHttpResponse } from 'lib/fetch/is-http-response';
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { Scope } from 'types/scope';
 
 export interface SignInProps {
@@ -76,46 +66,6 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
 
   const { code, url } = useAuthUrl({ clientId, onError: doError, scopes });
 
-  useEffect(() => {
-    const pollForApproval = async () => {
-      if (!code) {
-        return;
-      }
-
-      const interval = setInterval(async () => {
-        try {
-          const approval = (
-            await authApiClient.v2.getResult({ clientId, code })
-          ).data;
-          if (!approval.bearerToken || !approval.userId) {
-            throw new Error('No token returned');
-          }
-          const signedInUser = {
-            accessToken: approval.bearerToken,
-            userId: approval.userId,
-          };
-          setUser(signedInUser);
-          signedIn(signedInUser);
-          clearInterval(interval);
-        } catch (err: unknown) {
-          if (!isHttpResponse(err)) {
-            console.error('Unknown error: ', err);
-            clearInterval(interval);
-            doError();
-            return;
-          }
-          if (err.status === 401) {
-            return;
-          }
-
-          clearInterval(interval);
-          doError();
-        }
-      }, THREE_SECONDS_MS);
-    };
-    pollForApproval();
-  }, [code]);
-
   const signIn = async () => {
     const width = 400;
     const height = 600;
@@ -128,14 +78,27 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
     );
     if (popup) {
       window.addEventListener('message', e => {
+        if (e.data.event === Events.HANDSHAKE) {
+          popup.window.postMessage(
+            {
+              event: Events.HANDSHAKE,
+              payload: {
+                clientId,
+                code,
+                origin: window.location.origin,
+              },
+            },
+            '*',
+          );
+        }
         if (e.origin === FRACTAL_DOMAIN) {
           return;
         }
         if (e.data.event === Events.PROJECT_APPROVED) {
+          const user = e.data.payload.user;
+          setUser(user);
+          signedIn(user);
           popup.close();
-          // Need to pass data through postMessage that comes from
-          // approval/result before we can use this to remove poller.
-          // signedIn();
         }
       });
     }
