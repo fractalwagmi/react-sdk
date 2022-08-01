@@ -1,0 +1,40 @@
+{
+  /** Editor **/
+  "editor.rulers": [
+    80,
+  ],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.eol": "\n",
+  // Links editing of fields like JSX (opening, closing tags)
+  "editor.linkedEditing": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+    // "source.organizeImports": true
+  },
+  /** npm **/
+  "npm.packageManager": "npm",
+  /** Open In Github (Extension) **/
+  "openInGitHub.defaultPullRequestBranch": "main",
+  "openInGitHub.providerType": "github",
+  /** ESLint **/
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.lintTask.options": "'*/**/*.{ts,tsx,js}'",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+  ],
+  /** Default Formatters **/
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  /** Typescript **/
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+}
