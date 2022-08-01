@@ -70,7 +70,7 @@ export function SignIn({
   if (!verifyScopes(scope)) {
     console.error(
       'Invalid scopes. Be sure to pass in at least one of the values from ' +
-        'types/Scope.ts. Defaulting to `[Scope.IDENTIFY]`.',
+        'types/scope.ts. Defaulting to `[Scope.IDENTIFY]`.',
     );
     scope = DEFAULT_SCOPE;
   }
@@ -81,7 +81,7 @@ export function SignIn({
         const urlInfo = (
           await authApiClient.v2.getUrl({
             clientId,
-            scope: scope as string[],
+            scope,
           })
         ).data;
         setUrl(urlInfo.url);
