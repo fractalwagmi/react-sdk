@@ -1,3 +1,5 @@
+import { THREE_SECONDS_MS } from 'constants/time';
+
 import { authApiClient } from 'core/api/client';
 import { Events, FRACTAL_DOMAIN } from 'core/messaging';
 import { verifyScopes } from 'core/scope';
@@ -95,40 +97,40 @@ export function SignIn({
 
   useEffect(() => {
     const pollForApproval = async () => {
-      if (code) {
-        const interval = setInterval(async () => {
-          try {
-            const approval = (
-              await authApiClient.v2.getResult({ clientId, code })
-            ).data;
-            if (approval.bearerToken && approval.userId) {
-              const signedInUser = {
-                accessToken: approval.bearerToken,
-                userId: approval.userId,
-              };
-              setUser(signedInUser);
-              signedIn(signedInUser);
-              clearInterval(interval);
-            } else {
-              throw new Error('No token returned');
-            }
-          } catch (err: unknown) {
-            if (!isHttpResponse(err)) {
-              console.error('Unknown error: ', err);
-              clearInterval(interval);
-              doError();
-              return;
-            }
-            if (err.status === 401) {
-              return;
-            } else {
-              clearInterval(interval);
-              doError();
-              return;
-            }
-          }
-        }, 3000);
+      if (!code) {
+        return;
       }
+
+      const interval = setInterval(async () => {
+        try {
+          const approval = (
+            await authApiClient.v2.getResult({ clientId, code })
+          ).data;
+          if (!approval.bearerToken || !approval.userId) {
+            throw new Error('No token returned');
+          }
+          const signedInUser = {
+            accessToken: approval.bearerToken,
+            userId: approval.userId,
+          };
+          setUser(signedInUser);
+          signedIn(signedInUser);
+          clearInterval(interval);
+        } catch (err: unknown) {
+          if (!isHttpResponse(err)) {
+            console.error('Unknown error: ', err);
+            clearInterval(interval);
+            doError();
+            return;
+          }
+          if (err.status === 401) {
+            return;
+          }
+
+          clearInterval(interval);
+          doError();
+        }
+      }, THREE_SECONDS_MS);
     };
     pollForApproval();
   }, [code]);
