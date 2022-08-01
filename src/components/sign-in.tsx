@@ -1,5 +1,6 @@
 import { authApiClient } from 'core/api/client';
 import { Events, FRACTAL_DOMAIN } from 'core/messaging';
+import { verifyScopes } from 'core/scope';
 import { isHttpResponse } from 'lib/fetch/is-http-response';
 import React, {
   createContext,
@@ -8,11 +9,21 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { Scope } from 'types/scope';
+
+const DEFAULT_SCOPE = [Scope.IDENTIFY];
 
 export interface SignInProps {
   clientId: string;
   onError?: () => void;
   onSuccess?: (user: FractalUser) => void;
+
+  /**
+   * The scopes to assign to the access token. Defaults to [FractalSdkScope.IDENTIFY].
+   *
+   * See src/types/scope.ts for a list of available scopes.
+   */
+  scope?: Scope[];
 }
 
 export interface FractalUser {
@@ -46,10 +57,23 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   );
 }
 
-export function SignIn({ clientId, onError, onSuccess }: SignInProps) {
+export function SignIn({
+  clientId,
+  onError,
+  onSuccess,
+  scope = DEFAULT_SCOPE,
+}: SignInProps) {
   const { setUser, user } = useContext(UserContext);
   const [url, setUrl] = useState<string | undefined>();
   const [code, setCode] = useState<string | undefined>();
+
+  if (!verifyScopes(scope)) {
+    console.error(
+      'Invalid scopes. Be sure to pass in at least one of the values from ' +
+        'types/Scope.ts. Defaulting to `[Scope.IDENTIFY]`.',
+    );
+    scope = DEFAULT_SCOPE;
+  }
 
   useEffect(() => {
     const getUrl = async () => {
@@ -57,8 +81,7 @@ export function SignIn({ clientId, onError, onSuccess }: SignInProps) {
         const urlInfo = (
           await authApiClient.v2.getUrl({
             clientId,
-            // TODO(Kan): Allow configuring these permissions.
-            scope: ['items:read', 'coins:read', 'identify'],
+            scope: scope as string[],
           })
         ).data;
         setUrl(urlInfo.url);
@@ -127,7 +150,8 @@ export function SignIn({ clientId, onError, onSuccess }: SignInProps) {
         }
         if (e.data.event === Events.PROJECT_APPROVED) {
           popup.close();
-          // Need to pass data through postMessage that comes from approval/result before we can use this to remove poller.
+          // Need to pass data through postMessage that comes from
+          // approval/result before we can use this to remove poller.
           // signedIn();
         }
       });
