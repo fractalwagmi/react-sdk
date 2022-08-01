@@ -65,6 +65,7 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
   };
 
   const { code, url } = useAuthUrl({ clientId, onError: doError, scopes });
+  const localUrl = url?.replace('https://fractal.is', 'http://localhost:3000');
 
   const signIn = async () => {
     const width = 400;
@@ -72,7 +73,7 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
     const left = window.screenX + (window.innerWidth - width) / 2;
     const top = window.screenY + (window.innerHeight - height) / 2;
     const popup = window.open(
-      url,
+      localUrl,
       'fractal:approval:popup',
       `popup,left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`,
     );
@@ -81,7 +82,7 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
         if (e.data.event === Events.HANDSHAKE) {
           popup.window.postMessage(
             {
-              event: Events.HANDSHAKE,
+              event: Events.HANDSHAKE_ACK,
               payload: {
                 clientId,
                 code,
