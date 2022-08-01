@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@fractalwagmi/fractal-auth-api": "^0.0.9",
+    "@fractalwagmi/fractal-sdk-api": "^0.0.4",
     "jest": "^28.1.3",
     "swr": "^1.3.0"
   },
