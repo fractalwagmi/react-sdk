@@ -1,10 +1,8 @@
 import { UserContext } from 'components/sign-in';
 import { Events, validateOrigin } from 'core/messaging';
+import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useCallback, useContext } from 'react';
 import { FractalUser } from 'types/user';
-
-const POPUP_WIDTH_PX = 400;
-const POPUP_HEIGHT_PX = 600;
 
 interface UseSignInParameters {
   clientId: string;
@@ -28,13 +26,13 @@ export const useSignIn = ({
 
     const left = window.screenX + (window.innerWidth - POPUP_WIDTH_PX) / 2;
     const top = window.screenY + (window.innerHeight - POPUP_HEIGHT_PX) / 2;
-    const popup = window.open(
+    const popup = openPopup({
+      left,
+      top,
       url,
-      'fractal:approval:popup',
-      `popup,left=${left},top=${top},width=${POPUP_WIDTH_PX},height=${POPUP_HEIGHT_PX},resizable,scrollbars=yes,status=1`,
-    );
+    });
     if (popup) {
-      window.addEventListener('message', e => {
+      const handleMessage = (e: MessageEvent) => {
         // We only care about events from our own domain.
         if (!validateOrigin(e.origin)) {
           return;
@@ -60,7 +58,12 @@ export const useSignIn = ({
 
           popup.close();
         }
-      });
+      };
+      window.addEventListener('message', handleMessage);
+
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
     }
   }, [clientId, code, url, onSignIn]);
 
