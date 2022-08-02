@@ -1,5 +1,5 @@
 import { UserContext } from 'components/sign-in';
-import { Events } from 'core/messaging';
+import { Events, validateOrigin } from 'core/messaging';
 import { useCallback, useContext } from 'react';
 import { FractalUser } from 'types/user';
 
@@ -35,6 +35,11 @@ export const useSignIn = ({
     );
     if (popup) {
       window.addEventListener('message', e => {
+        // We only care about events from our own domain.
+        if (!validateOrigin(e.origin)) {
+          return;
+        }
+
         if (e.data.event === Events.HANDSHAKE) {
           const payload = {
             clientId,
@@ -45,7 +50,7 @@ export const useSignIn = ({
               event: Events.HANDSHAKE_ACK,
               payload,
             },
-            '*',
+            e.origin,
           );
         }
         if (e.data.event === Events.PROJECT_APPROVED) {
