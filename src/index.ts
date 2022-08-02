@@ -1,7 +1,5 @@
-export {
-  SignIn as SignInWithFractal,
-  UserContextProvider as SignInWithFractalProvider,
-} from 'components/sign-in';
+export { SignIn as SignInWithFractal } from 'components/sign-in';
+export { UserContextProvider as SignInWithFractalProvider } from 'context/user';
 export type { SignInProps as SignInWithFractalProps } from 'components/sign-in';
 
 export { Scope as FractalSdkScope } from 'types/scope';

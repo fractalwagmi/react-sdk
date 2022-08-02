@@ -1,4 +1,4 @@
-import { UserContext } from 'components/sign-in';
+import { UserContext } from 'context/user';
 import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useCallback, useContext } from 'react';

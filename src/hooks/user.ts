@@ -1,4 +1,4 @@
-import { UserContext } from 'components/sign-in';
+import { UserContext } from 'context/user';
 import { useContext } from 'react';
 
 export const useFractalUser = () => {
