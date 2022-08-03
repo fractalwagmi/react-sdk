@@ -54,93 +54,95 @@ describe('useFractalUserSetter', () => {
     );
   });
 
-  it('the setter returns an object with fractal user', async () => {
-    const { result } = renderHook(() => useFractalUserSetter());
+  describe('the setter', () => {
+    it('returns an object with fractal user', async () => {
+      const { result } = renderHook(() => useFractalUserSetter());
 
-    const { fractalUser } = await result.current.fetchAndSetFractalUser(
-      DEFAULT_PARAMS,
-    );
-
-    expect(fractalUser).toEqual({
-      accessToken: TEST_ACCESS_TOKEN,
-      email: TEST_EMAIL,
-      userId: TEST_USER_ID,
-      username: TEST_USERNAME,
-    });
-  });
-
-  it('the setter returns an object with fractal user wallet', async () => {
-    const { result } = renderHook(() => useFractalUserSetter());
-
-    const { fractalUserWallet } = await result.current.fetchAndSetFractalUser(
-      DEFAULT_PARAMS,
-    );
-
-    expect(fractalUserWallet).toEqual({
-      solanaPublicKeys: [TEST_SOLANA_PUBLIC_KEY],
-    });
-  });
-
-  it('calling the setter sets a fractal user for the wrapping `UserContext`', async () => {
-    const wrapper: React.FC = ({ children }) => (
-      <UserContextProvider>{children}</UserContextProvider>
-    );
-    const { result } = renderHook(
-      () => {
-        const useFractalUserSetterResult = useFractalUserSetter();
-        const useFractalUserResult = useFractalUser();
-        // We have to return the result of 2 hooks here in this test hook
-        // so that the hooks share the same `wrapper` context.
-        return {
-          useFractalUserResult,
-          useFractalUserSetterResult,
-        };
-      },
-      { wrapper },
-    );
-
-    await act(async () => {
-      await result.current.useFractalUserSetterResult.fetchAndSetFractalUser(
+      const { fractalUser } = await result.current.fetchAndSetFractalUser(
         DEFAULT_PARAMS,
       );
+
+      expect(fractalUser).toEqual({
+        accessToken: TEST_ACCESS_TOKEN,
+        email: TEST_EMAIL,
+        userId: TEST_USER_ID,
+        username: TEST_USERNAME,
+      });
     });
 
-    expect(result.current.useFractalUserResult.fractalUser).toEqual({
-      accessToken: TEST_ACCESS_TOKEN,
-      email: TEST_EMAIL,
-      userId: TEST_USER_ID,
-      username: TEST_USERNAME,
-    });
-  });
+    it('returns an object with fractal user wallet', async () => {
+      const { result } = renderHook(() => useFractalUserSetter());
 
-  it('calling the setter sets a fractal user wallet for the wrapping `UserContext`', async () => {
-    const wrapper: React.FC = ({ children }) => (
-      <UserContextProvider>{children}</UserContextProvider>
-    );
-    const { result } = renderHook(
-      () => {
-        const useFractalUserSetterResult = useFractalUserSetter();
-        const useFractalUserWalletResult = useFractalUserWallet();
-        // We have to return the result of 2 hooks here in this test hook
-        // so that the hooks share the same `wrapper` context.
-        return {
-          useFractalUserSetterResult,
-          useFractalUserWalletResult,
-        };
-      },
-      { wrapper },
-    );
-
-    await act(async () => {
-      await result.current.useFractalUserSetterResult.fetchAndSetFractalUser(
+      const { fractalUserWallet } = await result.current.fetchAndSetFractalUser(
         DEFAULT_PARAMS,
       );
-    });
 
-    expect(result.current.useFractalUserWalletResult.fractalUserWallet).toEqual(
-      {
+      expect(fractalUserWallet).toEqual({
         solanaPublicKeys: [TEST_SOLANA_PUBLIC_KEY],
-      },
-    );
+      });
+    });
+
+    it('sets a fractal user for the wrapping `UserContext`', async () => {
+      const wrapper: React.FC = ({ children }) => (
+        <UserContextProvider>{children}</UserContextProvider>
+      );
+      const { result } = renderHook(
+        () => {
+          const useFractalUserSetterResult = useFractalUserSetter();
+          const useFractalUserResult = useFractalUser();
+          // We have to return the result of 2 hooks here in this test hook
+          // so that the hooks share the same `wrapper` context.
+          return {
+            useFractalUserResult,
+            useFractalUserSetterResult,
+          };
+        },
+        { wrapper },
+      );
+
+      await act(async () => {
+        await result.current.useFractalUserSetterResult.fetchAndSetFractalUser(
+          DEFAULT_PARAMS,
+        );
+      });
+
+      expect(result.current.useFractalUserResult.fractalUser).toEqual({
+        accessToken: TEST_ACCESS_TOKEN,
+        email: TEST_EMAIL,
+        userId: TEST_USER_ID,
+        username: TEST_USERNAME,
+      });
+    });
+
+    it('sets a fractal user wallet for the wrapping `UserContext`', async () => {
+      const wrapper: React.FC = ({ children }) => (
+        <UserContextProvider>{children}</UserContextProvider>
+      );
+      const { result } = renderHook(
+        () => {
+          const useFractalUserSetterResult = useFractalUserSetter();
+          const useFractalUserWalletResult = useFractalUserWallet();
+          // We have to return the result of 2 hooks here in this test hook
+          // so that the hooks share the same `wrapper` context.
+          return {
+            useFractalUserSetterResult,
+            useFractalUserWalletResult,
+          };
+        },
+        { wrapper },
+      );
+
+      await act(async () => {
+        await result.current.useFractalUserSetterResult.fetchAndSetFractalUser(
+          DEFAULT_PARAMS,
+        );
+      });
+
+      expect(
+        result.current.useFractalUserWalletResult.fractalUserWallet,
+      ).toEqual({
+        solanaPublicKeys: [TEST_SOLANA_PUBLIC_KEY],
+      });
+    });
   });
 });
