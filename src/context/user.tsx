@@ -1,14 +1,19 @@
 import { createContext, ReactNode, useState } from 'react';
 import { FractalUser } from 'types/user';
+import { FractalUserWallet } from 'types/user-wallet';
 
 interface UserContextState {
   fractalUser?: FractalUser;
+  fractalUserWallet?: FractalUserWallet;
   setFractalUser: (user: FractalUser | undefined) => void;
+  setFractalUserWallet: (userWallet: FractalUserWallet | undefined) => void;
 }
 
 export const UserContext = createContext<UserContextState>({
   fractalUser: undefined,
+  fractalUserWallet: undefined,
   setFractalUser: () => undefined,
+  setFractalUserWallet: () => undefined,
 });
 
 export interface UserContextProviderProps {
@@ -19,14 +24,18 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [fractalUser, setFractalUser] = useState<FractalUser | undefined>(
     undefined,
   );
-
-  const setFractalUserInternal = (user?: FractalUser) => {
-    setFractalUser(user);
-  };
+  const [fractalUserWallet, setFractalUserWallet] = useState<
+    FractalUserWallet | undefined
+  >(undefined);
 
   return (
     <UserContext.Provider
-      value={{ fractalUser, setFractalUser: setFractalUserInternal }}
+      value={{
+        fractalUser,
+        fractalUserWallet,
+        setFractalUser,
+        setFractalUserWallet,
+      }}
     >
       {children}
     </UserContext.Provider>

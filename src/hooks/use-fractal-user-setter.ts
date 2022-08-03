@@ -3,9 +3,10 @@ import { sdkApiClient } from 'core/api/client';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { useCallback, useContext } from 'react';
 import { BaseUser, FractalUser } from 'types/user';
+import { FractalUserWallet } from 'types/user-wallet';
 
 export const useFractalUserSetter = () => {
-  const { setFractalUser } = useContext(UserContext);
+  const { setFractalUser, setFractalUserWallet } = useContext(UserContext);
 
   const fetchAndSetFractalUser = useCallback(async (baseUser: BaseUser) => {
     const { data } = await sdkApiClient.v1.getInfo({
@@ -20,8 +21,16 @@ export const useFractalUserSetter = () => {
       email: data.email,
       username: data.username,
     };
+    const fractalUserWallet: FractalUserWallet = {
+      solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
+    };
     setFractalUser(fractalUser);
-    return fractalUser;
+    setFractalUserWallet(fractalUserWallet);
+
+    return {
+      fractalUser,
+      fractalUserWallet,
+    };
   }, []);
 
   return {
