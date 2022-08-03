@@ -1,13 +1,14 @@
-import { UserContext } from 'context/user';
 import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
-import { useCallback, useContext } from 'react';
+import { useFractalUserSetter } from 'hooks/use-fractal-user-setter';
+import { useCallback } from 'react';
 import { FractalUser } from 'types/user';
 
 interface UseSignInParameters {
   clientId: string;
   code?: string;
   onSignIn: (user: FractalUser) => void;
+  onSignInFailed: (e: unknown) => void;
   url?: string;
 }
 
@@ -15,9 +16,10 @@ export const useSignIn = ({
   clientId,
   code,
   onSignIn,
+  onSignInFailed,
   url,
 }: UseSignInParameters) => {
-  const { setUser } = useContext(UserContext);
+  const { fetchAndSetFractalUser } = useFractalUserSetter();
 
   const signIn = useCallback(async () => {
     if (!url || !code) {
@@ -32,7 +34,7 @@ export const useSignIn = ({
       url,
     });
     if (popup) {
-      const handleMessage = (e: MessageEvent) => {
+      const handleMessage = async (e: MessageEvent) => {
         // We only care about events from our own domain.
         if (!validateOrigin(e.origin)) {
           return;
@@ -52,11 +54,14 @@ export const useSignIn = ({
           );
         }
         if (e.data.event === Events.PROJECT_APPROVED) {
-          const user = e.data.payload.user;
-          setUser(user);
-          onSignIn(user);
-
-          popup.close();
+          try {
+            const baseUser = e.data.payload.user;
+            const fractalUser = await fetchAndSetFractalUser(baseUser);
+            popup.close();
+            onSignIn(fractalUser);
+          } catch (e: unknown) {
+            onSignInFailed(e);
+          }
         }
       };
       window.addEventListener('message', handleMessage);
@@ -65,7 +70,7 @@ export const useSignIn = ({
         window.removeEventListener('message', handleMessage);
       };
     }
-  }, [clientId, code, url, onSignIn]);
+  }, [clientId, code, url, onSignIn, onSignInFailed]);
 
   return { signIn };
 };

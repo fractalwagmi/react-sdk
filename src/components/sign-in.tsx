@@ -6,7 +6,7 @@ import { FractalUser } from 'types/user';
 
 export interface SignInProps {
   clientId: string;
-  onError?: () => void;
+  onError?: (e: unknown) => void;
   onSuccess?: (user: FractalUser) => void;
 
   /**
@@ -18,29 +18,32 @@ export interface SignInProps {
 }
 
 export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
+  const doError = (e: unknown) => {
+    if (!onError) {
+      return;
+    }
+    onError(e);
+  };
+
+  const doSuccess = (fractalUser: FractalUser) => {
+    if (!onSuccess) {
+      return;
+    }
+    onSuccess(fractalUser);
+  };
+
   const { code, url } = useAuthUrl({
     clientId,
-    onError: () => doError(),
+    onError: doError,
     scopes,
   });
   const { signIn } = useSignIn({
     clientId,
     code,
-    onSignIn: (user: FractalUser) => {
-      if (!onSuccess) {
-        return;
-      }
-      onSuccess(user);
-    },
+    onSignIn: doSuccess,
+    onSignInFailed: doError,
     url,
   });
-
-  const doError = () => {
-    if (!onError) {
-      return;
-    }
-    onError();
-  };
 
   return <button onClick={signIn}>Sign in with Fractal</button>;
 }

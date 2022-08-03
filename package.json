@@ -9,7 +9,6 @@
     "test": "jest",
     "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
     "prepare": "husky install && ts-patch install",
-    "prebuild": "npm run prebuild:local",
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc-esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
@@ -48,7 +47,7 @@
   },
   "dependencies": {
     "@fractalwagmi/fractal-auth-api": "^0.0.9",
-    "@fractalwagmi/fractal-sdk-api": "^0.0.4",
+    "@fractalwagmi/fractal-sdk-api": "^0.0.5",
     "jest": "^28.1.3",
     "swr": "^1.3.0"
   },
