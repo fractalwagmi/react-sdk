@@ -15,13 +15,6 @@ const DEFAULT_PARAMS = { clientId: TEST_CLIENT_ID, onError: DO_NOTHING };
 
 describe('useAuthUrl', () => {
   beforeEach(() => {
-    (authApiClient.v2.getUrl as jest.Mock).mockResolvedValue({
-      data: {
-        code: TEST_RETURNED_CODE,
-        url: TEST_RETURNED_URL,
-      },
-    });
-
     // eslint-disable-next-line no-console
     console.error = jest.fn();
   });
@@ -87,6 +80,13 @@ describe('useAuthUrl', () => {
   });
 
   it('returns the expected code and url', async () => {
+    (authApiClient.v2.getUrl as jest.Mock).mockResolvedValue({
+      data: {
+        code: TEST_RETURNED_CODE,
+        url: TEST_RETURNED_URL,
+      },
+    });
+
     const { result, waitForNextUpdate } = renderHook(() =>
       useAuthUrl(DEFAULT_PARAMS),
     );
