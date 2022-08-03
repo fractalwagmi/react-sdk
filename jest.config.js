@@ -5,6 +5,7 @@ const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
   preset: 'ts-jest',
   rootDir: 'src',
+  testEnvironment: 'jsdom',
 };
 
 module.exports = customJestConfig;
