@@ -2,13 +2,13 @@ import { createContext, ReactNode, useState } from 'react';
 import { FractalUser } from 'types/user';
 
 interface UserContextState {
-  setUser: (user: FractalUser | undefined) => void;
-  user?: FractalUser;
+  fractalUser?: FractalUser;
+  setFractalUser: (user: FractalUser | undefined) => void;
 }
 
 export const UserContext = createContext<UserContextState>({
-  setUser: () => undefined,
-  user: undefined,
+  fractalUser: undefined,
+  setFractalUser: () => undefined,
 });
 
 export interface UserContextProviderProps {
@@ -16,10 +16,12 @@ export interface UserContextProviderProps {
 }
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
-  const [user, setUser] = useState<FractalUser | undefined>(undefined);
+  const [fractalUser, setFractalUser] = useState<FractalUser | undefined>(
+    undefined,
+  );
 
   return (
-    <UserContext.Provider value={{ setUser, user }}>
+    <UserContext.Provider value={{ fractalUser, setFractalUser }}>
       {children}
     </UserContext.Provider>
   );

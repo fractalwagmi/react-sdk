@@ -7,7 +7,7 @@ const DEFAULT_SCOPE = [Scope.IDENTIFY];
 
 interface UseAuthUrlParameters {
   clientId: string;
-  onError: () => void;
+  onError: (e: unknown) => void;
   scopes?: Scope[];
 }
 
@@ -39,8 +39,8 @@ export const useAuthUrl = ({
         ).data;
         setUrl(urlInfo.url);
         setCode(urlInfo.code);
-      } catch {
-        onError();
+      } catch (e: unknown) {
+        onError(e);
       }
     };
     getUrl();
