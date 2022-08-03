@@ -20,8 +20,14 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     undefined,
   );
 
+  const setFractalUserInternal = (user?: FractalUser) => {
+    setFractalUser(user);
+  };
+
   return (
-    <UserContext.Provider value={{ fractalUser, setFractalUser }}>
+    <UserContext.Provider
+      value={{ fractalUser, setFractalUser: setFractalUserInternal }}
+    >
       {children}
     </UserContext.Provider>
   );
