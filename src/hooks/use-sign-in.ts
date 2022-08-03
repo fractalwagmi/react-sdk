@@ -56,7 +56,7 @@ export const useSignIn = ({
         if (e.data.event === Events.PROJECT_APPROVED) {
           try {
             const baseUser = e.data.payload.user;
-            const fractalUser = await fetchAndSetFractalUser(baseUser);
+            const { fractalUser } = await fetchAndSetFractalUser(baseUser);
             popup.close();
             onSignIn(fractalUser);
           } catch (e: unknown) {
