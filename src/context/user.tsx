@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useState } from 'react';
+import { SWRConfig } from 'swr';
 import { FractalUser } from 'types/user';
 import { FractalUserWallet } from 'types/user-wallet';
 
@@ -37,7 +38,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         setFractalUserWallet,
       }}
     >
-      {children}
+      <SWRConfig>{children}</SWRConfig>
     </UserContext.Provider>
   );
 }

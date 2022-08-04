@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/fractalwagmi/fractal-sdk#readme",
   "peerDependencies": {
-    "react": "17.0.2",
+    "react": "^17.0.2",
     "react-dom": "17.0.2"
   },
   "dependencies": {
