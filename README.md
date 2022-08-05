@@ -26,6 +26,8 @@ const App = () => {
 2. Render the `SignIn` component to display a button for logging in.
 
 ```tsx
+import { Scope, SignIn, User } from '@fractalwagmi/fractal-sdk';
+
 export function YourSignInComponent() {
   return (
     <SignIn
@@ -48,11 +50,8 @@ export function YourSignInComponent() {
 
 ```tsx
 import {
-  Scope,
-  SignIn,
   useCoins,
   useItems,
-  User,
   useUser,
   useUserWallet,
 } from '@fractalwagmi/fractal-sdk';
