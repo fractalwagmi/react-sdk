@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useState } from 'react';
 import { SWRConfig } from 'swr';
-import { FractalUser } from 'types/user';
-import { FractalUserWallet } from 'types/user-wallet';
+import { FractalUser, FractalUserWallet } from 'types';
 
 interface UserContextState {
   fractalUser?: FractalUser;

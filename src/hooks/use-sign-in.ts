@@ -2,7 +2,7 @@ import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useFractalUserSetter } from 'hooks/use-fractal-user-setter';
 import { useCallback } from 'react';
-import { FractalUser } from 'types/user';
+import { FractalUser } from 'types';
 
 interface UseSignInParameters {
   clientId: string;

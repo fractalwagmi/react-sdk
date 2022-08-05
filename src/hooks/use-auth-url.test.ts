@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks/dom';
 import { authApiClient } from 'core/api/client';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { act } from 'react-dom/test-utils';
-import { Scope } from 'types/scope';
+import { Scope } from 'types';
 
 jest.mock('core/api/client');
 
