@@ -46,6 +46,22 @@ export function YourSignInComponent() {
 }
 ```
 
+You can customize the look of the button with either of these options:
+
+```tsx
+// Using your own class name to override any default styles:
+<SignIn
+  className="foobar"
+>
+```
+
+```tsx
+// Use your own child component:
+<SignIn
+  component={<YourOwnButton>Sign in with Fractal</YourOwnButton>}
+>
+```
+
 3. Use the hooks.
 
 ```tsx
