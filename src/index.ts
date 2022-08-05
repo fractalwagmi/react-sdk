@@ -1,18 +1,8 @@
-export { SignIn as SignInWithFractal } from 'components/sign-in';
-export { UserContextProvider as SignInWithFractalProvider } from 'context/user';
-export type { SignInProps as SignInWithFractalProps } from 'components/sign-in';
+export { SignIn } from 'components/sign-in';
+export { UserContextProvider as FractalProvider } from 'context/user';
+export type { SignInProps } from 'components/sign-in';
 
-export { Scope as FractalSdkScope } from 'types';
-export type {
-  FractalUser,
-  FractalUserWallet,
-  FractalCoin,
-  FractalItem,
-} from 'types';
+export { Scope } from 'types';
+export type { User, UserWallet, Coin, Item } from 'types';
 
-export {
-  useUser as useFractalUser,
-  useUserWallet as useFractalUserWallet,
-  useItems as useFractalItems,
-  useCoins as useFractalCoins,
-} from 'hooks';
+export * from 'hooks/public';

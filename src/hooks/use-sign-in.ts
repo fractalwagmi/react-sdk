@@ -2,12 +2,12 @@ import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useUserSetter } from 'hooks/use-user-setter';
 import { useCallback } from 'react';
-import { FractalUser } from 'types';
+import { User } from 'types';
 
 interface UseSignInParameters {
   clientId: string;
   code?: string;
-  onSignIn: (user: FractalUser) => void;
+  onSignIn: (user: User) => void;
   onSignInFailed: (e: unknown) => void;
   url?: string;
 }
@@ -19,7 +19,7 @@ export const useSignIn = ({
   onSignInFailed,
   url,
 }: UseSignInParameters) => {
-  const { fetchAndSetFractalUser } = useUserSetter();
+  const { fetchAndSetUser } = useUserSetter();
 
   const signIn = useCallback(async () => {
     if (!url || !code) {
@@ -56,9 +56,9 @@ export const useSignIn = ({
         if (e.data.event === Events.PROJECT_APPROVED) {
           try {
             const baseUser = e.data.payload.user;
-            const { fractalUser } = await fetchAndSetFractalUser(baseUser);
+            const { user } = await fetchAndSetUser(baseUser);
             popup.close();
-            onSignIn(fractalUser);
+            onSignIn(user);
           } catch (e: unknown) {
             onSignInFailed(e);
           }

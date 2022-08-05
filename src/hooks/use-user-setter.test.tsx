@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { UserContextProvider } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
-import { useUser } from 'hooks/use-user';
+import { useUser } from 'hooks/public/use-user';
+import { useUserWallet } from 'hooks/public/use-user-wallet';
 import { useUserSetter } from 'hooks/use-user-setter';
-import { useUserWallet } from 'hooks/use-user-wallet';
 import { act } from 'react-dom/test-utils';
 
 jest.mock('core/api/client');
@@ -39,13 +39,13 @@ describe('useUserSetter', () => {
   it('returns a callable function', () => {
     const { result } = renderHook(() => useUserSetter());
 
-    expect(typeof result.current.fetchAndSetFractalUser).toBe('function');
+    expect(typeof result.current.fetchAndSetUser).toBe('function');
   });
 
   it('includes an authorization header when fetching user info', async () => {
     const { result } = renderHook(() => useUserSetter());
 
-    await result.current.fetchAndSetFractalUser(DEFAULT_PARAMS);
+    await result.current.fetchAndSetUser(DEFAULT_PARAMS);
 
     expect(mockGetInfo).lastCalledWith(
       expect.objectContaining({
@@ -58,11 +58,9 @@ describe('useUserSetter', () => {
     it('returns an object with fractal user', async () => {
       const { result } = renderHook(() => useUserSetter());
 
-      const { fractalUser } = await result.current.fetchAndSetFractalUser(
-        DEFAULT_PARAMS,
-      );
+      const { user } = await result.current.fetchAndSetUser(DEFAULT_PARAMS);
 
-      expect(fractalUser).toEqual({
+      expect(user).toEqual({
         accessToken: TEST_ACCESS_TOKEN,
         email: TEST_EMAIL,
         userId: TEST_USER_ID,
@@ -73,11 +71,11 @@ describe('useUserSetter', () => {
     it('returns an object with fractal user wallet', async () => {
       const { result } = renderHook(() => useUserSetter());
 
-      const { fractalUserWallet } = await result.current.fetchAndSetFractalUser(
+      const { userWallet } = await result.current.fetchAndSetUser(
         DEFAULT_PARAMS,
       );
 
-      expect(fractalUserWallet).toEqual({
+      expect(userWallet).toEqual({
         solanaPublicKeys: [TEST_SOLANA_PUBLIC_KEY],
       });
     });
@@ -101,12 +99,12 @@ describe('useUserSetter', () => {
       );
 
       await act(async () => {
-        await result.current.useUserSetterResult.fetchAndSetFractalUser(
+        await result.current.useUserSetterResult.fetchAndSetUser(
           DEFAULT_PARAMS,
         );
       });
 
-      expect(result.current.useUserResult.fractalUser).toEqual({
+      expect(result.current.useUserResult.data).toEqual({
         accessToken: TEST_ACCESS_TOKEN,
         email: TEST_EMAIL,
         userId: TEST_USER_ID,
@@ -133,12 +131,12 @@ describe('useUserSetter', () => {
       );
 
       await act(async () => {
-        await result.current.useUserSetterResult.fetchAndSetFractalUser(
+        await result.current.useUserSetterResult.fetchAndSetUser(
           DEFAULT_PARAMS,
         );
       });
 
-      expect(result.current.useUserWalletResult.fractalUserWallet).toEqual({
+      expect(result.current.useUserWalletResult.data).toEqual({
         solanaPublicKeys: [TEST_SOLANA_PUBLIC_KEY],
       });
     });

@@ -1,4 +1,4 @@
-export interface FractalCoin {
+export interface Coin {
   address: string;
   amount: string;
   decimals: number;

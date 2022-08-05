@@ -2,14 +2,14 @@ import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/fractal-sdk-
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { UserContextProvider } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
+import { useItems } from 'hooks/public/use-items';
+import * as useUserModule from 'hooks/public/use-user';
 import { TEST_FRACTAL_USER } from 'hooks/testing/constants';
-import { useItems } from 'hooks/use-items';
-import * as useUserModule from 'hooks/use-user';
 import { act } from 'react-dom/test-utils';
 import { SWRConfig } from 'swr';
 
 jest.mock('core/api/client');
-jest.mock('hooks/use-fractal-user');
+jest.mock('hooks/public/use-user');
 
 const ITEM_1: FractalSdkWalletGetItemsResponseItem = {
   files: [
@@ -52,8 +52,8 @@ describe('useItems', () => {
 
     mockGetUser = jest.spyOn(useUserModule, 'useUser');
     mockGetUser.mockReturnValue({
-      fractalUser: TEST_FRACTAL_USER,
-    });
+      data: TEST_FRACTAL_USER,
+    } as ReturnType<typeof useUserModule.useUser>);
 
     wrapper = ({ children }) => (
       <SWRConfig value={{ provider: () => new Map() }}>
@@ -70,25 +70,25 @@ describe('useItems', () => {
   it('returns the expected items', async () => {
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1, ITEM_2] } });
     const { result } = renderHook(() => useItems(), { wrapper });
-    expect(result.current.fractalItems).toEqual([]);
+    expect(result.current.data).toEqual([]);
 
     await act(async () => void {});
 
-    expect(result.current.fractalItems).toEqual([ITEM_1, ITEM_2]);
+    expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
   it('returns a refetcher to trigger a new fetch', async () => {
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1] } });
     const { result } = renderHook(() => useItems(), { wrapper });
     await act(async () => void {});
-    expect(result.current.fractalItems).toEqual([ITEM_1]);
+    expect(result.current.data).toEqual([ITEM_1]);
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1, ITEM_2] } });
 
     await act(async () => {
       result.current.refetch();
     });
 
-    expect(result.current.fractalItems).toEqual([ITEM_1, ITEM_2]);
+    expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
   it('only makes one network request until refetch is called', async () => {

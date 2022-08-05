@@ -6,7 +6,7 @@ export interface BaseUser {
   userId: string;
 }
 
-export interface FractalUser extends BaseUser {
+export interface User extends BaseUser {
   /** The user's email as configured in Fractal. */
   email?: string;
 
