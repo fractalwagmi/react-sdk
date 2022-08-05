@@ -6,9 +6,8 @@ export interface SignInProps {
   clientId: string;
   onError?: (e: unknown) => void;
   onSuccess?: (user: User) => void;
-
   /**
-   * The scopes to assign to the access token. Defaults to [FractalSdkScope.IDENTIFY].
+   * The scopes to assign to the access token. Defaults to [Scope.IDENTIFY].
    *
    * See src/types/scope.ts for a list of available scopes.
    */
