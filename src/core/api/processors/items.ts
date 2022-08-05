@@ -1,5 +1,5 @@
 import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/fractal-sdk-api';
-import { FractalItem } from 'types/item';
+import { FractalItem } from 'types';
 
 export const processItems = (
   sdkApiWalletItems: FractalSdkWalletGetItemsResponseItem[],

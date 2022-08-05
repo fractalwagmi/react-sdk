@@ -1,6 +1,6 @@
 export interface FractalCoin {
   address: string;
-  amount: number;
+  amount: string;
   decimals: number;
   logoUri: string;
   name: string;
