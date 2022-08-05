@@ -1,6 +1,6 @@
 import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
-import { useFractalUserSetter } from 'hooks/use-fractal-user-setter';
+import { useUserSetter } from 'hooks/use-user-setter';
 import { useCallback } from 'react';
 import { FractalUser } from 'types';
 
@@ -19,7 +19,7 @@ export const useSignIn = ({
   onSignInFailed,
   url,
 }: UseSignInParameters) => {
-  const { fetchAndSetFractalUser } = useFractalUserSetter();
+  const { fetchAndSetFractalUser } = useUserSetter();
 
   const signIn = useCallback(async () => {
     if (!url || !code) {

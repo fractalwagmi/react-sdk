@@ -4,7 +4,7 @@ import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { useCallback, useContext } from 'react';
 import { FractalUserWallet, BaseUser, FractalUser } from 'types';
 
-export const useFractalUserSetter = () => {
+export const useUserSetter = () => {
   const { setFractalUser, setFractalUserWallet } = useContext(UserContext);
 
   const fetchAndSetFractalUser = useCallback(async (baseUser: BaseUser) => {

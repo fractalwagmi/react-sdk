@@ -3,8 +3,8 @@ import { renderHook } from '@testing-library/react-hooks/dom';
 import { UserContextProvider } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
 import { TEST_FRACTAL_USER } from 'hooks/testing/constants';
-import { useFractalItems } from 'hooks/use-fractal-items';
-import * as useFractalUserModule from 'hooks/use-fractal-user';
+import { useItems } from 'hooks/use-items';
+import * as useUserModule from 'hooks/use-user';
 import { act } from 'react-dom/test-utils';
 import { SWRConfig } from 'swr';
 
@@ -41,7 +41,7 @@ const ITEM_2: FractalSdkWalletGetItemsResponseItem = {
   name: 'bar',
 };
 
-describe('useFractalItems', () => {
+describe('useItems', () => {
   let mockGetWalletItems: jest.SpyInstance;
   let mockGetUser: jest.SpyInstance;
   let wrapper: React.FC;
@@ -50,7 +50,7 @@ describe('useFractalItems', () => {
     mockGetWalletItems = jest.spyOn(sdkApiClient.v1, 'getWalletItems');
     mockGetWalletItems.mockResolvedValue([]);
 
-    mockGetUser = jest.spyOn(useFractalUserModule, 'useFractalUser');
+    mockGetUser = jest.spyOn(useUserModule, 'useUser');
     mockGetUser.mockReturnValue({
       fractalUser: TEST_FRACTAL_USER,
     });
@@ -69,7 +69,7 @@ describe('useFractalItems', () => {
 
   it('returns the expected items', async () => {
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1, ITEM_2] } });
-    const { result } = renderHook(() => useFractalItems(), { wrapper });
+    const { result } = renderHook(() => useItems(), { wrapper });
     expect(result.current.fractalItems).toEqual([]);
 
     await act(async () => void {});
@@ -79,7 +79,7 @@ describe('useFractalItems', () => {
 
   it('returns a refetcher to trigger a new fetch', async () => {
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1] } });
-    const { result } = renderHook(() => useFractalItems(), { wrapper });
+    const { result } = renderHook(() => useItems(), { wrapper });
     await act(async () => void {});
     expect(result.current.fractalItems).toEqual([ITEM_1]);
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1, ITEM_2] } });
@@ -92,7 +92,7 @@ describe('useFractalItems', () => {
   });
 
   it('only makes one network request until refetch is called', async () => {
-    const { rerender, result } = renderHook(() => useFractalItems(), {
+    const { rerender, result } = renderHook(() => useItems(), {
       wrapper,
     });
     await act(async () => void {});
