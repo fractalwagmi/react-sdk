@@ -10,6 +10,9 @@ export type {
   FractalItem,
 } from 'types';
 
-export { useFractalUser } from 'hooks/use-fractal-user';
-export { useFractalUserWallet } from 'hooks/use-fractal-user-wallet';
-export { useFractalItems } from 'hooks/use-fractal-items';
+export {
+  useUser as useFractalUser,
+  useUserWallet as useFractalUserWallet,
+  useItems as useFractalItems,
+  useCoins as useFractalCoins,
+} from 'hooks';
