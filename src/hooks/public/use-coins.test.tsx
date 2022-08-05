@@ -2,14 +2,14 @@ import { FractalSdkWalletGetCoinsResponseCoin } from '@fractalwagmi/fractal-sdk-
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { UserContextProvider } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
+import { useCoins } from 'hooks/public/use-coins';
+import * as useUserModule from 'hooks/public/use-user';
 import { TEST_FRACTAL_USER } from 'hooks/testing/constants';
-import { useCoins } from 'hooks/use-coins';
-import * as useUserModule from 'hooks/use-user';
 import { act } from 'react-dom/test-utils';
 import { SWRConfig } from 'swr';
 
 jest.mock('core/api/client');
-jest.mock('hooks/use-fractal-user');
+jest.mock('hooks/public/use-user');
 
 const ITEM_1: FractalSdkWalletGetCoinsResponseCoin = {
   address: 'test-address-1',
@@ -33,17 +33,17 @@ const ITEM_2: FractalSdkWalletGetCoinsResponseCoin = {
 
 describe('useCoins', () => {
   let mockGetCoins: jest.SpyInstance;
-  let mockGetUser: jest.SpyInstance;
+  let mockUseUser: jest.SpyInstance;
   let wrapper: React.FC;
 
   beforeEach(() => {
     mockGetCoins = jest.spyOn(sdkApiClient.v1, 'getCoins');
     mockGetCoins.mockResolvedValue([]);
 
-    mockGetUser = jest.spyOn(useUserModule, 'useUser');
-    mockGetUser.mockReturnValue({
-      fractalUser: TEST_FRACTAL_USER,
-    });
+    mockUseUser = jest.spyOn(useUserModule, 'useUser');
+    mockUseUser.mockReturnValue({
+      data: TEST_FRACTAL_USER,
+    } as ReturnType<typeof useUserModule.useUser>);
 
     wrapper = ({ children }) => (
       <SWRConfig value={{ provider: () => new Map() }}>
@@ -54,31 +54,31 @@ describe('useCoins', () => {
 
   afterEach(() => {
     mockGetCoins.mockReset();
-    mockGetUser.mockReset();
+    mockUseUser.mockReset();
   });
 
   it('returns the expected coins', async () => {
     mockGetCoins.mockResolvedValue({ data: { coins: [ITEM_1, ITEM_2] } });
     const { result } = renderHook(() => useCoins(), { wrapper });
-    expect(result.current.fractalCoins).toEqual([]);
+    expect(result.current.data).toEqual([]);
 
     await act(async () => void {});
 
-    expect(result.current.fractalCoins).toEqual([ITEM_1, ITEM_2]);
+    expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
   it('returns a refetcher to trigger a new fetch', async () => {
     mockGetCoins.mockResolvedValue({ data: { coins: [ITEM_1] } });
     const { result } = renderHook(() => useCoins(), { wrapper });
     await act(async () => void {});
-    expect(result.current.fractalCoins).toEqual([ITEM_1]);
+    expect(result.current.data).toEqual([ITEM_1]);
     mockGetCoins.mockResolvedValue({ data: { coins: [ITEM_1, ITEM_2] } });
 
     await act(async () => {
       result.current.refetch();
     });
 
-    expect(result.current.fractalCoins).toEqual([ITEM_1, ITEM_2]);
+    expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
   it('only makes one network request until refetch is called', async () => {

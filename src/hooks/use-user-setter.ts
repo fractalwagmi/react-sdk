@@ -2,12 +2,12 @@ import { UserContext } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { useCallback, useContext } from 'react';
-import { FractalUserWallet, BaseUser, FractalUser } from 'types';
+import { UserWallet, BaseUser, User } from 'types';
 
 export const useUserSetter = () => {
-  const { setFractalUser, setFractalUserWallet } = useContext(UserContext);
+  const { setUser, setUserWallet } = useContext(UserContext);
 
-  const fetchAndSetFractalUser = useCallback(async (baseUser: BaseUser) => {
+  const fetchAndSetUser = useCallback(async (baseUser: BaseUser) => {
     const { data } = await sdkApiClient.v1.getInfo({
       headers: maybeIncludeAuthorizationHeaders(
         baseUser.accessToken,
@@ -15,24 +15,24 @@ export const useUserSetter = () => {
       ),
     });
 
-    const fractalUser: FractalUser = {
+    const user: User = {
       ...baseUser,
       email: data.email,
       username: data.username,
     };
-    const fractalUserWallet: FractalUserWallet = {
+    const userWallet: UserWallet = {
       solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
     };
-    setFractalUser(fractalUser);
-    setFractalUserWallet(fractalUserWallet);
+    setUser(user);
+    setUserWallet(userWallet);
 
     return {
-      fractalUser,
-      fractalUserWallet,
+      user,
+      userWallet,
     };
   }, []);
 
   return {
-    fetchAndSetFractalUser,
+    fetchAndSetUser,
   };
 };

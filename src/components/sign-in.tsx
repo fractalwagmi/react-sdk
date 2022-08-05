@@ -1,12 +1,11 @@
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
-import React from 'react';
-import { Scope, FractalUser } from 'types';
+import { Scope, User } from 'types';
 
 export interface SignInProps {
   clientId: string;
   onError?: (e: unknown) => void;
-  onSuccess?: (user: FractalUser) => void;
+  onSuccess?: (user: User) => void;
 
   /**
    * The scopes to assign to the access token. Defaults to [FractalSdkScope.IDENTIFY].
@@ -24,11 +23,11 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
     onError(e);
   };
 
-  const doSuccess = (fractalUser: FractalUser) => {
+  const doSuccess = (user: User) => {
     if (!onSuccess) {
       return;
     }
-    onSuccess(fractalUser);
+    onSuccess(user);
   };
 
   const { code, url } = useAuthUrl({

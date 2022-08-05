@@ -1,10 +1,10 @@
-export interface FractalItem {
-  files: FractalItemFile[];
+export interface Item {
+  files: ItemFile[];
   id: string;
   name: string;
 }
 
-export interface FractalItemFile {
+export interface ItemFile {
   type: string;
   uri: string;
 }
