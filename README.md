@@ -52,7 +52,9 @@ export function YourWalletComponent() {
   return (
     <>
       <SignIn
+        // The `clientId` is the only required prop.
         clientId="YOUR_CLIENT_ID"
+        // `scopes` defaults to [Scope.IDENTIFY].
         scopes={[Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ]}
         onError={err => {
           console.log('err = ', err);
