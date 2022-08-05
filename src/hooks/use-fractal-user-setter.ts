@@ -2,8 +2,7 @@ import { UserContext } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { useCallback, useContext } from 'react';
-import { BaseUser, FractalUser } from 'types/user';
-import { FractalUserWallet } from 'types/user-wallet';
+import { FractalUserWallet, BaseUser, FractalUser } from 'types';
 
 export const useFractalUserSetter = () => {
   const { setFractalUser, setFractalUserWallet } = useContext(UserContext);

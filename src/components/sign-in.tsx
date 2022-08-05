@@ -1,8 +1,7 @@
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
 import React from 'react';
-import { Scope } from 'types/scope';
-import { FractalUser } from 'types/user';
+import { Scope, FractalUser } from 'types';
 
 export interface SignInProps {
   clientId: string;

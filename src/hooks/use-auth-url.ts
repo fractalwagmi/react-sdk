@@ -1,7 +1,7 @@
 import { authApiClient } from 'core/api/client';
 import { verifyScopes } from 'core/scope';
 import { useEffect, useState } from 'react';
-import { Scope } from 'types/scope';
+import { Scope } from 'types';
 
 const DEFAULT_SCOPE = [Scope.IDENTIFY];
 
