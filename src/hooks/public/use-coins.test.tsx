@@ -95,4 +95,16 @@ describe('useCoins', () => {
 
     expect(mockGetCoins).toHaveBeenCalledTimes(2);
   });
+
+  it('attaches the correct access token to the request headers', async () => {
+    renderHook(() => useCoins(), { wrapper });
+    await act(async () => void {});
+    expect(mockGetCoins).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        headers: {
+          authorization: `Bearer ${TEST_FRACTAL_USER.accessToken}`,
+        },
+      }),
+    );
+  });
 });

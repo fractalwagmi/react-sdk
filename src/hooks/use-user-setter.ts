@@ -1,5 +1,6 @@
 import { UserContext } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
+import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { useCallback, useContext } from 'react';
 import { UserWallet, BaseUser, User } from 'types';
@@ -11,7 +12,7 @@ export const useUserSetter = () => {
     const { data } = await sdkApiClient.v1.getInfo({
       headers: maybeIncludeAuthorizationHeaders(
         baseUser.accessToken,
-        sdkApiClient.v1.getInfo,
+        Endpoint.GET_INFO,
       ),
     });
 
@@ -23,6 +24,7 @@ export const useUserSetter = () => {
     const userWallet: UserWallet = {
       solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
     };
+
     setUser(user);
     setUserWallet(userWallet);
 

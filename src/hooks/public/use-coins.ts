@@ -1,4 +1,5 @@
 import { sdkApiClient } from 'core/api/client';
+import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { processCoins } from 'core/api/processors/coins';
 import { PublicHookResponse } from 'hooks/public/types';
@@ -15,18 +16,20 @@ export const useCoins = (): PublicHookResponse<Coin[]> => {
     setFetchToken(fetchToken + 1);
   }, [fetchToken]);
 
+  const requestKey = user
+    ? [Endpoint.GET_COINS, user.accessToken, user.userId, fetchToken]
+    : null;
   const { data, error } = useSWR(
-    user ? [user.userId, user.accessToken, fetchToken] : null,
-    async () => {
-      return (
+    requestKey,
+    async () =>
+      (
         await sdkApiClient.v1.getCoins({
           headers: maybeIncludeAuthorizationHeaders(
             user?.accessToken ?? '',
-            sdkApiClient.v1.getCoins,
+            Endpoint.GET_COINS,
           ),
         })
-      ).data;
-    },
+      ).data,
   );
 
   const coins = useMemo(() => processCoins(data?.coins ?? []), [data?.coins]);

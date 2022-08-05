@@ -1,4 +1,4 @@
-import { sdkApiClient } from 'core/api/client';
+import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 
 const ACCESS_TOKEN = 'foobar';
@@ -6,7 +6,7 @@ const ACCESS_TOKEN = 'foobar';
 describe('maybeIncludeAuthorizationHeaders', () => {
   it('returns an object with authorization header attached', () => {
     expect(
-      maybeIncludeAuthorizationHeaders(ACCESS_TOKEN, sdkApiClient.v1.getCoins),
+      maybeIncludeAuthorizationHeaders(ACCESS_TOKEN, Endpoint.GET_COINS),
     ).toEqual({
       authorization: `Bearer ${ACCESS_TOKEN}`,
     });
@@ -14,7 +14,7 @@ describe('maybeIncludeAuthorizationHeaders', () => {
 
   it('can use an existing object', () => {
     expect(
-      maybeIncludeAuthorizationHeaders(ACCESS_TOKEN, sdkApiClient.v1.getCoins, {
+      maybeIncludeAuthorizationHeaders(ACCESS_TOKEN, Endpoint.GET_COINS, {
         foo: 'bar',
       }),
     ).toEqual({
