@@ -1,10 +1,18 @@
 import { SignInButton } from 'components/sign-in-button';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
+import React, { HTMLAttributes } from 'react';
 import { Scope, User } from 'types';
 
 export interface SignInProps {
+  /**
+   * Any additional props for <button> that should be passed to the default
+   * sign-in button.
+   */
+  buttonProps: HTMLAttributes<HTMLButtonElement>;
   clientId: string;
+  /** Optional component to render instead of the default sign-in button. */
+  component?: React.ReactElement;
   onError?: (e: unknown) => void;
   onSuccess?: (user: User) => void;
   /**
@@ -15,7 +23,14 @@ export interface SignInProps {
   scopes?: Scope[];
 }
 
-export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
+export const SignIn = ({
+  buttonProps,
+  clientId,
+  component,
+  onError,
+  onSuccess,
+  scopes,
+}: SignInProps) => {
   const doError = (e: unknown) => {
     if (!onError) {
       return;
@@ -43,5 +58,15 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
     url,
   });
 
-  return <SignInButton onClick={signIn}>Sign in with Fractal</SignInButton>;
-}
+  if (component) {
+    return React.cloneElement(component, {
+      onClick: signIn,
+    });
+  }
+
+  return (
+    <SignInButton onClick={signIn} {...buttonProps}>
+      Sign in with Fractal
+    </SignInButton>
+  );
+};
