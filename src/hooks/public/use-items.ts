@@ -1,4 +1,5 @@
 import { sdkApiClient } from 'core/api/client';
+import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { processItems } from 'core/api/processors/items';
 import { PublicHookResponse } from 'hooks/public/types';
@@ -15,14 +16,18 @@ export const useItems = (): PublicHookResponse<Item[]> => {
     setFetchToken(fetchToken + 1);
   }, [fetchToken]);
 
+  const requestKey = user
+    ? [Endpoint.GET_WALLET_ITEMS, user.accessToken, user.userId, fetchToken]
+    : null;
+
   const { data, error } = useSWR(
-    user ? [user.userId, user.accessToken, fetchToken] : null,
+    requestKey,
     async () =>
       (
         await sdkApiClient.v1.getWalletItems({
           headers: maybeIncludeAuthorizationHeaders(
             user?.accessToken ?? '',
-            sdkApiClient.v1.getWalletItems,
+            Endpoint.GET_WALLET_ITEMS,
           ),
         })
       ).data,
