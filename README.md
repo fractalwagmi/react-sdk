@@ -12,56 +12,55 @@ npm install @fractalwagmi/fractal-sdk
 
 ### Usage
 
-1. Setup the provider above any components that need access to the wallet.
-
-_Note: endpoint defaults to `https://api.mainnet-beta.solana.com`_
+1. Setup the provider above any components that need access to the available
+   hooks.
 
 ```tsx
-import { WalletProvider } from '@fractalwagmi/fractal-sdk';
+import { FractalProvider } from '@fractalwagmi/fractal-sdk';
 
 const App = () => {
-  return (
-    <WalletProvider endpoint={'https://optional-rpc-provider.com'}>
-      ...
-    </WalletProvider>
-  );
+  return <FractalProvider>...</FractalProvider>;
 };
 ```
 
-2. Use the wallet and related hooks.
+2. Use the hooks.
 
 ```tsx
 import {
-  FractalWallet,
-  useFractalUser,
-  useSolBalance,
+  Scope,
+  SignIn,
+  useCoins,
+  useItems,
+  User,
+  useUser,
+  useUserWallet,
 } from '@fractalwagmi/fractal-sdk';
 
 export function YourWalletComponent() {
-  // Hook returns userId, publicKey, and username
-  const user = useFractalUser();
-  // Returns sol in lamports
-  const sol = useSolBalance();
-  console.log(user);
-  console.log(sol);
+  // Returns user information like email, username, and id.
+  const { data: user } = useUser();
+
+  // Returns the user's wallet information like solana public keys.
+  const { data: userWallet } = useUserWallet();
+
+  // Returns the items in the user's wallet.
+  const { data: items } = useItems();
+
+  // Returns the coins in the user's wallet.
+  const { data: coins } = useCoins();
 
   return (
     <>
-      <FractalWallet
-        onLogin={user => {
-          console.log(user);
+      <SignIn
+        clientId="YOUR_CLIENT_ID"
+        scopes={[Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ]}
+        onError={err => {
+          console.log('err = ', err);
         }}
-        onLogout={() => {
-          console.log('logged out');
-        }}
-        ready={() => {
-          console.log('ready');
+        onSuccess={(user: User) => {
+          console.log('user = ', user);
         }}
       />
-      <div>{user?.userId}</div>
-      <div>{user?.publicKey}</div>
-      <div>{user?.username}</div>
-      <div>{sol?.balance}</div>
     </>
   );
 }
