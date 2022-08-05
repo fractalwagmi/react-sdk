@@ -40,6 +40,15 @@ export const useSignIn = ({
           return;
         }
 
+        if (!popup.window) {
+          // This is a sanity check in case popup.window is not defined.
+          // This can happen when a user exits the popup without completing the
+          // sign in flow, and then opening another popup.
+          //
+          // TODO: Fix multiple event listeners from registering.
+          return;
+        }
+
         if (e.data.event === Events.HANDSHAKE) {
           const payload = {
             clientId,
