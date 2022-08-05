@@ -23,7 +23,28 @@ const App = () => {
 };
 ```
 
-2. Use the hooks.
+2. Render the `SignIn` component to display a button for logging in.
+
+```tsx
+export function YourSignInComponent() {
+  return (
+    <SignIn
+      // The `clientId` is the only required prop.
+      clientId="YOUR_CLIENT_ID"
+      // `scopes` defaults to [Scope.IDENTIFY].
+      scopes={[Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ]}
+      onError={err => {
+        console.log('err = ', err);
+      }}
+      onSuccess={(user: User) => {
+        console.log('user = ', user);
+      }}
+    />
+  );
+}
+```
+
+3. Use the hooks.
 
 ```tsx
 import {
@@ -49,21 +70,6 @@ export function YourWalletComponent() {
   // Returns the coins in the user's wallet.
   const { data: coins } = useCoins();
 
-  return (
-    <>
-      <SignIn
-        // The `clientId` is the only required prop.
-        clientId="YOUR_CLIENT_ID"
-        // `scopes` defaults to [Scope.IDENTIFY].
-        scopes={[Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ]}
-        onError={err => {
-          console.log('err = ', err);
-        }}
-        onSuccess={(user: User) => {
-          console.log('user = ', user);
-        }}
-      />
-    </>
-  );
+  return <div>your component</div>;
 }
 ```
