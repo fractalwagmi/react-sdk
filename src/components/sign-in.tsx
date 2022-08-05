@@ -1,3 +1,4 @@
+import { SignInButton } from 'components/sign-in-button';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
 import { Scope, User } from 'types';
@@ -42,5 +43,5 @@ export function SignIn({ clientId, onError, onSuccess, scopes }: SignInProps) {
     url,
   });
 
-  return <button onClick={signIn}>Sign in with Fractal</button>;
+  return <SignInButton onClick={signIn}>Sign in with Fractal</SignInButton>;
 }
