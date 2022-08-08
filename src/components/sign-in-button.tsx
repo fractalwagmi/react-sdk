@@ -10,19 +10,18 @@ export const SignInButton = (
   const className = [
     css(`
       align-items: center;
-      background: #f2059f;
+      background: #d71d96;
       border-radius: 0.25rem;
       border: 0;
       color: #fff;
       cursor: pointer;
       display: flex;
       font-size: 1rem;
-      gap: 0.625rem;
-      padding: 0.125rem 0.75rem 0.125rem 0.125rem;
+      padding: 0.1875rem;
       width: max-content;
 
       &:hover {
-        background: #ff3dbb;
+        background: #c31a88;
       }
     `),
     buttonProps.className ?? '',
@@ -34,24 +33,28 @@ export const SignInButton = (
     <button {...buttonProps} className={className}>
       <div
         className={css`
-          background: #fff;
-          width: 2rem;
+          height: 2.25rem;
           aspect-ratio: 1/1;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 1.5px;
+          background: #f2059f;
+          border-radius: 0.125rem;
         `}
       >
         <Logo></Logo>
       </div>
-      <span
+      <div
         className={css`
+          padding: 0 0.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           white-space: nowrap;
         `}
       >
         {DEFAULT_BUTTON_TEXT}
-      </span>
+      </div>
     </button>
   );
 };

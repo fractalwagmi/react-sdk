@@ -9,7 +9,7 @@ export const Logo = () => {
     >
       <path
         className={css(`
-          fill: #f2059f;
+          fill: #fff;
         `)}
         d="M74.9,520.1V0h372.8v112.7h-234v115.6h182V341h-182v179.1H74.9z"
       />
