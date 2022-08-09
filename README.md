@@ -1,18 +1,18 @@
 # fractal-sdk
 
-### Installation
+## Installation
 
 ```sh
 npm install @fractalwagmi/fractal-sdk
 ```
 
-### Example
+## Example
 
 [SDK Demo Preview](https://sdk-demo.fractalpreview.com/)
 
-### Usage
+## Usage
 
-#### 1. Import the global stylesheet
+### 1. Import the global stylesheet
 
 If you're using the default button that we provide, you'll need to import our
 global stylesheet for the component to look correct.
@@ -21,7 +21,7 @@ global stylesheet for the component to look correct.
 import '@fractalwagmi/fractal-sdk/styles.css';
 ```
 
-#### 2. Set up the provider
+### 2. Set up the provider
 
 The provider will allow any child component to use hooks to access data.
 
@@ -33,7 +33,7 @@ const App = () => {
 };
 ```
 
-#### 3. Render the `SignIn` component.
+### 3. Render the `SignIn` component.
 
 This will display a button for logging in.
 
@@ -58,7 +58,7 @@ export function YourSignInComponent() {
 }
 ```
 
-##### 4. Customization
+##### Customizations
 
 You can customize the look of the button with either of these options:
 
@@ -72,7 +72,7 @@ You can customize the look of the button with either of these options:
 <SignIn component={<YourOwnButton />}>
 ```
 
-#### Using hooks to access data
+### 4. Use the hooks to access data
 
 ```tsx
 import {
