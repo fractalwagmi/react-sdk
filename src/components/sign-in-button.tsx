@@ -4,24 +4,41 @@ import { HTMLAttributes } from 'react';
 
 const DEFAULT_BUTTON_TEXT = 'Sign in with Fractal';
 
-export const SignInButton = (
-  buttonProps: HTMLAttributes<HTMLButtonElement>,
-) => {
+export interface SignInButtonProps extends HTMLAttributes<HTMLButtonElement> {
+  variant?: 'light' | 'dark';
+}
+
+export const SignInButton = ({
+  variant,
+  ...buttonProps
+}: SignInButtonProps) => {
+  const {
+    buttonBackground,
+    buttonBackgroundHover,
+    logoBackground,
+    logoFill,
+    textColor,
+  } = getColorsFromVariant(variant);
+
   const className = [
     css(`
       align-items: center;
-      background: #d71d96;
+      background: ${buttonBackground};
       border-radius: 0.25rem;
       border: 0;
-      color: #fff;
+      color: ${textColor};
       cursor: pointer;
       display: flex;
-      font-size: 1rem;
+      font-family: "Quattrocento Sans", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.02857em;
       padding: 0.1875rem;
+      text-transform: uppercase;
       width: max-content;
 
       &:hover {
-        background: #c31a88;
+        background: ${buttonBackgroundHover};
       }
     `),
     buttonProps.className ?? '',
@@ -38,11 +55,11 @@ export const SignInButton = (
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f2059f;
+          background: ${logoBackground};
           border-radius: 0.125rem;
         `}
       >
-        <Logo></Logo>
+        <Logo fill={logoFill}></Logo>
       </div>
       <div
         className={css`
@@ -58,3 +75,25 @@ export const SignInButton = (
     </button>
   );
 };
+
+function getColorsFromVariant(variant: SignInButtonProps['variant']) {
+  switch (variant) {
+    case 'light':
+      return {
+        buttonBackground: '#c31a88',
+        buttonBackgroundHover: '#d71d96',
+        logoBackground: '#f2059f',
+        logoFill: '#fff',
+        textColor: '#fff',
+      };
+    case 'dark':
+    default:
+      return {
+        buttonBackground: '#000',
+        buttonBackgroundHover: '#181818',
+        logoBackground: '#232323',
+        logoFill: '#f2059f',
+        textColor: '#fff',
+      };
+  }
+}

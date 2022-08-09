@@ -1,4 +1,4 @@
-import { SignInButton } from 'components/sign-in-button';
+import { SignInButton, SignInButtonProps } from 'components/sign-in-button';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
 import React, { HTMLAttributes } from 'react';
@@ -21,6 +21,12 @@ export interface SignInProps {
    * See src/types/scope.ts for a list of available scopes.
    */
   scopes?: Scope[];
+  /**
+   * The button style variant to use.
+   *
+   * Possible values: 'light' | 'dark'. Defaults to 'light'.
+   */
+  variant?: SignInButtonProps['variant'];
 }
 
 export const SignIn = ({
@@ -30,6 +36,7 @@ export const SignIn = ({
   onError,
   onSuccess,
   scopes,
+  variant = 'light',
 }: SignInProps) => {
   const doError = (e: unknown) => {
     if (!onError) {
@@ -64,9 +71,5 @@ export const SignIn = ({
     });
   }
 
-  return (
-    <SignInButton onClick={signIn} {...buttonProps}>
-      Sign in with Fractal
-    </SignInButton>
-  );
+  return <SignInButton variant={variant} onClick={signIn} {...buttonProps} />;
 };

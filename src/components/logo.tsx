@@ -1,6 +1,11 @@
 import { css } from '@emotion/css';
+import * as CSS from 'csstype';
 
-export const Logo = () => {
+interface Props {
+  fill?: CSS.Property.Fill;
+}
+
+export const Logo = ({ fill = '#fff' }: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,7 +14,7 @@ export const Logo = () => {
     >
       <path
         className={css(`
-          fill: #fff;
+          fill: ${fill};
         `)}
         d="M74.9,520.1V0h372.8v112.7h-234v115.6h182V341h-182v179.1H74.9z"
       />
