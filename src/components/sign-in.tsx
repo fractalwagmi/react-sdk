@@ -1,7 +1,9 @@
 import { SignInButton, SignInButtonProps } from 'components/sign-in-button';
+import { maybeGetBaseUserFromLS } from 'core/token';
+import { useUser, useUserSetter } from 'hooks';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, useEffect, useState } from 'react';
 import { Scope, User } from 'types';
 
 export interface SignInProps {
@@ -13,6 +15,8 @@ export interface SignInProps {
   clientId: string;
   /** Optional component to render instead of the default sign-in button. */
   component?: React.ReactElement;
+  /** Whether to hide the sign in button when logged in or not. Defaults to `true`. */
+  hideWhenSignedIn?: boolean;
   onError?: (e: unknown) => void;
   onSuccess?: (user: User) => void;
   /**
@@ -33,11 +37,16 @@ export const SignIn = ({
   buttonProps,
   clientId,
   component,
+  hideWhenSignedIn = true,
   onError,
   onSuccess,
   scopes,
   variant = 'light',
 }: SignInProps) => {
+  const { data: user } = useUser();
+  const [fetchingUser, setFetchingUser] = useState(false);
+  const { fetchAndSetUser } = useUserSetter();
+
   const doError = (e: unknown) => {
     if (!onError) {
       return;
@@ -65,11 +74,38 @@ export const SignIn = ({
     url,
   });
 
+  useEffect(() => {
+    const baseUserFromLS = maybeGetBaseUserFromLS();
+    const isAlreadyLoggedIn = Boolean(user);
+    if (isAlreadyLoggedIn || !baseUserFromLS || fetchingUser) {
+      return;
+    }
+
+    const refreshUser = async () => {
+      await fetchAndSetUser(baseUserFromLS);
+      setFetchingUser(false);
+    };
+
+    setFetchingUser(true);
+    refreshUser();
+  }, [user, fetchingUser]);
+
+  if (user && hideWhenSignedIn) {
+    return null;
+  }
+
   if (component) {
     return React.cloneElement(component, {
       onClick: signIn,
     });
   }
 
-  return <SignInButton variant={variant} onClick={signIn} {...buttonProps} />;
+  return (
+    <SignInButton
+      variant={variant}
+      onClick={signIn}
+      {...buttonProps}
+      loading={fetchingUser}
+    />
+  );
 };

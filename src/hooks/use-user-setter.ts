@@ -2,6 +2,7 @@ import { UserContext } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
 import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
+import { storeIdAndTokenInLS } from 'core/token';
 import { useCallback, useContext } from 'react';
 import { UserWallet, BaseUser, User } from 'types';
 
@@ -25,6 +26,10 @@ export const useUserSetter = () => {
       solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
     };
 
+    storeIdAndTokenInLS({
+      accessToken: user.accessToken,
+      userId: user.userId,
+    });
     setUser(user);
     setUserWallet(userWallet);
 
