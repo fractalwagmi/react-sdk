@@ -3,12 +3,15 @@ import { Logo } from 'components/logo';
 import { HTMLAttributes } from 'react';
 
 const DEFAULT_BUTTON_TEXT = 'Sign in with Fractal';
+const LOADING_TEXT = 'Loading...';
 
 export interface SignInButtonProps extends HTMLAttributes<HTMLButtonElement> {
+  loading?: boolean;
   variant?: 'light' | 'dark';
 }
 
 export const SignInButton = ({
+  loading = false,
   variant,
   ...buttonProps
 }: SignInButtonProps) => {
@@ -70,7 +73,7 @@ export const SignInButton = ({
           white-space: nowrap;
         `}
       >
-        {DEFAULT_BUTTON_TEXT}
+        {loading ? LOADING_TEXT : DEFAULT_BUTTON_TEXT}
       </div>
     </button>
   );
