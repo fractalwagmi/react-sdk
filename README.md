@@ -74,16 +74,16 @@ You can customize the look of the button with either of these options:
 
 #### SignIn Props
 
-| Prop               | Value Type                          | Default            | Description                                                                                                            |
-| ------------------ | ----------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `buttonProps`      | `HTMLAttributes<HTMLButtonElement>` | `{}`               | Any additional props for `<button>` that should be passed to the default sign-in button.                               |
-| `clientId`         | `string`                            | n/a                | (Required) The client ID to use.                                                                                       |
-| `component`        | `React.ReactElement`                | `undefined`        | Optional component to render instead of the default sign-in button                                                     |
-| `hideWhenSignedIn` | `boolean`                           | `true`             | Whether to hide the sign in button when logged in or not.                                                              |
-| `onError`          | `(e: unknown) => void`              | `undefined`        | A callback function to call when an error occurs.                                                                      |
-| `onSuccess`        | `(user: User) => void`              | `undefined`        | A callback function to call when a user successfully logs in.                                                          |
-| `scopes`           | `Scope[]`                           | `[Scope.IDENTIFY]` | The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. |
-| `variant`          | `"light" \| "dark"`                 | `"light"`          | The button style variant to use.                                                                                       |
+| Prop               | Type / Description                                                                                                                   | Default            |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `buttonProps`      | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
+| `clientId`         | `string`<br/>(Required) The client ID to use.                                                                                        | n/a                |
+| `component`        | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
+| `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign in button when logged in or not.                                                              | `true`             |
+| `onError`          | `(e: unknown) => void`<br/>A callback function to call when an error occurs.                                                         | `undefined`        |
+| `onSuccess`        | `(user: User) => void`<br/>A callback function to call when a user successfully logs in.                                             | `undefined`        |
+| `scopes`           | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
+| `variant`          | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
 
 ### 4. Use the hooks to access data
 
