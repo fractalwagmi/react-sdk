@@ -11,7 +11,7 @@ export interface SignInProps {
    * Any additional props for <button> that should be passed to the default
    * sign-in button.
    */
-  buttonProps: HTMLAttributes<HTMLButtonElement>;
+  buttonProps?: HTMLAttributes<HTMLButtonElement>;
   clientId: string;
   /** Optional component to render instead of the default sign-in button. */
   component?: React.ReactElement;
@@ -34,7 +34,7 @@ export interface SignInProps {
 }
 
 export const SignIn = ({
-  buttonProps,
+  buttonProps = {},
   clientId,
   component,
   hideWhenSignedIn = true,
