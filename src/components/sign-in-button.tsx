@@ -79,7 +79,7 @@ export const SignInButton = ({
   );
 };
 
-function getColorsFromVariant(variant: SignInButtonProps['variant']) {
+function getColorsFromVariant(variant: SignInButtonProps['variant'] = 'dark') {
   switch (variant) {
     case 'light':
       return {
@@ -90,7 +90,6 @@ function getColorsFromVariant(variant: SignInButtonProps['variant']) {
         textColor: '#fff',
       };
     case 'dark':
-    default:
       return {
         buttonBackground: '#000',
         buttonBackgroundHover: '#181818',
