@@ -6,10 +6,10 @@ import { User } from 'types';
 
 interface UseSignInParameters {
   clientId: string;
-  code?: string;
+  code: string | undefined;
   onSignIn: (user: User) => void;
   onSignInFailed: (e: unknown) => void;
-  url?: string;
+  url: string | undefined;
 }
 
 export const useSignIn = ({
