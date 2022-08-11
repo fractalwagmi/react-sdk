@@ -5,7 +5,7 @@ interface Props {
   fill?: CSS.Property.Fill;
 }
 
-export const Logo = ({ fill = '#fff' }: Props) => {
+export const FractalFLogo = ({ fill = '#fff' }: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

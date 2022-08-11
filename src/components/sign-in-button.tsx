@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { Logo } from 'components/logo';
+import { FractalFLogo } from 'components/fractal-f-logo';
 import { HTMLAttributes } from 'react';
 
 const DEFAULT_BUTTON_TEXT = 'Sign in with Fractal';
@@ -62,7 +62,7 @@ export const SignInButton = ({
           border-radius: 0.125rem;
         `}
       >
-        <Logo fill={logoFill}></Logo>
+        <FractalFLogo fill={logoFill}></FractalFLogo>
       </div>
       <div
         className={css`
