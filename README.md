@@ -14,8 +14,8 @@ npm install @fractalwagmi/fractal-sdk
 
 ### 1. Import the global stylesheet
 
-If using the provided default button, import our global stylesheet to ensure
-that the component renders correctly:
+If using the provided default button rather than your own UI, import our global
+stylesheet to ensure that the component renders correctly:
 
 ```
 import '@fractalwagmi/fractal-sdk/styles.css';
@@ -23,7 +23,7 @@ import '@fractalwagmi/fractal-sdk/styles.css';
 
 ### 2. Set up the provider
 
-Render the provider any components that need access to data from the SDK.
+Render the provider above any components that need access to data from the SDK.
 
 ```tsx
 import { FractalProvider } from '@fractalwagmi/fractal-sdk';
