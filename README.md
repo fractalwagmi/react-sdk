@@ -60,17 +60,37 @@ export function YourSignInComponent() {
 
 #### Customizations
 
+By default, there are 2 button variants that we support:
+
+```tsx
+// There is a "light" (default) and "dark" variant:
+<SignIn clientId="..." variant="dark">
+```
+
 You can customize the look of the button with either of these options:
 
 ```tsx
 // Using your own class name to override any default styles:
-<SignIn className="foobar">
+<SignIn clientId="..." className="foobar">
 ```
 
 ```tsx
 // Use your own child component:
-<SignIn component={<YourOwnButton />}>
+<SignIn clientId="..." component={<YourOwnButton />}>
 ```
+
+#### SignIn Props
+
+| Prop               | Type / Description                                                                                                                   | Default            |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `buttonProps`      | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
+| `clientId`         | `string`<br/>(Required) The client ID to use.                                                                                        | n/a                |
+| `component`        | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
+| `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign in button when logged in or not.                                                              | `true`             |
+| `onError`          | `(e: unknown) => void`<br/>A callback function to call when an error occurs.                                                         | `undefined`        |
+| `onSuccess`        | `(user: User) => void`<br/>A callback function to call when a user successfully logs in.                                             | `undefined`        |
+| `scopes`           | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
+| `variant`          | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
 
 ### 4. Use the hooks to access data
 
