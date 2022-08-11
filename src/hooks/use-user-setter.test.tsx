@@ -36,12 +36,6 @@ describe('useUserSetter', () => {
     });
   });
 
-  it('returns a callable function', () => {
-    const { result } = renderHook(() => useUserSetter());
-
-    expect(typeof result.current.fetchAndSetUser).toBe('function');
-  });
-
   it('includes an authorization header when fetching user info', async () => {
     const { result } = renderHook(() => useUserSetter());
 
