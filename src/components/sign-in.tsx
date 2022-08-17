@@ -1,5 +1,5 @@
 import { SignInButton, SignInButtonProps } from 'components/sign-in-button';
-import { maybeGetBaseUserFromLS } from 'core/token';
+import { maybeGetAccessToken, maybeGetBaseUser } from 'core/token';
 import { useUser, useUserSetter } from 'hooks';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
@@ -75,14 +75,20 @@ export const SignIn = ({
   });
 
   useEffect(() => {
-    const baseUserFromLS = maybeGetBaseUserFromLS();
+    const baseUserFromLS = maybeGetBaseUser();
+    const accessTokenFromLS = maybeGetAccessToken();
     const isAlreadyLoggedIn = Boolean(user);
-    if (isAlreadyLoggedIn || !baseUserFromLS || fetchingUser) {
+    if (
+      isAlreadyLoggedIn ||
+      !baseUserFromLS ||
+      !accessTokenFromLS ||
+      fetchingUser
+    ) {
       return;
     }
 
     const refreshUser = async () => {
-      await fetchAndSetUser(baseUserFromLS);
+      await fetchAndSetUser(baseUserFromLS, accessTokenFromLS);
       setFetchingUser(false);
     };
 

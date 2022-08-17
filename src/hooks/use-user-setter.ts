@@ -9,35 +9,38 @@ import { UserWallet, BaseUser, User } from 'types';
 export const useUserSetter = () => {
   const { setUser, setUserWallet } = useContext(UserContext);
 
-  const fetchAndSetUser = useCallback(async (baseUser: BaseUser) => {
-    const { data } = await sdkApiClient.v1.getInfo({
-      headers: maybeIncludeAuthorizationHeaders(
-        baseUser.accessToken,
-        Endpoint.GET_INFO,
-      ),
-    });
+  const fetchAndSetUser = useCallback(
+    async (baseUser: BaseUser, accessToken: string) => {
+      const { data } = await sdkApiClient.v1.getInfo({
+        headers: maybeIncludeAuthorizationHeaders(
+          accessToken,
+          Endpoint.GET_INFO,
+        ),
+      });
 
-    const user: User = {
-      ...baseUser,
-      email: data.email,
-      username: data.username,
-    };
-    const userWallet: UserWallet = {
-      solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
-    };
+      const user: User = {
+        ...baseUser,
+        email: data.email,
+        username: data.username,
+      };
+      const userWallet: UserWallet = {
+        solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
+      };
 
-    storeIdAndTokenInLS({
-      accessToken: user.accessToken,
-      userId: user.userId,
-    });
-    setUser(user);
-    setUserWallet(userWallet);
+      storeIdAndTokenInLS({
+        accessToken,
+        userId: user.userId,
+      });
+      setUser(user);
+      setUserWallet(userWallet);
 
-    return {
-      user,
-      userWallet,
-    };
-  }, []);
+      return {
+        user,
+        userWallet,
+      };
+    },
+    [],
+  );
 
   return {
     fetchAndSetUser,

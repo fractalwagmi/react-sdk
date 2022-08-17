@@ -2,14 +2,16 @@ import { FractalSdkWalletGetCoinsResponseCoin } from '@fractalwagmi/fractal-sdk-
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { UserContextProvider } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
+import * as tokenModule from 'core/token';
 import { useCoins } from 'hooks/public/use-coins';
 import * as useUserModule from 'hooks/public/use-user';
-import { TEST_FRACTAL_USER } from 'hooks/testing/constants';
+import { TEST_ACCESS_TOKEN, TEST_FRACTAL_USER } from 'hooks/testing/constants';
 import { act } from 'react-dom/test-utils';
 import { SWRConfig } from 'swr';
 
 jest.mock('core/api/client');
 jest.mock('hooks/public/use-user');
+jest.mock('core/token');
 
 const ITEM_1: FractalSdkWalletGetCoinsResponseCoin = {
   address: 'test-address-1',
@@ -32,11 +34,15 @@ const ITEM_2: FractalSdkWalletGetCoinsResponseCoin = {
 };
 
 describe('useCoins', () => {
+  let mockMaybeGetAccessToken: jest.SpyInstance;
   let mockGetCoins: jest.SpyInstance;
   let mockUseUser: jest.SpyInstance;
   let wrapper: React.FC;
 
   beforeEach(() => {
+    mockMaybeGetAccessToken = jest.spyOn(tokenModule, 'maybeGetAccessToken');
+    mockMaybeGetAccessToken.mockReturnValue(TEST_ACCESS_TOKEN);
+
     mockGetCoins = jest.spyOn(sdkApiClient.v1, 'getCoins');
     mockGetCoins.mockResolvedValue([]);
 
@@ -102,7 +108,7 @@ describe('useCoins', () => {
     expect(mockGetCoins).toHaveBeenLastCalledWith(
       expect.objectContaining({
         headers: {
-          authorization: `Bearer ${TEST_FRACTAL_USER.accessToken}`,
+          authorization: `Bearer ${TEST_ACCESS_TOKEN}`,
         },
       }),
     );

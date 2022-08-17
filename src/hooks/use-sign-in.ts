@@ -2,7 +2,7 @@ import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useUserSetter } from 'hooks/use-user-setter';
 import { useCallback } from 'react';
-import { User } from 'types';
+import { BaseUser, User } from 'types';
 
 interface UseSignInParameters {
   clientId: string;
@@ -64,8 +64,10 @@ export const useSignIn = ({
         }
         if (e.data.event === Events.PROJECT_APPROVED) {
           try {
-            const baseUser = e.data.payload.user;
-            const { user } = await fetchAndSetUser(baseUser);
+            const userId = e.data.payload.user.id;
+            const accessToken = e.data.payload.user.accessToken;
+            const baseUser: BaseUser = { userId };
+            const { user } = await fetchAndSetUser(baseUser, accessToken);
             popup.close();
             onSignIn(user);
           } catch (e: unknown) {

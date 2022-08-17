@@ -1,7 +1,4 @@
 export interface BaseUser {
-  /** The oauth access token used to authenticate with API calls to the SDK API. */
-  accessToken: string;
-
   /** A user identifier within Fractal. */
   userId: string;
 }
