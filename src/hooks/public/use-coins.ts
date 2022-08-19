@@ -2,6 +2,7 @@ import { sdkApiClient } from 'core/api/client';
 import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { processCoins } from 'core/api/processors/coins';
+import { maybeGetAccessToken } from 'core/token';
 import { PublicHookResponse } from 'hooks/public/types';
 import { useUser } from 'hooks/public/use-user';
 import { useCallback, useMemo, useState } from 'react';
@@ -10,6 +11,7 @@ import { Coin } from 'types';
 
 export const useCoins = (): PublicHookResponse<Coin[]> => {
   const { data: user } = useUser();
+  const accessToken = maybeGetAccessToken();
   const [fetchToken, setFetchToken] = useState(0);
 
   const refetch = useCallback(() => {
@@ -17,7 +19,7 @@ export const useCoins = (): PublicHookResponse<Coin[]> => {
   }, [fetchToken]);
 
   const requestKey = user
-    ? [Endpoint.GET_COINS, user.accessToken, user.userId, fetchToken]
+    ? [Endpoint.GET_COINS, accessToken, user.userId, fetchToken]
     : null;
   const { data, error } = useSWR(
     requestKey,
@@ -25,7 +27,7 @@ export const useCoins = (): PublicHookResponse<Coin[]> => {
       (
         await sdkApiClient.v1.getCoins({
           headers: maybeIncludeAuthorizationHeaders(
-            user?.accessToken ?? '',
+            accessToken ?? '',
             Endpoint.GET_COINS,
           ),
         })

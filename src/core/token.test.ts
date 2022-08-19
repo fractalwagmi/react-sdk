@@ -1,4 +1,4 @@
-import { maybeGetBaseUserFromLS, storeIdAndTokenInLS } from 'core/token';
+import { maybeGetBaseUser, storeIdAndTokenInLS } from 'core/token';
 import jwtDecode from 'jwt-decode';
 
 jest.mock('jwt-decode');
@@ -14,7 +14,7 @@ describe('storeIdAndTokenInLS', () => {
   });
 });
 
-describe('maybeGetBaseUserFromLS', () => {
+describe('maybeGetBaseUser', () => {
   const SOME_TIMESTAMP_IN_THE_PAST_SEC = (Date.now() - 50000) / 1000;
   const SOME_TIMESTAMP_IN_THE_FUTURE_SEC = (Date.now() + 50000) / 1000;
 
@@ -23,7 +23,7 @@ describe('maybeGetBaseUserFromLS', () => {
     (jwtDecode as jest.Mock).mockReturnValue({
       exp: SOME_TIMESTAMP_IN_THE_PAST_SEC,
     });
-    expect(maybeGetBaseUserFromLS()).toBeUndefined();
+    expect(maybeGetBaseUser()).toBeUndefined();
   });
 
   it('retrieves the base usser if token is unexpired', () => {
@@ -32,8 +32,7 @@ describe('maybeGetBaseUserFromLS', () => {
     });
     storeIdAndTokenInLS({ accessToken: 'foo', userId: 'bar' });
 
-    expect(maybeGetBaseUserFromLS()).toEqual({
-      accessToken: 'foo',
+    expect(maybeGetBaseUser()).toEqual({
       userId: 'bar',
     });
   });
@@ -45,7 +44,7 @@ describe('maybeGetBaseUserFromLS', () => {
     storeIdAndTokenInLS({ accessToken: 'foo', userId: 'bar' });
     localStorage.removeItem(LS_KEY_USER_ID);
 
-    expect(maybeGetBaseUserFromLS()).toBeUndefined();
+    expect(maybeGetBaseUser()).toBeUndefined();
   });
 
   it('returns undefined if only userId is stored in localStorage', () => {
@@ -55,6 +54,6 @@ describe('maybeGetBaseUserFromLS', () => {
     storeIdAndTokenInLS({ accessToken: 'foo', userId: 'bar' });
     localStorage.removeItem(LS_KEY_ACCESS_TOKEN);
 
-    expect(maybeGetBaseUserFromLS()).toBeUndefined();
+    expect(maybeGetBaseUser()).toBeUndefined();
   });
 });

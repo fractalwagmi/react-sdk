@@ -18,7 +18,6 @@ const EXPECTED_AUTHORIZATION_HEADER = {
   authorization: `Bearer ${TEST_ACCESS_TOKEN}`,
 };
 const DEFAULT_PARAMS = {
-  accessToken: TEST_ACCESS_TOKEN,
   userId: TEST_USER_ID,
 };
 
@@ -39,7 +38,7 @@ describe('useUserSetter', () => {
   it('includes an authorization header when fetching user info', async () => {
     const { result } = renderHook(() => useUserSetter());
 
-    await result.current.fetchAndSetUser(DEFAULT_PARAMS);
+    await result.current.fetchAndSetUser(DEFAULT_PARAMS, TEST_ACCESS_TOKEN);
 
     expect(mockGetInfo).lastCalledWith(
       expect.objectContaining({
@@ -52,10 +51,12 @@ describe('useUserSetter', () => {
     it('returns an object with fractal user', async () => {
       const { result } = renderHook(() => useUserSetter());
 
-      const { user } = await result.current.fetchAndSetUser(DEFAULT_PARAMS);
+      const { user } = await result.current.fetchAndSetUser(
+        DEFAULT_PARAMS,
+        TEST_ACCESS_TOKEN,
+      );
 
       expect(user).toEqual({
-        accessToken: TEST_ACCESS_TOKEN,
         email: TEST_EMAIL,
         userId: TEST_USER_ID,
         username: TEST_USERNAME,
@@ -67,6 +68,7 @@ describe('useUserSetter', () => {
 
       const { userWallet } = await result.current.fetchAndSetUser(
         DEFAULT_PARAMS,
+        TEST_ACCESS_TOKEN,
       );
 
       expect(userWallet).toEqual({
@@ -95,11 +97,11 @@ describe('useUserSetter', () => {
       await act(async () => {
         await result.current.useUserSetterResult.fetchAndSetUser(
           DEFAULT_PARAMS,
+          TEST_ACCESS_TOKEN,
         );
       });
 
       expect(result.current.useUserResult.data).toEqual({
-        accessToken: TEST_ACCESS_TOKEN,
         email: TEST_EMAIL,
         userId: TEST_USER_ID,
         username: TEST_USERNAME,
@@ -127,6 +129,7 @@ describe('useUserSetter', () => {
       await act(async () => {
         await result.current.useUserSetterResult.fetchAndSetUser(
           DEFAULT_PARAMS,
+          TEST_ACCESS_TOKEN,
         );
       });
 

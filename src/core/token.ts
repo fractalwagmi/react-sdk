@@ -26,22 +26,34 @@ export function storeIdAndTokenInLS({
  * Returns the base user from localStorage only if it exists and the stored
  * token is unexpired.
  */
-export function maybeGetBaseUserFromLS(): BaseUser | undefined {
+export function maybeGetBaseUser(): BaseUser | undefined {
   if (!window.localStorage) {
     return;
   }
 
-  const accessToken = window.localStorage.getItem(LS_KEY_ACCESS_TOKEN);
+  const accessToken = maybeGetAccessToken();
   const userId = window.localStorage.getItem(LS_KEY_USER_ID);
 
-  if (!accessToken || !userId || isTokenExpired(accessToken)) {
+  if (!accessToken && userId) {
+    window.localStorage.removeItem(LS_KEY_USER_ID);
+  }
+
+  if (!accessToken || !userId) {
     return;
   }
 
   return {
-    accessToken,
     userId,
   };
+}
+
+export function maybeGetAccessToken(): string | undefined {
+  const accessToken = window.localStorage.getItem(LS_KEY_ACCESS_TOKEN);
+  if (!accessToken || isTokenExpired(accessToken)) {
+    window.localStorage.removeItem(LS_KEY_ACCESS_TOKEN);
+    return;
+  }
+  return accessToken;
 }
 
 function isTokenExpired(accessToken: string): boolean {

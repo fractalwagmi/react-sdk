@@ -6,7 +6,6 @@ export const TEST_USER_EMAIL = 'test-user@email.com';
 export const TEST_USERNAME = 'test-username';
 
 export const TEST_FRACTAL_USER: User = {
-  accessToken: TEST_ACCESS_TOKEN,
   email: TEST_USER_EMAIL,
   userId: TEST_USER_ID,
   username: TEST_USERNAME,
