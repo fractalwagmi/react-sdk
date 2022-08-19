@@ -50,21 +50,16 @@ export const useSignIn = ({
         }
 
         if (e.data.event === Events.HANDSHAKE) {
-          const payload = {
-            clientId,
-            code,
-          };
           popup.window.postMessage(
             {
               event: Events.HANDSHAKE_ACK,
-              payload,
             },
             e.origin,
           );
         }
         if (e.data.event === Events.PROJECT_APPROVED) {
           try {
-            const userId = e.data.payload.user.id;
+            const userId = e.data.payload.user.userId;
             const accessToken = e.data.payload.user.accessToken;
             const baseUser: BaseUser = { userId };
             const { user } = await fetchAndSetUser(baseUser, accessToken);

@@ -34,6 +34,7 @@ export const useAuthUrl = ({
         const urlInfo = (
           await authApiClient.v2.getUrl({
             clientId,
+            redirect: `${window.location.protocol}//${window.location.host}`,
             scope: scopes,
           })
         ).data;
