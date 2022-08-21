@@ -1,4 +1,4 @@
-export { SignIn } from 'components/sign-in';
+export { SignIn as SignInWithFractal } from 'components/sign-in';
 export { UserContextProvider as FractalProvider } from 'context/user';
 export type { SignInProps } from 'components/sign-in';
 

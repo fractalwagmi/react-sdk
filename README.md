@@ -33,16 +33,16 @@ const App = () => {
 };
 ```
 
-### 3. Render the `SignIn` component
+### 3. Render the `SignInWithFractal` component
 
 This will display a button for logging in.
 
 ```tsx
-import { Scope, SignIn, User } from '@fractalwagmi/fractal-sdk';
+import { Scope, SignInWithFractal, User } from '@fractalwagmi/fractal-sdk';
 
 export function YourSignInComponent() {
   return (
-    <SignIn
+    <SignInWithFractal
       // The `clientId` is the only required prop.
       clientId="YOUR_CLIENT_ID"
       // `scopes` defaults to [Scope.IDENTIFY].
@@ -64,22 +64,22 @@ By default, there are 2 button variants that we support:
 
 ```tsx
 // There is a "light" (default) and "dark" variant:
-<SignIn clientId="..." variant="dark">
+<SignInWithFractal clientId="..." variant="dark">
 ```
 
 You can customize the look of the button with either of these options:
 
 ```tsx
 // Using your own class name to override any default styles:
-<SignIn clientId="..." className="foobar">
+<SignInWithFractal clientId="..." className="foobar">
 ```
 
 ```tsx
 // Use your own child component:
-<SignIn clientId="..." component={<YourOwnButton />}>
+<SignInWithFractal clientId="..." component={<YourOwnButton />}>
 ```
 
-#### SignIn Props
+#### SignInWithFractal Props
 
 | Prop               | Type / Description                                                                                                                   | Default            |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
