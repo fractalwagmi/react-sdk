@@ -2,6 +2,7 @@ import { sdkApiClient } from 'core/api/client';
 import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { transformItems } from 'core/api/transformers/items';
+import { FractalError } from 'core/error';
 import { maybeGetAccessToken } from 'core/token';
 import { PublicHookResponse } from 'hooks/public/types';
 import { useUser } from 'hooks/public/use-user';
@@ -22,7 +23,7 @@ export const useItems = (): PublicHookResponse<Item[]> => {
     ? [Endpoint.GET_WALLET_ITEMS, user.userId, fetchToken]
     : null;
 
-  const { data, error } = useSWR(
+  const { data, error: responseError } = useSWR(
     requestKey,
     async () =>
       (
@@ -37,6 +38,11 @@ export const useItems = (): PublicHookResponse<Item[]> => {
 
   const items = useMemo(() => transformItems(data?.items ?? []), [data?.items]);
 
+  let error: FractalError | undefined;
+  if (responseError) {
+    // TODO(ENG-394): Enumerate possible errors.
+    error = new FractalError('Unable to retrieve coins');
+  }
   return {
     data: items,
     error,

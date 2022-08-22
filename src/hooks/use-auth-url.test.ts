@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { authApiClient } from 'core/api/client';
+import { FractalError } from 'core/error';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { EMPTY_FN_RETURNS_UNDEFINED } from 'lib/__data__/constants';
 import { act } from 'react-dom/test-utils';
@@ -102,9 +103,8 @@ describe('useAuthUrl', () => {
     expect(result.current.url).toBe(TEST_RETURNED_URL);
   });
 
-  it('calls `onError` when an error occurs', async () => {
-    const error = new Error('some error');
-    (authApiClient.v2.getUrl as jest.Mock).mockRejectedValueOnce(error);
+  it('calls `onError` with a `FractalError` when an error occurs', async () => {
+    (authApiClient.v2.getUrl as jest.Mock).mockRejectedValueOnce(new Error());
     const onError = jest.fn();
     renderHook(() =>
       useAuthUrl({
@@ -118,6 +118,6 @@ describe('useAuthUrl', () => {
       await 0;
     });
 
-    expect(onError).toHaveBeenCalledWith(error);
+    expect(onError.mock.lastCall[0]).toBeInstanceOf(FractalError);
   });
 });
