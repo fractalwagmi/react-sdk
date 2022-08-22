@@ -1,11 +1,11 @@
 import { css, cx } from '@emotion/css';
 import { FractalFLogo } from 'components/fractal-f-logo';
-import { HTMLAttributes } from 'react';
 
 const DEFAULT_BUTTON_TEXT = 'Sign in with Fractal';
 const LOADING_TEXT = 'Loading...';
 
-export interface SignInButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface SignInButtonProps
+  extends React.ComponentPropsWithoutRef<'button'> {
   loading?: boolean;
   variant?: 'light' | 'dark';
 }
