@@ -1,11 +1,9 @@
-export {
-  Wallet as FractalWallet,
-  WalletContextProvider as WalletProvider,
-} from 'components/wallet';
-export type {
-  FractalUser,
-  WalletProps as FractalWalletProps,
-} from 'components/wallet';
-export { useFractalUser } from 'hooks/user';
-export { useSolBalance } from 'hooks/balance';
-export type { BalanceResponse } from 'hooks/balance';
+export { SignIn as SignInWithFractal } from 'components/sign-in';
+export { UserContextProvider as FractalProvider } from 'context/user';
+export type { SignInProps } from 'components/sign-in';
+
+export { FractalError } from 'core/error';
+export { Scope } from 'types';
+export type { User, UserWallet, Coin, Item } from 'types';
+
+export * from 'hooks/public';

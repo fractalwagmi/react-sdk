@@ -4,6 +4,7 @@
   "useTabs": false,
   "semi": true,
   "singleQuote": true,
+  "jsxSingleQuote": false,
   "trailingComma": "all",
   "arrowParens": "avoid",
   "plugins": ["./node_modules/prettier-plugin-jsdoc"]
