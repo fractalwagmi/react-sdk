@@ -1,7 +1,10 @@
-import {
-  Endpoint,
-  ENDPOINTS_THAT_REQUIRE_AUTHENTICATION,
-} from 'core/api/endpoints';
+import { Endpoint } from 'core/api/endpoints';
+
+export const ENDPOINTS_THAT_REQUIRE_AUTHENTICATION = new Set<Endpoint>([
+  Endpoint.GET_COINS,
+  Endpoint.GET_INFO,
+  Endpoint.GET_WALLET_ITEMS,
+]);
 
 /**
  * Maybe includes the authorization header in the `headers` input. If `headers`
