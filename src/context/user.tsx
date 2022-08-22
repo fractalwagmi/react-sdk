@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, useState } from 'react';
 import { SWRConfig } from 'swr';
 import { User, UserWallet } from 'types';
 
@@ -16,9 +16,9 @@ export const UserContext = createContext<UserContextState>({
   userWallet: undefined,
 });
 
-export interface UserContextProviderProps {
-  children: ReactNode;
-}
+export type UserContextProviderProps = React.PropsWithChildren<
+  Record<never, never>
+>;
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
   const [user, setUser] = useState<User | undefined>(undefined);
