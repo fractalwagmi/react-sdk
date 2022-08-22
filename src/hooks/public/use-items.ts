@@ -19,7 +19,7 @@ export const useItems = (): PublicHookResponse<Item[]> => {
   }, [fetchToken]);
 
   const requestKey = user
-    ? [Endpoint.GET_WALLET_ITEMS, accessToken, user.userId, fetchToken]
+    ? [Endpoint.GET_WALLET_ITEMS, user.userId, fetchToken]
     : null;
 
   const { data, error } = useSWR(

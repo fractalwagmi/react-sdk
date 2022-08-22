@@ -19,7 +19,7 @@ export const useCoins = (): PublicHookResponse<Coin[]> => {
   }, [fetchToken]);
 
   const requestKey = user
-    ? [Endpoint.GET_COINS, accessToken, user.userId, fetchToken]
+    ? [Endpoint.GET_COINS, user.userId, fetchToken]
     : null;
   const { data, error } = useSWR(
     requestKey,
