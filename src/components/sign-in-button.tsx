@@ -1,4 +1,4 @@
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { FractalFLogo } from 'components/fractal-f-logo';
 import { HTMLAttributes } from 'react';
 
@@ -23,34 +23,32 @@ export const SignInButton = ({
     textColor,
   } = getColorsFromVariant(variant);
 
-  const className = [
-    css(`
-      align-items: center;
-      background: ${buttonBackground};
-      border-radius: 0.25rem;
-      border: 0;
-      color: ${textColor};
-      cursor: pointer;
-      display: flex;
-      font-family: "Quattrocento Sans", sans-serif;
-      font-size: 0.875rem;
-      font-weight: 700;
-      letter-spacing: 0.02857em;
-      padding: 0.1875rem;
-      text-transform: uppercase;
-      width: max-content;
+  const defaultButtonStyles = css(`
+  align-items: center;
+  background: ${buttonBackground};
+  border-radius: 0.25rem;
+  border: 0;
+  color: ${textColor};
+  cursor: pointer;
+  display: flex;
+  font-family: "Quattrocento Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02857em;
+  padding: 0.1875rem;
+  text-transform: uppercase;
+  width: max-content;
 
-      &:hover {
-        background: ${buttonBackgroundHover};
-      }
-    `),
-    buttonProps.className ?? '',
-  ]
-    .join(' ')
-    .trim();
+  &:hover {
+    background: ${buttonBackgroundHover};
+  }
+`);
 
   return (
-    <button {...buttonProps} className={className}>
+    <button
+      {...buttonProps}
+      className={cx(defaultButtonStyles, buttonProps.className)}
+    >
       <div
         className={css`
           height: 2.25rem;
