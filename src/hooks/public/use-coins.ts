@@ -1,7 +1,7 @@
 import { sdkApiClient } from 'core/api/client';
 import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
-import { processCoins } from 'core/api/processors/coins';
+import { transformCoins } from 'core/api/transformers/coins';
 import { maybeGetAccessToken } from 'core/token';
 import { PublicHookResponse } from 'hooks/public/types';
 import { useUser } from 'hooks/public/use-user';
@@ -34,7 +34,7 @@ export const useCoins = (): PublicHookResponse<Coin[]> => {
       ).data,
   );
 
-  const coins = useMemo(() => processCoins(data?.coins ?? []), [data?.coins]);
+  const coins = useMemo(() => transformCoins(data?.coins ?? []), [data?.coins]);
 
   return {
     data: coins,
