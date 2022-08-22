@@ -30,7 +30,7 @@ describe('maybeGetBaseUser', () => {
     expect(maybeGetBaseUser()).toBeUndefined();
   });
 
-  it('retrieves the base usser if token is unexpired', () => {
+  it('retrieves the base user if token is unexpired', () => {
     (jwtDecode as jest.Mock).mockReturnValue({
       exp: SOME_TIMESTAMP_IN_THE_FUTURE_SEC,
     });
