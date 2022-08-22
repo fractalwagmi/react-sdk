@@ -1,3 +1,4 @@
+import { FractalError } from 'core/error';
 import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useUserSetter } from 'hooks/use-user-setter';
@@ -8,7 +9,7 @@ interface UseSignInParameters {
   clientId: string;
   code: string | undefined;
   onSignIn: (user: User) => void;
-  onSignInFailed: (e: unknown) => void;
+  onSignInFailed: (e: FractalError) => void;
   url: string | undefined;
 }
 
@@ -66,7 +67,8 @@ export const useSignIn = ({
             popup.close();
             onSignIn(user);
           } catch (e: unknown) {
-            onSignInFailed(e);
+            // TODO: Add sentry integration.
+            onSignInFailed(new FractalError('Sign in failed.'));
           }
         }
       };
