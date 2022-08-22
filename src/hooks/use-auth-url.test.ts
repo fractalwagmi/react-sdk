@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { authApiClient } from 'core/api/client';
 import { useAuthUrl } from 'hooks/use-auth-url';
+import { EMPTY_FN_RETURNS_UNDEFINED } from 'lib/testing/constants';
 import { act } from 'react-dom/test-utils';
 import { Scope } from 'types';
 
@@ -9,9 +10,10 @@ jest.mock('core/api/client');
 const TEST_CLIENT_ID = 'clientId';
 const TEST_RETURNED_CODE = 'code-foobar';
 const TEST_RETURNED_URL = 'url-foobar.com';
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const DO_NOTHING = () => {};
-const DEFAULT_PARAMS = { clientId: TEST_CLIENT_ID, onError: DO_NOTHING };
+const DEFAULT_PARAMS = {
+  clientId: TEST_CLIENT_ID,
+  onError: EMPTY_FN_RETURNS_UNDEFINED,
+};
 
 describe('useAuthUrl', () => {
   beforeEach(() => {
@@ -24,7 +26,7 @@ describe('useAuthUrl', () => {
       renderHook(() =>
         useAuthUrl({
           clientId: TEST_CLIENT_ID,
-          onError: DO_NOTHING,
+          onError: EMPTY_FN_RETURNS_UNDEFINED,
           scopes: ['invalid-scope' as Scope],
         }),
       );
@@ -36,7 +38,7 @@ describe('useAuthUrl', () => {
     it('defaults to using [Scope.IDENTIFY] for an undefined `scope`', () => {
       const INTENTIONALLY_MISSING_SCOPES = {
         clientId: TEST_CLIENT_ID,
-        onError: DO_NOTHING,
+        onError: EMPTY_FN_RETURNS_UNDEFINED,
       };
       renderHook(() => useAuthUrl(INTENTIONALLY_MISSING_SCOPES));
 
@@ -51,7 +53,7 @@ describe('useAuthUrl', () => {
       renderHook(() =>
         useAuthUrl({
           clientId: TEST_CLIENT_ID,
-          onError: DO_NOTHING,
+          onError: EMPTY_FN_RETURNS_UNDEFINED,
           scopes: [Scope.COINS_READ, Scope.ITEMS_READ, Scope.IDENTIFY],
         }),
       );
@@ -68,7 +70,7 @@ describe('useAuthUrl', () => {
     renderHook(() =>
       useAuthUrl({
         clientId: TEST_CLIENT_ID,
-        onError: DO_NOTHING,
+        onError: EMPTY_FN_RETURNS_UNDEFINED,
       }),
     );
 
