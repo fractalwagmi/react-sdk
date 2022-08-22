@@ -1,5 +1,4 @@
 import { createContext, useState } from 'react';
-import { SWRConfig } from 'swr';
 import { User, UserWallet } from 'types';
 
 interface UserContextState {
@@ -35,7 +34,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         userWallet,
       }}
     >
-      <SWRConfig>{children}</SWRConfig>
+      {children}
     </UserContext.Provider>
   );
 }
