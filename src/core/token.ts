@@ -1,4 +1,5 @@
 import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { secondsInMs } from 'lib/util/time';
 import { BaseUser } from 'types';
 
 const LS_KEY_USER_ID = 'xjnSUQnpZU';
@@ -65,9 +66,11 @@ function isTokenExpired(accessToken: string): boolean {
     return true;
   }
   const decoded = jwtDecode<JwtPayload>(accessToken);
-  if (decoded.exp === undefined) {
+  // decoded.exp is an expiration timestamp in seconds.
+  const expirationTimestampInSeconds = decoded.exp;
+  if (expirationTimestampInSeconds === undefined) {
     return false;
   }
-  const expirationTimestampMs = decoded.exp * 1000;
+  const expirationTimestampMs = secondsInMs(expirationTimestampInSeconds);
   return expirationTimestampMs < Date.now();
 }
