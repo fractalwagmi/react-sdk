@@ -3,9 +3,9 @@ import { renderHook } from '@testing-library/react-hooks/dom';
 import { UserContextProvider } from 'context/user';
 import { sdkApiClient } from 'core/api/client';
 import * as tokenModule from 'core/token';
+import { TEST_ACCESS_TOKEN, TEST_FRACTAL_USER } from 'hooks/__data__/constants';
 import { useItems } from 'hooks/public/use-items';
 import * as useUserModule from 'hooks/public/use-user';
-import { TEST_ACCESS_TOKEN, TEST_FRACTAL_USER } from 'hooks/testing/constants';
 import { act } from 'react-dom/test-utils';
 import { SWRConfig } from 'swr';
 

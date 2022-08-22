@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { authApiClient } from 'core/api/client';
 import { useAuthUrl } from 'hooks/use-auth-url';
-import { EMPTY_FN_RETURNS_UNDEFINED } from 'lib/testing/constants';
+import { EMPTY_FN_RETURNS_UNDEFINED } from 'lib/__data__/constants';
 import { act } from 'react-dom/test-utils';
 import { Scope } from 'types';
 
