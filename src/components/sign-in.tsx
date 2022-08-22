@@ -88,11 +88,11 @@ export const SignIn = ({
     }
 
     const refreshUser = async () => {
+      setFetchingUser(true);
       await fetchAndSetUser(baseUserFromLS, accessTokenFromLS);
       setFetchingUser(false);
     };
 
-    setFetchingUser(true);
     refreshUser();
   }, [user, fetchingUser]);
 
