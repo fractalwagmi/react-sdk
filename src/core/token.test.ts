@@ -6,6 +6,10 @@ jest.mock('jwt-decode');
 const LS_KEY_USER_ID = 'xjnSUQnpZU';
 const LS_KEY_ACCESS_TOKEN = 'QhiUizqDML';
 
+afterEach(() => {
+  localStorage.clear();
+});
+
 describe('storeIdAndTokenInLS', () => {
   it('stores the userID and accessToken in local storage', () => {
     storeIdAndTokenInLS({ accessToken: 'foo', userId: 'bar' });
