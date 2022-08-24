@@ -42,7 +42,7 @@ import {
   Scope,
   SignInWithFractal,
   User,
-  FractalError,
+  FractalSDKError,
 } from '@fractalwagmi/fractal-sdk';
 
 export function YourSignInComponent() {
@@ -52,7 +52,7 @@ export function YourSignInComponent() {
       clientId="YOUR_CLIENT_ID"
       // `scopes` defaults to [Scope.IDENTIFY].
       scopes={[Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ]}
-      onError={(err: FractalError) => {
+      onError={(err: FractalSDKError) => {
         console.log(err.getUserFacingErrorMessage());
       }}
       onSuccess={(user: User) => {
@@ -92,7 +92,7 @@ You can customize the look of the button with either of these options:
 | `clientId`         | `string`<br/>(Required) The client ID to use.                                                                                        | n/a                |
 | `component`        | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
 | `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign in button when logged in or not.                                                              | `true`             |
-| `onError`          | `(e: FractalError) => void`<br/>A callback function to call when an error occurs.                                                    | `undefined`        |
+| `onError`          | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |
 | `onSuccess`        | `(user: User) => void`<br/>A callback function to call when a user successfully logs in.                                             | `undefined`        |
 | `scopes`           | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
 | `variant`          | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
