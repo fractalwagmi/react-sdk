@@ -1,5 +1,5 @@
 import { authApiClient } from 'core/api/client';
-import { FractalError } from 'core/error';
+import { FractalSDKError } from 'core/error';
 import { verifyScopes } from 'core/scope';
 import { useEffect, useState } from 'react';
 import { Scope } from 'types';
@@ -8,7 +8,7 @@ const DEFAULT_SCOPE = [Scope.IDENTIFY];
 
 interface UseAuthUrlParameters {
   clientId: string;
-  onError: (e: FractalError) => void;
+  onError: (e: FractalSDKError) => void;
   scopes?: Scope[];
 }
 
@@ -43,7 +43,7 @@ export const useAuthUrl = ({
         setCode(urlInfo.code);
       } catch (e: unknown) {
         // TODO: Add sentry integration.
-        onError(new FractalError('Unable to retrieve auth URL'));
+        onError(new FractalSDKError('Unable to retrieve auth URL'));
       }
     };
     getUrl();
