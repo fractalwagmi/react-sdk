@@ -1,4 +1,4 @@
-import { authApiClient } from 'core/api/client';
+import { authPrivateWebSdkApiClient } from 'core/api/client';
 import { FractalError } from 'core/error';
 import { verifyScopes } from 'core/scope';
 import { useEffect, useState } from 'react';
@@ -33,9 +33,9 @@ export const useAuthUrl = ({
     const getUrl = async () => {
       try {
         const urlInfo = (
-          await authApiClient.v2.getUrl({
+          await authPrivateWebSdkApiClient.privateWebSdk.getApprovalUrl({
             clientId,
-            redirect: `${window.location.protocol}//${window.location.host}`,
+            origin: `${window.location.protocol}//${window.location.host}`,
             scope: scopes,
           })
         ).data;
