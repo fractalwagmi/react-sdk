@@ -9,7 +9,6 @@ interface StoreIdAndTokenParameters {
   accessToken: string;
   userId: string;
 }
-
 /** Stores the accessToken and userId to localStorage. */
 export function storeIdAndTokenInLS({
   accessToken,
@@ -21,6 +20,11 @@ export function storeIdAndTokenInLS({
 
   window.localStorage.setItem(LS_KEY_USER_ID, userId);
   window.localStorage.setItem(LS_KEY_ACCESS_TOKEN, accessToken);
+}
+
+export function clearIdAndTokenInLS() {
+  window.localStorage.removeItem(LS_KEY_USER_ID);
+  window.localStorage.removeItem(LS_KEY_ACCESS_TOKEN);
 }
 
 /**
