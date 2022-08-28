@@ -1,10 +1,10 @@
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { useContext } from 'react';
 
-export const useLogout = () => {
+export const useSignOut = () => {
   const { resetUser } = useContext(FractalSDKContext);
 
   return {
-    logout: resetUser,
+    signOut: resetUser,
   };
 };

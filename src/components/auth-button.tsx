@@ -1,48 +1,35 @@
 import { css, cx } from '@emotion/css';
 import { FractalFLogo } from 'components/fractal-f-logo';
+import { getDefaultButtonStyles } from 'components/styles';
 
-const DEFAULT_BUTTON_TEXT = 'Sign in with Fractal';
 const LOADING_TEXT = 'Loading...';
 
-export interface SignInButtonProps
+export interface AuthButtonProps
   extends React.ComponentPropsWithoutRef<'button'> {
+  buttonText: string;
   loading?: boolean;
   variant?: 'light' | 'dark';
 }
 
-export const SignInButton = ({
+export const AuthButton = ({
+  buttonText,
   loading = false,
   variant,
   ...buttonProps
-}: SignInButtonProps) => {
+}: AuthButtonProps) => {
   const {
     buttonBackground,
-    buttonBackgroundHover,
+    buttonBackgroundOnHover,
     logoBackground,
     logoFill,
     textColor,
   } = getColorsFromVariant(variant);
 
-  const defaultButtonStyles = css(`
-  align-items: center;
-  background: ${buttonBackground};
-  border-radius: 0.25rem;
-  border: 0;
-  color: ${textColor};
-  cursor: pointer;
-  display: flex;
-  font-family: "Quattrocento Sans", sans-serif;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.02857em;
-  padding: 0.1875rem;
-  text-transform: uppercase;
-  width: max-content;
-
-  &:hover {
-    background: ${buttonBackgroundHover};
-  }
-`);
+  const defaultButtonStyles = getDefaultButtonStyles({
+    buttonBackground,
+    buttonBackgroundOnHover,
+    textColor,
+  });
 
   return (
     <button
@@ -71,18 +58,18 @@ export const SignInButton = ({
           white-space: nowrap;
         `}
       >
-        {loading ? LOADING_TEXT : DEFAULT_BUTTON_TEXT}
+        {loading ? LOADING_TEXT : buttonText}
       </div>
     </button>
   );
 };
 
-function getColorsFromVariant(variant: SignInButtonProps['variant'] = 'dark') {
+function getColorsFromVariant(variant: AuthButtonProps['variant'] = 'dark') {
   switch (variant) {
     case 'light':
       return {
         buttonBackground: '#c31a88',
-        buttonBackgroundHover: '#d71d96',
+        buttonBackgroundOnHover: '#d71d96',
         logoBackground: '#f2059f',
         logoFill: '#fff',
         textColor: '#fff',
@@ -90,7 +77,7 @@ function getColorsFromVariant(variant: SignInButtonProps['variant'] = 'dark') {
     case 'dark':
       return {
         buttonBackground: '#000',
-        buttonBackgroundHover: '#181818',
+        buttonBackgroundOnHover: '#181818',
         logoBackground: '#232323',
         logoFill: '#f2059f',
         textColor: '#fff',

@@ -88,9 +88,13 @@ You can customize the look of the button with either of these options:
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
 | `buttonProps`      | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
 | `component`        | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
-| `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign in button when logged in or not.                                                              | `true`             |
+| `signOutComponent` | `React.ReactElement`<br/>Optional component to render instead of the default sign-out button                                         |
+| `undefined`        |
+| `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign out button when signed in or not.                                                             | `false`            |
 | `onError`          | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |
-| `onSuccess`        | `(user: User) => void`<br/>A callback function to call when a user successfully logs in.                                             | `undefined`        |
+| `onSuccess`        | `(user: User) => void`<br/>A callback function to call when a user successfully signs in.                                            | `undefined`        |
+| `onSignOut`        | `() => void`<br/>A callback function to call when a sign out occurs.                                                                 |
+| `undefined`        |
 | `scopes`           | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
 | `variant`          | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
 
@@ -118,5 +122,19 @@ export function YourWalletComponent() {
   const { data: coins } = useCoins();
 
   return <div>...</div>;
+}
+```
+
+### 5. Other misc. Non-data related hooks:
+
+#### Logging out
+
+```tsx
+import { useSignOut } from '@fractalwagmi/fractal-sdk';
+
+export function YourWalletComponent() {
+  const { signOut } = useSignOut();
+
+  return <button onClick={signOut}>Your Sign Out Button Text</button>;
 }
 ```
