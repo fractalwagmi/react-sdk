@@ -66,37 +66,49 @@ export function YourSignInComponent() {
 By default, there are 2 button variants that we support:
 
 ```tsx
-// There is a "light" (default) and "dark" variant:
-<SignInWithFractal variant="dark">
+const YourComponent = () => {
+  // There is a "light" (default) and "dark" variant:
+  return <SignInWithFractal variant="dark">;
+}
 ```
 
 You can customize the look of the button with either of these options:
 
 ```tsx
-// Using your own class name to override any default styles:
-<SignInWithFractal className="foobar">
+const YourComponent = () => {
+  // Using your own class name to override any default styles:
+  return <SignInWithFractal className="foobar">;
+};
 ```
 
 ```tsx
-// Use your own child component:
-<SignInWithFractal component={<YourOwnButton />}>
+const YourComponent = () => {
+  // Use your own child component:
+  return <SignInWithFractal component={<YourOwnButton />}>;
+};
+
+// [CAVEAT] You'll need to make sure that `YourOwnButton` accepts an `onClick`
+// prop, otherwise our sign in logic will not run.
+const YourOwnButton = ({ onClick }: { onClick?: () => void }) => {
+  return <button onClick={onClick}>Your Own Button</button>;
+};
 ```
 
 #### SignInWithFractal Props
 
-| Prop               | Type / Description                                                                                                                   | Default            |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
-| `buttonProps`      | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
-| `component`        | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
-| `signOutComponent` | `React.ReactElement`<br/>Optional component to render instead of the default sign-out button                                         |
-| `undefined`        |
-| `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign out button when signed in or not.                                                             | `false`            |
-| `onError`          | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |
-| `onSuccess`        | `(user: User) => void`<br/>A callback function to call when a user successfully signs in.                                            | `undefined`        |
-| `onSignOut`        | `() => void`<br/>A callback function to call when a sign out occurs.                                                                 |
-| `undefined`        |
-| `scopes`           | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
-| `variant`          | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
+| Prop                | Type / Description                                                                                                                   | Default            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `buttonProps`       | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
+| `component`         | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
+| `signOutComponent`  | `React.ReactElement`<br/>Optional component to render instead of the default sign-out button                                         |
+| `undefined`         |
+| `hideSignOutButton` | `boolean`<br/>Whether to hide the sign out button when signed in or not.                                                             | `false`            |
+| `onError`           | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |
+| `onSuccess`         | `(user: User) => void`<br/>A callback function to call when a user successfully signs in.                                            | `undefined`        |
+| `onSignOut`         | `() => void`<br/>A callback function to call when a sign out occurs.                                                                 |
+| `undefined`         |
+| `scopes`            | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
+| `variant`           | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
 
 ### 4. Use the hooks to access data
 

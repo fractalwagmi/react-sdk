@@ -89,6 +89,7 @@ export const usePopupConnection = () => {
     }
     popupWindow.close();
     setHandlers(new Map());
+    setConnection(undefined);
   }, [popupWindow, setHandlers]);
 
   const handleMessage = useCallback(

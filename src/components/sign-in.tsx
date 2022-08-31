@@ -11,7 +11,14 @@ import { Scope, User } from 'types';
 const DEFAULT_SIGN_IN_BUTTON_TEXT = 'Sign in with Fractal';
 const DEFAULT_SIGN_OUT_BUTTON_TEXT = 'Sign out';
 
-export interface SignInProps {
+interface PropsWithOnClick {
+  onClick: () => void;
+}
+
+export interface SignInProps<
+  ComponentProps extends PropsWithOnClick = PropsWithOnClick,
+  SignOutComponentProps extends PropsWithOnClick = PropsWithOnClick,
+> {
   /**
    * Any additional props for <button> that should be passed to the default
    * sign-in button.
@@ -23,13 +30,13 @@ export interface SignInProps {
    * `signOutComponent` to control what the button looks like for the purposes
    * of signing out.
    */
-  component?: React.ReactElement;
+  component?: React.ReactElement<ComponentProps>;
   /**
    * Whether to hide the button completely when signed in or not.
    *
    * Defaults to `false`.
    */
-  hideWhenSignedIn?: boolean;
+  hideSignOutButton?: boolean;
   onError?: (e: FractalSDKError) => void;
   onSignOut?: () => void;
   onSuccess?: (user: User) => void;
@@ -40,7 +47,7 @@ export interface SignInProps {
    */
   scopes?: Scope[];
   /** Optional component to render instead of the default sign-out button. */
-  signOutComponent?: React.ReactElement;
+  signOutComponent?: React.ReactElement<SignOutComponentProps>;
   /**
    * The button style variant to use.
    *
@@ -53,7 +60,7 @@ export const SignIn = ({
   buttonProps = {},
   component,
   signOutComponent,
-  hideWhenSignedIn = false,
+  hideSignOutButton = false,
   onError,
   onSuccess,
   onSignOut,
@@ -122,7 +129,7 @@ export const SignIn = ({
     refreshUser();
   }, [user, fetchingUser]);
 
-  if (signedIn && hideWhenSignedIn) {
+  if (signedIn && hideSignOutButton) {
     return null;
   }
 
@@ -141,7 +148,9 @@ export const SignIn = ({
   // but THEIR sign in component when signed out.
   if (component) {
     return React.cloneElement(component, {
-      onClick: signIn,
+      onClick: () => {
+        signIn();
+      },
     });
   }
 
