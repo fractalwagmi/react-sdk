@@ -4,13 +4,13 @@ import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { transformCoins } from 'core/api/transformers/coins';
 import { FractalSDKError } from 'core/error';
 import { maybeGetAccessToken } from 'core/token';
-import { PublicHookResponse } from 'hooks/public/types';
+import { PublicDataHookResponse } from 'hooks/public/types';
 import { useUser } from 'hooks/public/use-user';
 import { useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { Coin } from 'types';
 
-export const useCoins = (): PublicHookResponse<Coin[]> => {
+export const useCoins = (): PublicDataHookResponse<Coin[]> => {
   const { data: user } = useUser();
   const accessToken = maybeGetAccessToken();
   const [fetchToken, setFetchToken] = useState(0);

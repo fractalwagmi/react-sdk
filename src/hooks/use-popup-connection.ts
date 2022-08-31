@@ -2,6 +2,9 @@ import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
 import { useCallback, useEffect, useState } from 'react';
 
+// TODO: Add support for detecting when a popup is closed (without approval,)
+// so we can surface the rejection.
+
 interface SendParams {
   event: Events;
   origin: string;
@@ -124,7 +127,7 @@ export const usePopupConnection = () => {
         callback(e.data.payload);
       }
     },
-    [connection, setConnection, popupWindow, on, off],
+    [handlers, connection, setConnection, popupWindow, on, off],
   );
 
   useEffect(() => {
