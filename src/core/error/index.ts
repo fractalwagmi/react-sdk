@@ -1,11 +1,11 @@
-export class FractalError extends Error {
+export class FractalSDKError extends Error {
   name: string;
   constructor(message: string) {
     super(message);
-    this.name = 'FractalError';
+    this.name = 'FractalSDKError';
 
     // 👇️ because we are extending a built-in class
-    Object.setPrototypeOf(this, FractalError.prototype);
+    Object.setPrototypeOf(this, FractalSDKError.prototype);
   }
 
   getUserFacingErrorMessage() {

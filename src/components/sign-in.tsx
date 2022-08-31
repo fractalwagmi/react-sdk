@@ -1,5 +1,5 @@
 import { SignInButton, SignInButtonProps } from 'components/sign-in-button';
-import { FractalError } from 'core/error';
+import { FractalSDKError } from 'core/error';
 import { maybeGetAccessToken, maybeGetBaseUser } from 'core/token';
 import { useUser, useUserSetter } from 'hooks';
 import { useAuthUrl } from 'hooks/use-auth-url';
@@ -18,7 +18,7 @@ export interface SignInProps {
   component?: React.ReactElement;
   /** Whether to hide the sign in button when logged in or not. Defaults to `true`. */
   hideWhenSignedIn?: boolean;
-  onError?: (e: FractalError) => void;
+  onError?: (e: FractalSDKError) => void;
   onSuccess?: (user: User) => void;
   /**
    * The scopes to assign to the access token. Defaults to [Scope.IDENTIFY].
@@ -48,7 +48,7 @@ export const SignIn = ({
   const [fetchingUser, setFetchingUser] = useState(false);
   const { fetchAndSetUser } = useUserSetter();
 
-  const doError = (e: FractalError) => {
+  const doError = (e: FractalSDKError) => {
     if (!onError) {
       return;
     }

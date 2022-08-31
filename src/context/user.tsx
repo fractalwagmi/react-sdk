@@ -1,7 +1,9 @@
-import { createContext, useState } from 'react';
+import { clearIdAndTokenInLS } from 'core/token';
+import { createContext, useCallback, useState } from 'react';
 import { User, UserWallet } from 'types';
 
 interface UserContextState {
+  resetUser: () => void;
   setUser: (user: User | undefined) => void;
   setUserWallet: (userWallet: UserWallet | undefined) => void;
   user?: User;
@@ -9,6 +11,7 @@ interface UserContextState {
 }
 
 export const UserContext = createContext<UserContextState>({
+  resetUser: () => undefined,
   setUser: () => undefined,
   setUserWallet: () => undefined,
   user: undefined,
@@ -24,10 +27,16 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [userWallet, setUserWallet] = useState<UserWallet | undefined>(
     undefined,
   );
+  const resetUser = useCallback(() => {
+    clearIdAndTokenInLS();
+    setUser(undefined);
+    setUserWallet(undefined);
+  }, []);
 
   return (
     <UserContext.Provider
       value={{
+        resetUser,
         setUser,
         setUserWallet,
         user,

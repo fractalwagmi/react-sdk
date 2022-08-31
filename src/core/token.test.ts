@@ -1,4 +1,8 @@
-import { maybeGetBaseUser, storeIdAndTokenInLS } from 'core/token';
+import {
+  clearIdAndTokenInLS,
+  maybeGetBaseUser,
+  storeIdAndTokenInLS,
+} from 'core/token';
 import jwtDecode from 'jwt-decode';
 
 jest.mock('jwt-decode');
@@ -15,6 +19,18 @@ describe('storeIdAndTokenInLS', () => {
     storeIdAndTokenInLS({ accessToken: 'foo', userId: 'bar' });
     expect(localStorage.getItem(LS_KEY_ACCESS_TOKEN)).toBe('foo');
     expect(localStorage.getItem(LS_KEY_USER_ID)).toBe('bar');
+  });
+});
+
+describe('clearIdAndTokenInLS', () => {
+  it('removes the userID and accessToken in local storage', () => {
+    storeIdAndTokenInLS({ accessToken: 'foo', userId: 'bar' });
+    expect(localStorage.getItem(LS_KEY_ACCESS_TOKEN)).toBe('foo');
+    expect(localStorage.getItem(LS_KEY_USER_ID)).toBe('bar');
+
+    clearIdAndTokenInLS();
+    expect(localStorage.getItem(LS_KEY_ACCESS_TOKEN)).toBe(null);
+    expect(localStorage.getItem(LS_KEY_USER_ID)).toBe(null);
   });
 });
 
