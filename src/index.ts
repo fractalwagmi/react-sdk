@@ -1,7 +1,7 @@
 import { FractalSDKError } from 'core/error';
 
 export { SignIn as SignInWithFractal } from 'components/sign-in';
-export { UserContextProvider as FractalProvider } from 'context/user';
+export { FractalSDKContextProvider as FractalProvider } from 'context/fractal-sdk-context';
 export type { SignInProps } from 'components/sign-in';
 
 export { FractalSDKError } from 'core/error';

@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
-import { UserContextProvider } from 'context/user';
+import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
@@ -78,7 +78,9 @@ describe('useUserSetter', () => {
 
     it('sets a fractal user for the wrapping `UserContext`', async () => {
       const wrapper: React.FC = ({ children }) => (
-        <UserContextProvider>{children}</UserContextProvider>
+        <FractalSDKContextProvider clientId="abc">
+          {children}
+        </FractalSDKContextProvider>
       );
       const { result } = renderHook(
         () => {
@@ -110,7 +112,9 @@ describe('useUserSetter', () => {
 
     it('sets a fractal user wallet for the wrapping `UserContext`', async () => {
       const wrapper: React.FC = ({ children }) => (
-        <UserContextProvider>{children}</UserContextProvider>
+        <FractalSDKContextProvider clientId="abc">
+          {children}
+        </FractalSDKContextProvider>
       );
       const { result } = renderHook(
         () => {
