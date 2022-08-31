@@ -49,7 +49,12 @@ export const useAuthUrl = ({
       }
     };
     getUrl();
-  }, [user]);
+  }, [
+    // Making this effect depend on `user` ensures we re-fetch for the approval
+    // url when a user object is mutated (signed out and sign back in, for
+    // example).
+    user,
+  ]);
 
   return {
     code,
