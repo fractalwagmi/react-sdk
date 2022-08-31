@@ -1,4 +1,4 @@
-import { UserContext } from 'context/user';
+import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
 import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
@@ -7,7 +7,7 @@ import { useCallback, useContext } from 'react';
 import { UserWallet, BaseUser, User } from 'types';
 
 export const useUserSetter = () => {
-  const { setUser, setUserWallet } = useContext(UserContext);
+  const { setUser, setUserWallet } = useContext(FractalSDKContext);
 
   const fetchAndSetUser = useCallback(
     async (baseUser: BaseUser, accessToken: string) => {

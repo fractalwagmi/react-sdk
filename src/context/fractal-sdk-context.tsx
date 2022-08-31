@@ -2,7 +2,8 @@ import { clearIdAndTokenInLS } from 'core/token';
 import { createContext, useCallback, useState } from 'react';
 import { User, UserWallet } from 'types';
 
-interface UserContextState {
+interface FractalSDKContextState {
+  clientId: string;
   resetUser: () => void;
   setUser: (user: User | undefined) => void;
   setUserWallet: (userWallet: UserWallet | undefined) => void;
@@ -10,7 +11,8 @@ interface UserContextState {
   userWallet?: UserWallet;
 }
 
-export const UserContext = createContext<UserContextState>({
+export const FractalSDKContext = createContext<FractalSDKContextState>({
+  clientId: '',
   resetUser: () => undefined,
   setUser: () => undefined,
   setUserWallet: () => undefined,
@@ -18,11 +20,15 @@ export const UserContext = createContext<UserContextState>({
   userWallet: undefined,
 });
 
-export type UserContextProviderProps = React.PropsWithChildren<
-  Record<never, never>
->;
+export interface FractalSDKContextProviderProps
+  extends React.PropsWithChildren<Record<never, never>> {
+  clientId: string;
+}
 
-export function UserContextProvider({ children }: UserContextProviderProps) {
+export function FractalSDKContextProvider({
+  children,
+  clientId,
+}: FractalSDKContextProviderProps) {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [userWallet, setUserWallet] = useState<UserWallet | undefined>(
     undefined,
@@ -34,8 +40,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   }, []);
 
   return (
-    <UserContext.Provider
+    <FractalSDKContext.Provider
       value={{
+        clientId,
         resetUser,
         setUser,
         setUserWallet,
@@ -44,6 +51,6 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       }}
     >
       {children}
-    </UserContext.Provider>
+    </FractalSDKContext.Provider>
   );
 }

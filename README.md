@@ -29,7 +29,7 @@ Render the provider above any components that need access to data from the SDK.
 import { FractalProvider } from '@fractalwagmi/fractal-sdk';
 
 const App = () => {
-  return <FractalProvider>...</FractalProvider>;
+  return <FractalProvider clientId="YOUR_CLIENT_ID">...</FractalProvider>;
 };
 ```
 
@@ -48,8 +48,6 @@ import {
 export function YourSignInComponent() {
   return (
     <SignInWithFractal
-      // The `clientId` is the only required prop.
-      clientId="YOUR_CLIENT_ID"
       // `scopes` defaults to [Scope.IDENTIFY].
       scopes={[Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ]}
       onError={(err: FractalSDKError) => {
@@ -69,19 +67,19 @@ By default, there are 2 button variants that we support:
 
 ```tsx
 // There is a "light" (default) and "dark" variant:
-<SignInWithFractal clientId="..." variant="dark">
+<SignInWithFractal variant="dark">
 ```
 
 You can customize the look of the button with either of these options:
 
 ```tsx
 // Using your own class name to override any default styles:
-<SignInWithFractal clientId="..." className="foobar">
+<SignInWithFractal className="foobar">
 ```
 
 ```tsx
 // Use your own child component:
-<SignInWithFractal clientId="..." component={<YourOwnButton />}>
+<SignInWithFractal component={<YourOwnButton />}>
 ```
 
 #### SignInWithFractal Props
@@ -89,7 +87,6 @@ You can customize the look of the button with either of these options:
 | Prop               | Type / Description                                                                                                                   | Default            |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
 | `buttonProps`      | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
-| `clientId`         | `string`<br/>(Required) The client ID to use.                                                                                        | n/a                |
 | `component`        | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
 | `hideWhenSignedIn` | `boolean`<br/>Whether to hide the sign in button when logged in or not.                                                              | `true`             |
 | `onError`          | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |

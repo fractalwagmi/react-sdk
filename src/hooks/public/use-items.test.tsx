@@ -1,6 +1,6 @@
 import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/fractal-sdk-api';
 import { renderHook } from '@testing-library/react-hooks/dom';
-import { UserContextProvider } from 'context/user';
+import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
 import * as tokenModule from 'core/token';
 import { TEST_ACCESS_TOKEN, TEST_FRACTAL_USER } from 'hooks/__data__/constants';
@@ -63,7 +63,9 @@ describe('useItems', () => {
 
     wrapper = ({ children }) => (
       <SWRConfig value={{ provider: () => new Map() }}>
-        <UserContextProvider>{children}</UserContextProvider>
+        <FractalSDKContextProvider clientId="abc">
+          {children}
+        </FractalSDKContextProvider>
       </SWRConfig>
     );
   });

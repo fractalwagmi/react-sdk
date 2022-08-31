@@ -1,10 +1,11 @@
 import { SignInButton, SignInButtonProps } from 'components/sign-in-button';
+import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { FractalSDKError } from 'core/error';
 import { maybeGetAccessToken, maybeGetBaseUser } from 'core/token';
 import { useUser, useUserSetter } from 'hooks';
 import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
-import React, { HTMLAttributes, useEffect, useState } from 'react';
+import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import { Scope, User } from 'types';
 
 export interface SignInProps {
@@ -13,7 +14,6 @@ export interface SignInProps {
    * sign-in button.
    */
   buttonProps?: HTMLAttributes<HTMLButtonElement>;
-  clientId: string;
   /** Optional component to render instead of the default sign-in button. */
   component?: React.ReactElement;
   /** Whether to hide the sign in button when logged in or not. Defaults to `true`. */
@@ -36,7 +36,6 @@ export interface SignInProps {
 
 export const SignIn = ({
   buttonProps = {},
-  clientId,
   component,
   hideWhenSignedIn = true,
   onError,
@@ -46,6 +45,7 @@ export const SignIn = ({
 }: SignInProps) => {
   const { data: user } = useUser();
   const [fetchingUser, setFetchingUser] = useState(false);
+  const { clientId } = useContext(FractalSDKContext);
   const { fetchAndSetUser } = useUserSetter();
 
   const doError = (e: FractalSDKError) => {
