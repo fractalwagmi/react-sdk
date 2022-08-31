@@ -10,8 +10,6 @@ export enum Events {
 export function validateOrigin(origin: string): boolean {
   return (
     origin === `https://www.${FRACTAL_DOMAIN}` ||
-    origin === `https://${FRACTAL_DOMAIN}` ||
-    // Enables local testing.
-    origin === 'http://localhost:3000'
+    origin === `https://${FRACTAL_DOMAIN}`
   );
 }
