@@ -1,8 +1,8 @@
 import { FractalSDKError } from 'core/error';
-import { Events, validateOrigin } from 'core/messaging';
-import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
+import { Events } from 'core/messaging';
+import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useUserSetter } from 'hooks/use-user-setter';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { BaseUser, User } from 'types';
 
 interface UseSignInParameters {
@@ -21,64 +21,102 @@ export const useSignIn = ({
   url,
 }: UseSignInParameters) => {
   const { fetchAndSetUser } = useUserSetter();
+  const {
+    close: closePopup,
+    connection,
+    open: openPopup,
+  } = usePopupConnection();
 
-  const signIn = useCallback(async () => {
+  const signIn = useCallback(() => {
     if (!url || !code) {
       return;
     }
 
-    const left = window.screenX + (window.innerWidth - POPUP_WIDTH_PX) / 2;
-    const top = window.screenY + (window.innerHeight - POPUP_HEIGHT_PX) / 2;
-    const popup = openPopup({
-      left,
-      top,
-      url,
-    });
-    if (popup) {
-      const handleMessage = async (e: MessageEvent) => {
-        // We only care about events from our own domain.
-        if (!validateOrigin(e.origin)) {
-          return;
-        }
-
-        if (!popup.window) {
-          // This is a sanity check in case popup.window is not defined.
-          // This can happen when a user exits the popup without completing the
-          // sign in flow, and then opening another popup.
-          //
-          // TODO: Fix multiple event listeners from registering.
-          return;
-        }
-
-        if (e.data.event === Events.HANDSHAKE) {
-          popup.window.postMessage(
-            {
-              event: Events.HANDSHAKE_ACK,
-            },
-            e.origin,
-          );
-        }
-        if (e.data.event === Events.PROJECT_APPROVED) {
-          try {
-            const userId = e.data.payload.user.userId;
-            const accessToken = e.data.payload.user.accessToken;
-            const baseUser: BaseUser = { userId };
-            const { user } = await fetchAndSetUser(baseUser, accessToken);
-            popup.close();
-            onSignIn(user);
-          } catch (e: unknown) {
-            // TODO: Add sentry integration.
-            onSignInFailed(new FractalSDKError('Sign in failed.'));
-          }
-        }
-      };
-      window.addEventListener('message', handleMessage);
-
-      return () => {
-        window.removeEventListener('message', handleMessage);
-      };
+    if (!connection) {
+      openPopup(url);
+      return;
     }
   }, [clientId, code, url, onSignIn, onSignInFailed]);
 
+  useEffect(() => {
+    if (!connection) {
+      return;
+    }
+
+    const handleProjectApproved = async (payload: unknown) => {
+      try {
+        if (!assertPayloadIsProjectApprovedPayload(payload)) {
+          // eslint-disable-next-line no-console
+          console.error('malformed payload. payload = ', payload);
+          return;
+        }
+        const userId = payload.user.userId;
+        const accessToken = payload.user.accessToken;
+        const baseUser: BaseUser = { userId };
+        const { user } = await fetchAndSetUser(baseUser, accessToken);
+        closePopup();
+        onSignIn(user);
+      } catch (e: unknown) {
+        // TODO: Add sentry integration.
+        onSignInFailed(new FractalSDKError('Sign in failed.'));
+      }
+    };
+
+    connection.on(Events.PROJECT_APPROVED, handleProjectApproved);
+
+    return () => {
+      connection.off(Events.PROJECT_APPROVED, handleProjectApproved);
+    };
+  }, [connection]);
+
   return { signIn };
 };
+
+interface ProjectApprovedPayload {
+  user: {
+    accessToken: string;
+    userId: string;
+  };
+}
+
+function assertPayloadIsProjectApprovedPayload(
+  payload: unknown,
+): payload is ProjectApprovedPayload {
+  if (payload === null) {
+    return false;
+  }
+  if (typeof payload !== 'object') {
+    return false;
+  }
+  if (!Object.prototype.hasOwnProperty.call(payload, 'user')) {
+    return false;
+  }
+  const user = (payload as { user: unknown }).user;
+  if (!assertUser(user)) {
+    return false;
+  }
+  return true;
+}
+
+function assertUser(user: unknown): user is ProjectApprovedPayload['user'] {
+  if (user === null) {
+    return false;
+  }
+  if (typeof user !== 'object') {
+    return false;
+  }
+  if (
+    !Object.prototype.hasOwnProperty.call(user, 'userId') ||
+    !Object.prototype.hasOwnProperty.call(user, 'accessToken')
+  ) {
+    return false;
+  }
+  const maybeUser = user as { accessToken: unknown; userId: unknown };
+  if (
+    typeof maybeUser.accessToken !== 'string' ||
+    typeof maybeUser.userId !== 'string'
+  ) {
+    return false;
+  }
+  return true;
+}
