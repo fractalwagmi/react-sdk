@@ -1,6 +1,6 @@
 {
   "name": "@fractalwagmi/fractal-sdk",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Fractal Client SDK to install Fractal Wallet and access Fractal SDKs/APIs.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -56,8 +56,8 @@
     "@emotion/css": "^11.10.0",
     "@fontsource/quattrocento-sans": "^4.5.9",
     "@fractalwagmi/fractal-auth-api": "^0.0.22",
-    "@fractalwagmi/fractal-sdk-api": "^0.0.5",
     "@fractalwagmi/fractal-auth-private-web-sdk-api": "^0.0.1",
+    "@fractalwagmi/fractal-sdk-api": "^0.0.5",
     "jest": "^28.1.3",
     "jwt-decode": "^3.1.2",
     "swr": "^1.3.0"
@@ -82,7 +82,6 @@
     "husky": "^7.0.4",
     "jest-environment-jsdom": "^28.1.3",
     "lint-staged": "^12.3.4",
-    "live-server": "^1.2.2",
     "prettier": "^2.5.1",
     "prettier-plugin-jsdoc": "^0.3.30",
     "ts-jest": "^28.0.7",
