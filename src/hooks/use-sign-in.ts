@@ -2,6 +2,7 @@ import { FractalSDKError } from 'core/error';
 import { Events } from 'core/messaging';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useUserSetter } from 'hooks/use-user-setter';
+import { assertObject } from 'lib/util/guards';
 import { useCallback, useEffect } from 'react';
 import { BaseUser, User } from 'types';
 
@@ -82,10 +83,7 @@ interface ProjectApprovedPayload {
 function assertPayloadIsProjectApprovedPayload(
   payload: unknown,
 ): payload is ProjectApprovedPayload {
-  if (payload === null) {
-    return false;
-  }
-  if (typeof payload !== 'object') {
+  if (!assertObject(payload)) {
     return false;
   }
   if (!Object.prototype.hasOwnProperty.call(payload, 'user')) {
