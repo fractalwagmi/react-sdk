@@ -36,19 +36,25 @@ export const useAuthButtonProps = ({
     onResetUser(onSignOut);
   }
 
-  const doError = (e: FractalSDKError) => {
-    if (!onError) {
-      return;
-    }
-    onError(e);
-  };
+  const doError = useCallback(
+    (e: FractalSDKError) => {
+      if (!onError) {
+        return;
+      }
+      onError(e);
+    },
+    [onError],
+  );
 
-  const doSuccess = (user: User) => {
-    if (!onSuccess) {
-      return;
-    }
-    onSuccess(user);
-  };
+  const doSuccess = useCallback(
+    (user: User) => {
+      if (!onSuccess) {
+        return;
+      }
+      onSuccess(user);
+    },
+    [onSuccess],
+  );
 
   const { code, url } = useAuthUrl({
     clientId,
