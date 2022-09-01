@@ -2,11 +2,12 @@ import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
 import { Events } from 'core/messaging';
 import { usePopupConnection } from 'hooks/use-popup-connection';
+import { assertObject } from 'lib/util/guards';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 /**
  * Returns a function, `signTransaction`, that returns a promise which resolves
- * when a transaction is signed.
+ * with a transaction signature when a transaction is signed.
  *
  * Keep in mind that although a transaction may be signed, there will be a delay
  * before it is posted to the chain.
@@ -16,23 +17,28 @@ export const useSignTransaction = () => {
   const { clientId } = useContext(FractalSDKContext);
   const [promiseResolvers, setPromiseResolvers] = useState<{
     reject: null | (() => void);
-    resolve: null | (() => void);
+    resolve: null | ((signature: string) => void);
   }>({
     reject: null,
     resolve: null,
   });
 
-  const handleSignedTransaction = useCallback(() => {
-    connection?.off(Events.SIGNED_TRANSACTION, handleSignedTransaction);
-    close();
-    promiseResolvers.resolve?.();
-  }, [connection, close, promiseResolvers]);
+  const handleSignedTransaction = useCallback(
+    (payload: unknown) => {
+      if (!assertPayloadHasSignature(payload)) {
+        console.error(
+          'Malformed response for signed transaction. payload = ',
+          payload,
+        );
+        return;
+      }
+      close();
+      promiseResolvers.resolve?.(payload.signature);
+    },
+    [connection, close, promiseResolvers],
+  );
 
   const handleSignedTransactionFailed = useCallback(() => {
-    connection?.off(
-      Events.FAILED_TO_SIGN_TRANSACTION,
-      handleSignedTransactionFailed,
-    );
     close();
     promiseResolvers.reject?.();
   }, [connection, close, promiseResolvers]);
@@ -53,7 +59,7 @@ export const useSignTransaction = () => {
         throw err;
       }
 
-      return new Promise<void>((resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         setPromiseResolvers({
           reject,
           resolve,
@@ -87,3 +93,19 @@ export const useSignTransaction = () => {
     signTransaction,
   };
 };
+
+interface PayloadWithSignature {
+  signature: string;
+}
+
+function assertPayloadHasSignature(
+  payload: unknown,
+): payload is PayloadWithSignature {
+  if (!assertObject(payload)) {
+    return false;
+  }
+  if (!Object.prototype.hasOwnProperty.call(payload, 'signature')) {
+    return false;
+  }
+  return true;
+}
