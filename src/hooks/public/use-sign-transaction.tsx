@@ -39,6 +39,7 @@ export const useSignTransaction = () => {
 
   const signTransaction = useCallback(
     async (unsignedTransactionB58: string) => {
+      // TODO(ricebin/obber): pass in orgin
       try {
         const response = await webSdkApiClient.websdk.authorize({
           clientId,
