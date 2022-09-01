@@ -166,3 +166,9 @@ export function YourWalletComponent() {
   return <button onClick={signOut}>Your Sign Out Button Text</button>;
 }
 ```
+
+#### Allowed Origins
+
+You will need to provide us with a list of allowed origins (e.g. http://localhost,
+https://your.game.com). Please reach out to our dev team and let us know the
+origins you would like to allow when you are ready to start integrating.
