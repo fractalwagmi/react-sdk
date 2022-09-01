@@ -33,7 +33,7 @@ const App = () => {
 };
 ```
 
-### 3. Render the `SignInWithFractal` component
+### 3A. Render the `SignInWithFractal` component
 
 This will display a button for logging in.
 
@@ -61,7 +61,20 @@ export function YourSignInComponent() {
 }
 ```
 
+#### SignInWithFractal Props
+
+| Prop          | Type / Description                                                                                                                   | Default            |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| `buttonProps` | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
+| `onError`     | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |
+| `onSuccess`   | `(user: User) => void`<br/>A callback function to call when a user successfully signs in.                                            | `undefined`        |
+| `onSignOut`   | `() => void`<br/>A callback function to call when a sign out occurs.                                                                 | `undefined`        |
+| `scopes`      | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
+| `variant`     | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
+
 #### Customizations
+
+##### Variants
 
 By default, there are 2 button variants that we support:
 
@@ -72,7 +85,9 @@ const YourComponent = () => {
 }
 ```
 
-You can customize the look of the button with either of these options:
+##### Custom Class Names
+
+You can make minor adjustments with your own class name to override any styles:
 
 ```tsx
 const YourComponent = () => {
@@ -81,32 +96,32 @@ const YourComponent = () => {
 };
 ```
 
-```tsx
-const YourComponent = () => {
-  // Use your own child component:
-  return <SignInWithFractal component={<YourOwnButton />}>;
-};
+### 3B: Render Your Own Button
 
-// [CAVEAT] You'll need to make sure that `YourOwnButton` accepts an `onClick`
-// prop, otherwise our sign in logic will not run.
-const YourOwnButton = ({ onClick }: { onClick?: () => void }) => {
-  return <button onClick={onClick}>Your Own Button</button>;
+You can go headless and render your own button with the help of the
+`useAuthButtonProps` hook.
+
+This option offers full control over your mark and styles:
+
+```tsx
+import { useAuthButtonProps, Scope } from '@fractalwagmi/fractal-sdk';
+
+const YourButtonComponent = () => {
+  const { loading, signedIn, onClick } = useAuthButtonProps({
+    scopes: [Scope.IDENTIFY, Scope.ITEMS_READ, Scope.COINS_READ],
+  });
+
+  if (loading) {
+    return '...';
+  }
+
+  return <button onClick={onClick}>{signedIn ? 'Sign Out' : 'Sign In'}</button>;
 };
 ```
 
-#### SignInWithFractal Props
-
-| Prop                | Type / Description                                                                                                                   | Default            |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
-| `buttonProps`       | `HTMLAttributes<HTMLButtonElement>`<br/>Any additional props for `<button>` that should be passed to the default sign-in button.     | `{}`               |
-| `component`         | `React.ReactElement`<br/>Optional component to render instead of the default sign-in button                                          | `undefined`        |
-| `signOutComponent`  | `React.ReactElement`<br/>Optional component to render instead of the default sign-out button                                         | `undefined`        |
-| `hideSignOutButton` | `boolean`<br/>Whether to hide the sign out button when signed in or not.                                                             | `false`            |
-| `onError`           | `(e: FractalSDKError) => void`<br/>A callback function to call when an error occurs.                                                 | `undefined`        |
-| `onSuccess`         | `(user: User) => void`<br/>A callback function to call when a user successfully signs in.                                            | `undefined`        |
-| `onSignOut`         | `() => void`<br/>A callback function to call when a sign out occurs.                                                                 | `undefined`        |
-| `scopes`            | `Scope[]`<br/>The scope to assign to the access token. See [src/types/scope.ts](/src/types/scope.ts) for a list of available scopes. | `[Scope.IDENTIFY]` |
-| `variant`           | `"light" \| "dark"`<br/>The button style variant to use.                                                                             | `"light"`          |
+**Be sure to add support for both signed in and signed out states** (like in the
+example above with the alternating button text,) because the `onClick` prop will
+invoke different logic based on the `signedIn` boolean.
 
 ### 4. Use the hooks to access data
 
@@ -137,7 +152,10 @@ export function YourWalletComponent() {
 
 ### 5. Other misc. Non-data related hooks:
 
-#### Logging out
+#### Signing Out
+
+If you need to programmatically sign the user out, you can use the `useSignOut`
+hook to do this:
 
 ```tsx
 import { useSignOut } from '@fractalwagmi/fractal-sdk';

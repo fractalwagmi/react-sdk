@@ -1,19 +1,22 @@
 import { css, cx } from '@emotion/css';
 import { FractalFLogo } from 'components/fractal-f-logo';
 import { getDefaultButtonStyles } from 'components/styles';
+import { HeadlessAuthButtonProps } from 'hooks/public/use-auth-button-props';
 
 const LOADING_TEXT = 'Loading...';
+const DEFAULT_SIGN_IN_BUTTON_TEXT = 'Sign in with Fractal';
+const DEFAULT_SIGN_OUT_BUTTON_TEXT = 'Sign out';
 
 export interface AuthButtonProps
-  extends React.ComponentPropsWithoutRef<'button'> {
-  buttonText: string;
-  loading?: boolean;
+  extends HeadlessAuthButtonProps,
+    Omit<React.ComponentPropsWithoutRef<'button'>, 'onClick'> {
   variant?: 'light' | 'dark';
 }
 
 export const AuthButton = ({
-  buttonText,
   loading = false,
+  onClick,
+  signedIn,
   variant,
   ...buttonProps
 }: AuthButtonProps) => {
@@ -31,9 +34,14 @@ export const AuthButton = ({
     textColor,
   });
 
+  const buttonText = signedIn
+    ? DEFAULT_SIGN_OUT_BUTTON_TEXT
+    : DEFAULT_SIGN_IN_BUTTON_TEXT;
+
   return (
     <button
       {...buttonProps}
+      onClick={onClick}
       className={cx(defaultButtonStyles, buttonProps.className)}
     >
       <div

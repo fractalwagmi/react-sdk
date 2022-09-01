@@ -1,53 +1,16 @@
 import { AuthButton, AuthButtonProps } from 'components/auth-button';
-import { FractalSDKContext } from 'context/fractal-sdk-context';
-import { FractalSDKError } from 'core/error';
-import { maybeGetAccessToken, maybeGetBaseUser } from 'core/token';
-import { useSignOut, useUser, useUserSetter } from 'hooks';
-import { useAuthUrl } from 'hooks/use-auth-url';
-import { useSignIn } from 'hooks/use-sign-in';
-import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
-import { Scope, User } from 'types';
+import {
+  UseAuthButtonPropsParameters,
+  useAuthButtonProps,
+} from 'hooks/public/use-auth-button-props';
+import React, { HTMLAttributes } from 'react';
 
-const DEFAULT_SIGN_IN_BUTTON_TEXT = 'Sign in with Fractal';
-const DEFAULT_SIGN_OUT_BUTTON_TEXT = 'Sign out';
-
-interface PropsWithOnClick {
-  onClick: () => void;
-}
-
-export interface SignInProps<
-  ComponentProps extends PropsWithOnClick = PropsWithOnClick,
-  SignOutComponentProps extends PropsWithOnClick = PropsWithOnClick,
-> {
+export interface SignInProps extends UseAuthButtonPropsParameters {
   /**
    * Any additional props for <button> that should be passed to the default
    * sign-in button.
    */
   buttonProps?: HTMLAttributes<HTMLButtonElement>;
-  /**
-   * Optional component to render instead of the default sign-in button. If
-   * defining this prop, it's recommended that you also define
-   * `signOutComponent` to control what the button looks like for the purposes
-   * of signing out.
-   */
-  component?: React.ReactElement<ComponentProps>;
-  /**
-   * Whether to hide the button completely when signed in or not.
-   *
-   * Defaults to `false`.
-   */
-  hideSignOutButton?: boolean;
-  onError?: (e: FractalSDKError) => void;
-  onSignOut?: () => void;
-  onSuccess?: (user: User) => void;
-  /**
-   * The scopes to assign to the access token. Defaults to [Scope.IDENTIFY].
-   *
-   * See src/types/scope.ts for a list of available scopes.
-   */
-  scopes?: Scope[];
-  /** Optional component to render instead of the default sign-out button. */
-  signOutComponent?: React.ReactElement<SignOutComponentProps>;
   /**
    * The button style variant to use.
    *
@@ -58,111 +21,33 @@ export interface SignInProps<
 
 export const SignIn = ({
   buttonProps = {},
-  component,
-  signOutComponent,
-  hideSignOutButton = false,
   onError,
   onSuccess,
   onSignOut,
   scopes,
   variant = 'light',
 }: SignInProps) => {
-  const { onResetUser } = useContext(FractalSDKContext);
-  const { data: user } = useUser();
-  const { signOut } = useSignOut();
-  const [fetchingUser, setFetchingUser] = useState(false);
-  const { clientId } = useContext(FractalSDKContext);
-  const { fetchAndSetUser } = useUserSetter();
-
-  if (onSignOut) {
-    onResetUser(onSignOut);
-  }
-
-  const signedIn = Boolean(user);
-
-  const doError = (e: FractalSDKError) => {
-    if (!onError) {
-      return;
-    }
-    onError(e);
-  };
-
-  const doSuccess = (user: User) => {
-    if (!onSuccess) {
-      return;
-    }
-    onSuccess(user);
-  };
-
-  const { code, url } = useAuthUrl({
-    clientId,
-    onError: doError,
+  const { loading, onClick, signedIn } = useAuthButtonProps({
+    onError,
+    onSignOut,
+    onSuccess,
     scopes,
   });
-  const { signIn } = useSignIn({
-    clientId,
-    code,
-    onSignIn: doSuccess,
-    onSignInFailed: doError,
-    url,
-  });
-
-  useEffect(() => {
-    const baseUserFromLS = maybeGetBaseUser();
-    const accessTokenFromLS = maybeGetAccessToken();
-    const isAlreadyLoggedIn = Boolean(user);
-    if (
-      isAlreadyLoggedIn ||
-      !baseUserFromLS ||
-      !accessTokenFromLS ||
-      fetchingUser
-    ) {
-      return;
-    }
-
-    const refreshUser = async () => {
-      setFetchingUser(true);
-      await fetchAndSetUser(baseUserFromLS, accessTokenFromLS);
-      setFetchingUser(false);
-    };
-
-    refreshUser();
-  }, [user, fetchingUser]);
-
-  if (signedIn && hideSignOutButton) {
-    return null;
-  }
-
-  if (signedIn && signOutComponent) {
-    return React.cloneElement(signOutComponent, {
-      onClick: signOut,
-    });
-  }
-
-  // We explicitly don't do a `!signedIn && component` check here because we
-  // want to guarantee that if a caller provides a `component`, it will always
-  // be rendered even when they are logged in and aren't passing in a
-  // `signOutComponent`.
-  //
-  // This prevents accidentally showing OUR sign out component when signed in
-  // but THEIR sign in component when signed out.
-  if (component) {
-    return React.cloneElement(component, {
-      onClick: () => {
-        signIn();
-      },
-    });
-  }
 
   return (
     <AuthButton
       variant={variant}
-      onClick={signedIn ? signOut : signIn}
-      buttonText={
-        signedIn ? DEFAULT_SIGN_OUT_BUTTON_TEXT : DEFAULT_SIGN_IN_BUTTON_TEXT
-      }
+      signedIn={signedIn}
+      loading={loading}
       {...buttonProps}
-      loading={fetchingUser}
+      // `onClick` needs to come after {...buttonProps} because the type of
+      // the `onClick` prop are inconsistent. We intentionally use () => void
+      // as opposed to the event handler type since the SDK caller may want to
+      // attach the `onClick` handler on something other than a button, or may
+      // just end up programatically calling it in some way where they don't
+      // have the ability to pass in the appropriately typed `event` as the
+      // argument.
+      onClick={onClick}
     />
   );
 };
