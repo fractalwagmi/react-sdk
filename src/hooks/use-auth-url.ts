@@ -2,6 +2,7 @@ import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { authPrivateWebSdkApiClient } from 'core/api/client';
 import { FractalSDKError } from 'core/error';
 import { verifyScopes } from 'core/scope';
+import { getCurrentOrigin } from 'lib/util/origin';
 import { useContext, useEffect, useState } from 'react';
 import { Scope } from 'types';
 
@@ -37,7 +38,7 @@ export const useAuthUrl = ({
         const urlInfo = (
           await authPrivateWebSdkApiClient.privateWebSdk.getApprovalUrl({
             clientId,
-            origin: `${window.location.protocol}//${window.location.host}`,
+            origin: getCurrentOrigin(),
             scope: scopes,
           })
         ).data;
