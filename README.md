@@ -33,7 +33,7 @@ const App = () => {
 };
 ```
 
-### 3. Render the `SignInWithFractal` component
+### 3A. Render the `SignInWithFractal` component
 
 This will display a button for logging in.
 
@@ -96,10 +96,12 @@ const YourComponent = () => {
 };
 ```
 
-##### Full Customization
+### 3B: Render Your Own Button
 
-You can use the headless button props by using the `useAuthButtonProps` hook
-which offers full control over your mark up as well as any styles.
+You can go headless and render your own button with the help of the
+`useAuthButtonProps` hook.
+
+This option offers full control over your mark and styles:
 
 ```tsx
 import { useAuthButtonProps, Scope } from '@fractalwagmi/fractal-sdk';
