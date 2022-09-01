@@ -1,7 +1,8 @@
+import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { authPrivateWebSdkApiClient } from 'core/api/client';
 import { FractalSDKError } from 'core/error';
 import { verifyScopes } from 'core/scope';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Scope } from 'types';
 
 const DEFAULT_SCOPE = [Scope.IDENTIFY];
@@ -17,6 +18,7 @@ export const useAuthUrl = ({
   onError,
   scopes = DEFAULT_SCOPE,
 }: UseAuthUrlParameters) => {
+  const { user } = useContext(FractalSDKContext);
   const [url, setUrl] = useState<string | undefined>();
   const [code, setCode] = useState<string | undefined>();
 
@@ -47,7 +49,12 @@ export const useAuthUrl = ({
       }
     };
     getUrl();
-  }, []);
+  }, [
+    // Making this effect depend on `user` ensures we re-fetch for the approval
+    // url when a user object is mutated (signed out and sign back in, for
+    // example).
+    user,
+  ]);
 
   return {
     code,

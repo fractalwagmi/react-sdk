@@ -4,6 +4,7 @@ import { User, UserWallet } from 'types';
 
 interface FractalSDKContextState {
   clientId: string;
+  onResetUser: (resetHandler: () => void) => void;
   resetUser: () => void;
   setUser: (user: User | undefined) => void;
   setUserWallet: (userWallet: UserWallet | undefined) => void;
@@ -13,6 +14,7 @@ interface FractalSDKContextState {
 
 export const FractalSDKContext = createContext<FractalSDKContextState>({
   clientId: '',
+  onResetUser: () => undefined,
   resetUser: () => undefined,
   setUser: () => undefined,
   setUserWallet: () => undefined,
@@ -33,16 +35,27 @@ export function FractalSDKContextProvider({
   const [userWallet, setUserWallet] = useState<UserWallet | undefined>(
     undefined,
   );
+  const [resetHandlers, setResetHandlers] = useState<Set<() => void>>(
+    () => new Set(),
+  );
   const resetUser = useCallback(() => {
     clearIdAndTokenInLS();
     setUser(undefined);
     setUserWallet(undefined);
+    for (const handler of resetHandlers) {
+      handler();
+    }
+  }, [resetHandlers]);
+
+  const onResetUser = useCallback((handleOnResetUser: () => void) => {
+    setResetHandlers(handlers => new Set([...handlers]).add(handleOnResetUser));
   }, []);
 
   return (
     <FractalSDKContext.Provider
       value={{
         clientId,
+        onResetUser,
         resetUser,
         setUser,
         setUserWallet,
