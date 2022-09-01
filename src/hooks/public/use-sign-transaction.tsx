@@ -1,5 +1,5 @@
 import { FractalSDKContext } from 'context/fractal-sdk-context';
-import { authApiClient } from 'core/api/client';
+import { webSdkApiClient } from 'core/api/client';
 import { Events } from 'core/messaging';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -40,7 +40,7 @@ export const useSignTransaction = () => {
   const signTransaction = useCallback(
     async (unsignedTransactionB58: string) => {
       try {
-        const response = await authApiClient.v2.authorize({
+        const response = await webSdkApiClient.websdk.authorize({
           clientId,
           unsigned: unsignedTransactionB58,
         });
