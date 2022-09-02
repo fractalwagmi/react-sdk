@@ -7,6 +7,7 @@ export enum Events {
   HANDSHAKE_ACK = 'HANDSHAKE_ACK',
   SIGNED_TRANSACTION = 'SIGNED_TRANSACTION',
   FAILED_TO_SIGN_TRANSACTION = 'FAILED_TO_SIGN_TRANSACTION',
+  TRANSACTION_DENIED = 'TRANSACTION_DENIED',
 }
 
 export function validateOrigin(origin: string): boolean {
