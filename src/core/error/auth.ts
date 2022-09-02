@@ -5,8 +5,6 @@ export class FractalSDKAuthenticationError extends FractalSDKError {
   constructor(message: string) {
     super(message);
     this.name = 'FractalSDKAuthenticationError';
-
-    // 👇️ because we are extending a built-in class
     Object.setPrototypeOf(this, FractalSDKAuthenticationError.prototype);
   }
 
