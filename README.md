@@ -181,17 +181,12 @@ interface YourComponentProps {
 }
 
 export function YourComponent({ someTransactionB58 }: YourComponentProps) {
-  const {
-    data: signature,
-    error,
-    signed,
-  } = useSignTransaction({
+  const { data: signature, error } = useSignTransaction({
     unsignedTransactionB58: someTransactionB58,
   });
 
   return (
     <div>
-      <p>{signed ? 'Signed' : 'Pending'}</p>
       <p>Transaction Signature: {signature}</p>
       <p>An error occurred: {error.getUserFacingErrorMessage()}</p>
     </div>
