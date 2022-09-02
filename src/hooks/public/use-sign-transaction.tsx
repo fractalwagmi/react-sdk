@@ -47,6 +47,8 @@ export const useSignTransaction = ({
   >(undefined);
   const { close, connection, open } = usePopupConnection({
     enabled: shouldInitiateRequest,
+    heightPx: Math.floor(window.innerHeight * 0.8),
+    widthPx: Math.floor(window.innerWidth * 0.8),
   });
   const { clientId } = useContext(FractalSDKContext);
 
