@@ -1,6 +1,7 @@
 import { Endpoint } from 'core/api/endpoints';
 
 export const ENDPOINTS_THAT_REQUIRE_AUTHENTICATION = new Set<Endpoint>([
+  Endpoint.AUTHORIZE_TRANSACTION,
   Endpoint.GET_COINS,
   Endpoint.GET_INFO,
   Endpoint.GET_WALLET_ITEMS,
