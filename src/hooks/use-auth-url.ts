@@ -37,7 +37,6 @@ export const useAuthUrl = ({
         const urlInfo = (
           await authPrivateWebSdkApiClient.privateWebSdk.getApprovalUrl({
             clientId,
-            origin: `${window.location.protocol}//${window.location.host}`,
             scope: scopes,
           })
         ).data;
