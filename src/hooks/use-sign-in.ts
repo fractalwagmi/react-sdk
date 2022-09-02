@@ -1,9 +1,11 @@
+import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { FractalSDKError } from 'core/error';
+import { FractalSDKApprovalDeniedError } from 'core/error/approve';
 import { Events } from 'core/messaging';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useUserSetter } from 'hooks/use-user-setter';
 import { assertObject } from 'lib/util/guards';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { BaseUser, User } from 'types';
 
 interface UseSignInParameters {
@@ -21,12 +23,15 @@ export const useSignIn = ({
   onSignInFailed,
   url,
 }: UseSignInParameters) => {
+  const { user } = useContext(FractalSDKContext);
   const { fetchAndSetUser } = useUserSetter();
   const {
     close: closePopup,
     connection,
     open: openPopup,
-  } = usePopupConnection();
+  } = usePopupConnection({
+    enabled: !user,
+  });
 
   const signIn = useCallback(() => {
     if (!url || !code) {
@@ -63,10 +68,16 @@ export const useSignIn = ({
       }
     };
 
+    const handlePopupClosed = () => {
+      onSignInFailed(new FractalSDKApprovalDeniedError('Sign in refused.'));
+    };
+
     connection.on(Events.PROJECT_APPROVED, handleProjectApproved);
+    connection.on(Events.POPUP_CLOSED, handlePopupClosed);
 
     return () => {
       connection.off(Events.PROJECT_APPROVED, handleProjectApproved);
+      connection.off(Events.POPUP_CLOSED, handlePopupClosed);
     };
   }, [connection]);
 

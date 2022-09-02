@@ -28,13 +28,9 @@ export const useAuthButtonProps = ({
   scopes,
 }: UseAuthButtonPropsParameters = {}): HeadlessAuthButtonProps => {
   const [fetchingUser, setFetchingUser] = useState(false);
-  const { clientId, onResetUser, user } = useContext(FractalSDKContext);
+  const { clientId, user } = useContext(FractalSDKContext);
   const { fetchAndSetUser } = useUserSetter();
   const { signOut } = useSignOut();
-
-  if (onSignOut) {
-    onResetUser(onSignOut);
-  }
 
   const doError = useCallback(
     (e: FractalSDKError) => {
@@ -95,6 +91,7 @@ export const useAuthButtonProps = ({
   const onClick = useCallback(() => {
     if (signedIn) {
       signOut();
+      onSignOut?.();
     } else {
       signIn();
     }

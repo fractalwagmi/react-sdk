@@ -20,13 +20,32 @@ interface PopupConnection {
   validatedOrigin: string;
 }
 
-export const usePopupConnection = () => {
+export interface UsePopupConnectionParameters {
+  enabled?: boolean;
+}
+
+export const usePopupConnection = ({
+  enabled = true,
+}: UsePopupConnectionParameters = {}) => {
   const [connection, setConnection] = useState<undefined | PopupConnection>(
     undefined,
   );
   const [popupWindow, setPopupWindow] = useState<null | Window>(null);
   const [handlers, setHandlers] = useState(
     new Map<Events, Set<(payload: unknown) => void>>(),
+  );
+
+  const runHandlersForEvent = useCallback(
+    (event: Events, payload: unknown) => {
+      const eventCallbacks = handlers.get(event);
+      if (!eventCallbacks) {
+        return;
+      }
+      for (const callback of eventCallbacks) {
+        callback(payload);
+      }
+    },
+    [handlers],
   );
 
   const send = useCallback(
@@ -120,24 +139,29 @@ export const usePopupConnection = () => {
         });
       }
 
-      const eventCallbacks = handlers.get(e.data.event);
-      if (!eventCallbacks) {
+      if (!connection) {
         return;
       }
-      for (const callback of eventCallbacks) {
-        callback(e.data.payload);
+
+      runHandlersForEvent(e.data.event, e.data.payload);
+
+      // Remove the connection once the popup is closed.
+      // This clean up needs to run after `runHandlersForEvent` in case any
+      // dependents are listening for the POPUP_CLOSED event.
+      if (e.data.event === Events.POPUP_CLOSED && connection) {
+        setConnection(undefined);
       }
     },
     [handlers, connection, setConnection, popupWindow, on, off],
   );
 
   useEffect(() => {
-    window.addEventListener('message', handleMessage);
-
-    return () => {
+    if (enabled) {
+      window.addEventListener('message', handleMessage);
+    } else {
       window.removeEventListener('message', handleMessage);
-    };
-  }, [handleMessage]);
+    }
+  }, [enabled, handleMessage]);
 
   return {
     close,
