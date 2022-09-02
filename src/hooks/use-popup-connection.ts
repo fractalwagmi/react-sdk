@@ -31,7 +31,6 @@ export const usePopupConnection = ({
   widthPx = POPUP_WIDTH_PX,
   heightPx = POPUP_HEIGHT_PX,
 }: UsePopupConnectionParameters = {}) => {
-  console.log('widthPx = ', widthPx);
   const [connection, setConnection] = useState<undefined | PopupConnection>(
     undefined,
   );

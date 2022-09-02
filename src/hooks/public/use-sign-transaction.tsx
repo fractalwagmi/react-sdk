@@ -10,11 +10,15 @@ import {
   FractalSDKInvalidTransactionError,
 } from 'core/error/transaction';
 import { Events } from 'core/messaging';
+import { POPUP_HEIGHT_PX } from 'core/popup';
 import { maybeGetAccessToken } from 'core/token';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { assertObject } from 'lib/util/guards';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
+
+const MIN_POPUP_HEIGHT_PX = POPUP_HEIGHT_PX;
+const MAX_POPUP_WIDTH_PX = 850;
 
 type SignTransactionErrors =
   | FractalSDKAuthenticationError
@@ -47,8 +51,11 @@ export const useSignTransaction = ({
   >(undefined);
   const { close, connection, open } = usePopupConnection({
     enabled: shouldInitiateRequest,
-    heightPx: Math.floor(window.innerHeight * 0.8),
-    widthPx: Math.floor(window.innerWidth * 0.8),
+    heightPx: Math.max(
+      MIN_POPUP_HEIGHT_PX,
+      Math.floor(window.innerHeight * 0.8),
+    ),
+    widthPx: Math.min(MAX_POPUP_WIDTH_PX, Math.floor(window.innerWidth * 0.8)),
   });
   const { clientId } = useContext(FractalSDKContext);
 
