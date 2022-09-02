@@ -24,26 +24,22 @@ type SignTransactionErrors =
   | FractalSDKSignTransactionUnknownError;
 
 interface UseSignTransactionParameters {
-  /** Whether to send the transaction signing request or not. Defaults to `true`. */
-  enabled?: boolean;
   /** The unsigned transaction as a base-58 string. */
   unsignedTransactionB58: string | undefined;
 }
 
 interface UseSignTransactionHookReturn {
+  /** The transaction signature. */
   data: string | undefined;
   error: SignTransactionErrors | undefined;
-  signed: boolean;
 }
 
 export const useSignTransaction = ({
-  enabled = true,
   unsignedTransactionB58,
 }: UseSignTransactionParameters): UseSignTransactionHookReturn => {
   const shouldInitiateRequest =
     unsignedTransactionB58 !== undefined &&
-    unsignedTransactionB58.trim() !== '' &&
-    enabled;
+    unsignedTransactionB58.trim() !== '';
 
   const [signature, setSignature] = useState<string | undefined>(undefined);
   const [signTransactionError, setSignTransactionError] = useState<
@@ -127,7 +123,7 @@ export const useSignTransaction = ({
       return;
     }
 
-    if (enabled) {
+    if (shouldInitiateRequest) {
       connection.on(Events.SIGNED_TRANSACTION, handleSignedTransaction);
       connection.on(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
       connection.on(Events.POPUP_CLOSED, handleSignedTransactionDenied);
@@ -145,7 +141,7 @@ export const useSignTransaction = ({
       );
     }
   }, [
-    enabled,
+    shouldInitiateRequest,
     connection,
     handleSignedTransaction,
     handleSignedTransactionFailed,
@@ -158,7 +154,6 @@ export const useSignTransaction = ({
   return {
     data: signature,
     error: authorizeRequestError ?? signTransactionError,
-    signed: Boolean(signature),
   };
 };
 
