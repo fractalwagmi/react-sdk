@@ -29,6 +29,19 @@ export const usePopupConnection = () => {
     new Map<Events, Set<(payload: unknown) => void>>(),
   );
 
+  const runHandlersForEvent = useCallback(
+    (event: Events, payload: unknown) => {
+      const eventCallbacks = handlers.get(event);
+      if (!eventCallbacks) {
+        return;
+      }
+      for (const callback of eventCallbacks) {
+        callback(payload);
+      }
+    },
+    [handlers],
+  );
+
   const send = useCallback(
     ({ event, payload }: SendParams) => {
       if (!connection || !popupWindow) {
@@ -120,12 +133,14 @@ export const usePopupConnection = () => {
         });
       }
 
-      const eventCallbacks = handlers.get(e.data.event);
-      if (!eventCallbacks) {
-        return;
-      }
-      for (const callback of eventCallbacks) {
-        callback(e.data.payload);
+      runHandlersForEvent(e.data.event, e.data.payload);
+
+      // Remove the connection once the popup is closed.
+      // This clean up needs to run after `runHandlersForEvent` in case any
+      // dependents are listening for the POPUP_CLOSED event.
+      if (e.data.event === Events.POPUP_CLOSED && connection) {
+        console.log('POPUP_CLOSED');
+        setConnection(undefined);
       }
     },
     [handlers, connection, setConnection, popupWindow, on, off],

@@ -68,7 +68,6 @@ export const useSignTransaction = () => {
 
   const signTransaction = useCallback(
     async (unsignedTransactionB58: string) => {
-      // TODO(ricebin/obber): pass in orgin
       const accessToken = maybeGetAccessToken();
       if (!accessToken) {
         // TODO handle this, shouldn't happen.
@@ -111,15 +110,17 @@ export const useSignTransaction = () => {
     }
 
     connection.on(Events.SIGNED_TRANSACTION, handleSignedTransaction);
+    connection.on(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
+    connection.on(Events.POPUP_CLOSED, handleSignedTransactionDenied);
     connection.on(
       Events.FAILED_TO_SIGN_TRANSACTION,
       handleSignedTransactionFailed,
     );
-    connection.on(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
 
     return () => {
       connection.off(Events.SIGNED_TRANSACTION, handleSignedTransaction);
       connection.off(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
+      connection.off(Events.POPUP_CLOSED, handleSignedTransactionDenied);
       connection.off(
         Events.FAILED_TO_SIGN_TRANSACTION,
         handleSignedTransactionFailed,

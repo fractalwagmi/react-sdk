@@ -8,6 +8,7 @@ export enum Events {
   SIGNED_TRANSACTION = 'SIGNED_TRANSACTION',
   FAILED_TO_SIGN_TRANSACTION = 'FAILED_TO_SIGN_TRANSACTION',
   TRANSACTION_DENIED = 'TRANSACTION_DENIED',
+  POPUP_CLOSED = 'POPUP_CLOSED',
 }
 
 export function validateOrigin(origin: string): boolean {
