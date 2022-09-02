@@ -167,6 +167,40 @@ export function YourWalletComponent() {
 }
 ```
 
+#### Approving a Generic Transaction
+
+If you need the user to approve a generic transaction, you can create an
+unsigned transaction and initialize an approval popup flow for the user to
+approve the transaction:
+
+```tsx
+import { useSignTransaction } from '@fractalwagmi/fractal-sdk';
+
+interface YourComponentProps {
+  someTransactionB58: string | undefined;
+}
+
+export function YourComponent({ someTransactionB58 }: YourComponentProps) {
+  const { data: signature, error } = useSignTransaction({
+    unsignedTransactionB58: someTransactionB58,
+  });
+
+  return (
+    <div>
+      <p>Transaction Signature: {signature}</p>
+      <p>An error occurred: {error.getUserFacingErrorMessage()}</p>
+    </div>
+  );
+}
+```
+
+Keep in mind that a signed transaction does not mean that it has been posted to
+the chain yet. As of now, this hook only returns a signed transaction signature.
+
+If you need to know when a transaction completes, use
+[Solana's JSON RPC API](https://docs.solana.com/developing/clients/jsonrpc-api#gettransaction)
+to accomplish this.
+
 #### Allowed Origins
 
 You will need to provide us with a list of allowed origins (e.g. http://localhost,

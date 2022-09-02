@@ -1,10 +1,21 @@
 import { FractalSDKError } from 'core/error';
 
+export class FractalSDKInvalidTransactionError extends FractalSDKError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKInvalidTransactionError';
+    Object.setPrototypeOf(this, FractalSDKInvalidTransactionError.prototype);
+  }
+
+  getUserFacingErrorMessage() {
+    return 'The provided transaction was invalid';
+  }
+}
+
 export class FractalSDKSignTransactionDeniedError extends FractalSDKError {
   constructor(message: string) {
     super(message);
     this.name = 'FractalSDKSignTransactionDeniedError';
-
     Object.setPrototypeOf(this, FractalSDKSignTransactionDeniedError.prototype);
   }
 
@@ -17,7 +28,6 @@ export class FractalSDKSignTransactionUnknownError extends FractalSDKError {
   constructor(message: string) {
     super(message);
     this.name = 'FractalSDKSignTransactionUnknownError';
-
     Object.setPrototypeOf(
       this,
       FractalSDKSignTransactionUnknownError.prototype,

@@ -1,6 +1,6 @@
 import { Events, validateOrigin } from 'core/messaging';
 import { openPopup, POPUP_HEIGHT_PX, POPUP_WIDTH_PX } from 'core/popup';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // TODO: Add support for detecting when a popup is closed (without approval,)
 // so we can surface the rejection.
@@ -30,7 +30,7 @@ export const usePopupConnection = ({
   const [connection, setConnection] = useState<undefined | PopupConnection>(
     undefined,
   );
-  const [popupWindow, setPopupWindow] = useState<null | Window>(null);
+  const popupWindowRef = useRef<null | Window>(null);
   const [handlers, setHandlers] = useState(
     new Map<Events, Set<(payload: unknown) => void>>(),
   );
@@ -50,11 +50,11 @@ export const usePopupConnection = ({
 
   const send = useCallback(
     ({ event, payload }: SendParams) => {
-      if (!connection || !popupWindow) {
+      if (!connection || !popupWindowRef.current) {
         return;
       }
 
-      popupWindow.postMessage(
+      popupWindowRef.current.postMessage(
         {
           event,
           payload,
@@ -62,7 +62,7 @@ export const usePopupConnection = ({
         connection.validatedOrigin,
       );
     },
-    [connection, popupWindow],
+    [connection, popupWindowRef],
   );
 
   const on: PopupConnection['on'] = useCallback(
@@ -87,6 +87,9 @@ export const usePopupConnection = ({
 
   const open = useCallback(
     (url: string) => {
+      if (popupWindowRef.current) {
+        return;
+      }
       const left = window.screenX + (window.innerWidth - POPUP_WIDTH_PX) / 2;
       const top = window.screenY + (window.innerHeight - POPUP_HEIGHT_PX) / 2;
       const popup = openPopup({
@@ -97,19 +100,20 @@ export const usePopupConnection = ({
       if (!popup) {
         return;
       }
-      setPopupWindow(popup);
+      popupWindowRef.current = popup;
     },
-    [setPopupWindow],
+    [popupWindowRef],
   );
 
   const close = useCallback(() => {
-    if (!popupWindow) {
+    if (!popupWindowRef.current) {
       return;
     }
-    popupWindow.close();
+    popupWindowRef.current.close();
     setHandlers(new Map());
     setConnection(undefined);
-  }, [popupWindow, setHandlers]);
+    popupWindowRef.current = null;
+  }, [popupWindowRef]);
 
   const handleMessage = useCallback(
     (e: MessageEvent) => {
@@ -118,13 +122,13 @@ export const usePopupConnection = ({
         return;
       }
 
-      if (!popupWindow) {
+      if (!popupWindowRef.current) {
         // TODO: Fix multiple event listeners from registering.
         return;
       }
 
       if (e.data.event === Events.HANDSHAKE && !connection) {
-        popupWindow.postMessage(
+        popupWindowRef.current.postMessage(
           {
             event: Events.HANDSHAKE_ACK,
           },
@@ -150,9 +154,10 @@ export const usePopupConnection = ({
       // dependents are listening for the POPUP_CLOSED event.
       if (e.data.event === Events.POPUP_CLOSED && connection) {
         setConnection(undefined);
+        popupWindowRef.current = null;
       }
     },
-    [handlers, connection, setConnection, popupWindow, on, off],
+    [handlers, connection, setConnection, popupWindowRef, on, off],
   );
 
   useEffect(() => {
