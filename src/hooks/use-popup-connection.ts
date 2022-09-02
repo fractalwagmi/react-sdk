@@ -22,11 +22,16 @@ interface PopupConnection {
 
 export interface UsePopupConnectionParameters {
   enabled?: boolean;
+  heightPx?: number;
+  widthPx?: number;
 }
 
 export const usePopupConnection = ({
   enabled = true,
+  widthPx = POPUP_WIDTH_PX,
+  heightPx = POPUP_HEIGHT_PX,
 }: UsePopupConnectionParameters = {}) => {
+  console.log('widthPx = ', widthPx);
   const [connection, setConnection] = useState<undefined | PopupConnection>(
     undefined,
   );
@@ -90,12 +95,14 @@ export const usePopupConnection = ({
       if (popupWindowRef.current) {
         return;
       }
-      const left = window.screenX + (window.innerWidth - POPUP_WIDTH_PX) / 2;
-      const top = window.screenY + (window.innerHeight - POPUP_HEIGHT_PX) / 2;
+      const left = window.screenX + (window.innerWidth - widthPx) / 2;
+      const top = window.screenY + (window.innerHeight - heightPx) / 2;
       const popup = openPopup({
+        height: heightPx,
         left,
         top,
         url,
+        width: widthPx,
       });
       if (!popup) {
         return;
