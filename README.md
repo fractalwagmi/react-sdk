@@ -1,5 +1,12 @@
 # fractal-sdk
 
+## Before Integrating
+
+You will need to provide us with a list of allowed origins (e.g. http://localhost,
+https://your.game.com). Please reach out to us at developers@fractal.is and let
+us know the origins you would like to allow when you are ready to start
+integrating.
+
 ## Installation
 
 ```sh
@@ -200,10 +207,3 @@ the chain yet. As of now, this hook only returns a signed transaction signature.
 If you need to know when a transaction completes, use
 [Solana's JSON RPC API](https://docs.solana.com/developing/clients/jsonrpc-api#gettransaction)
 to accomplish this.
-
-#### Allowed Origins
-
-You will need to provide us with a list of allowed origins (e.g. http://localhost,
-https://your.game.com). Please reach out to us at developers@fractal.is and let
-us know the origins you would like to allow when you are ready to start
-integrating.
