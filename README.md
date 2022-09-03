@@ -129,6 +129,43 @@ the `variant` and `buttonProps`.
 example above with the alternating button text,) because the `onClick` prop will
 invoke different logic based on the `signedIn` boolean.
 
+## General Error Handling
+
+All error classes are exported from the SDK directly and extend the
+`FractalSDKError` class. The `FractalSDKError` class extends the native JS
+`Error` class.
+
+All exported error classes have a `getUserFacingErrorMessage` method that
+returns a fallback a UI-friendly message, although we encourage you to handle
+each error case individually and render UI text that is appropriate for your
+application.
+
+You may handle different error cases using an `instanceof` checks to infer the
+meaning of the error state:
+
+```tsx
+import {
+  useSignTransaction,
+  FractalSDKSignTransactionDeniedError,
+  FractalSDKApprovalOccurringError,
+} from '@fractalwagmi/fractal-sdk';
+
+const MyComponent = () => {
+  const { data: signature, error } = useSignTransaction({
+    unsignedTransactionB58: 'some-string',
+  });
+
+  if (error instanceof FractalSDKApprovalOccurringError) {
+    return <div>Approving...</div>;
+  }
+  if (error instanceof FractalSDKSignTransactionDeniedError) {
+    return <div>The transaction was denied.</div>;
+  }
+
+  return <div>...</div>;
+};
+```
+
 ## Data Hooks
 
 There are a wide variety of hooks that wrap our API functions to give you access
@@ -183,21 +220,42 @@ unsigned transaction and initialize an approval popup flow for the user to
 approve the transaction:
 
 ```tsx
-import { useSignTransaction } from '@fractalwagmi/fractal-sdk';
+import {
+  useSignTransaction,
+  FractalSDKSignTransactionDeniedError,
+} from '@fractalwagmi/fractal-sdk';
 
 interface YourComponentProps {
   someTransactionB58: string | undefined;
 }
 
 export function YourComponent({ someTransactionB58 }: YourComponentProps) {
-  const { data: signature, error } = useSignTransaction({
+  const {
+    data: signature,
+    error,
+    approving,
+    refetch,
+  } = useSignTransaction({
+    // One thing to keep in mind is that the `unsignedTransactionB58` input
+    // parameter is what controls the popup URL. Given the same
+    // `unsignedTransactionB58` input, the popup will only be opened once.
+    //
+    // If you need to re-request approval (because the user denied the
+    // transaction,) you can call the `refetch` function that is returned from
+    // the hook.
     unsignedTransactionB58: someTransactionB58,
   });
+
+  const denied = e instanceof FractalSDKSignTransactionDeniedError;
 
   return (
     <div>
       <p>Transaction Signature: {signature}</p>
       <p>An error occurred: {error.getUserFacingErrorMessage()}</p>
+      <p>Approval popup is currently {approving ? 'open' : 'closed'}</p>
+      {denied ? (
+        <button onClick={refetch}>Re-request an approval</button>
+      ) : null}
     </div>
   );
 }
@@ -209,3 +267,16 @@ the chain yet. As of now, this hook only returns a signed transaction signature.
 If you need to know when a transaction completes, use the returned transaction signature and
 [Solana's JSON RPC API](https://docs.solana.com/developing/clients/jsonrpc-api#gettransaction)
 to accomplish this.
+
+#### Error Handling
+
+The `useSignTransaction` hook has multiple error states that can be returned in
+the `error` property:
+
+| Error class                             | Meaning                                                                                             |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `FractalSDKAuthenticationError`         | An authentication error occurred. This typically means that the user is not properly authenticated. |
+| `FractalSDKApprovalOccurringError`      | An approval flow popup is already open for this hook instance.                                      |
+| `FractalSDKInvalidTransactionError`     | The transaction input was invalid.                                                                  |
+| `FractalSDKSignTransactionDeniedError`  | The transaction was denied.                                                                         |
+| `FractalSDKSignTransactionUnknownError` | An unknown error occurred (catch-all).                                                              |

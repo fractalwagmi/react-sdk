@@ -3,6 +3,7 @@ import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
 import { Endpoint } from 'core/api/endpoints';
 import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
+import { FractalSDKApprovalOccurringError } from 'core/error/approve';
 import { FractalSDKAuthenticationError } from 'core/error/auth';
 import {
   FractalSDKSignTransactionDeniedError,
@@ -23,7 +24,7 @@ const MAX_POPUP_WIDTH_PX = 850;
 
 type SignTransactionErrors =
   | FractalSDKAuthenticationError
-  | FractalSDKInvalidTransactionError
+  | FractalSDKApprovalOccurringError
   | FractalSDKInvalidTransactionError
   | FractalSDKSignTransactionDeniedError
   | FractalSDKSignTransactionUnknownError;
@@ -34,6 +35,7 @@ interface UseSignTransactionParameters {
 }
 
 interface UseSignTransactionHookReturn {
+  approving: boolean;
   /** The transaction signature. */
   data: string | undefined;
   error: SignTransactionErrors | undefined;
@@ -92,6 +94,11 @@ export const useSignTransaction = ({
     FractalWebsdkApprovalAuthorizeTransactionResponse,
     SignTransactionErrors
   >(authorizeCacheKey, async () => {
+    if (connection) {
+      throw new FractalSDKApprovalOccurringError(
+        `An approval flow for a previous transaction is already occurring`,
+      );
+    }
     const accessToken = maybeGetAccessToken();
     if (!accessToken) {
       throw new FractalSDKAuthenticationError(
@@ -189,6 +196,7 @@ export const useSignTransaction = ({
   }, []);
 
   return {
+    approving: Boolean(connection),
     data: signature,
     error: authorizeRequestError ?? signTransactionError,
     refetch,
