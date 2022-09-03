@@ -270,13 +270,13 @@ to accomplish this.
 
 #### Error Handling
 
-The `useSignTransaction` hook has multiple error states that is provided in the
-`error` property that is returned from the hook:
+The `useSignTransaction` hook has multiple error states that can be returned in
+the `error` property:
 
-| Error class                           | meaning                                                                                             |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| FractalSDKAuthenticationError         | An authentication error occurred. This typically means that the user is not properly authenticated. |
-| FractalSDKApprovalOccurringError      | An approval flow popup is already open for this hook instance.                                      |
-| FractalSDKInvalidTransactionError     | The transaction input was invalid.                                                                  |
-| FractalSDKSignTransactionDeniedError  | The transaction was denied.                                                                         |
-| FractalSDKSignTransactionUnknownError | An unknown error occurred (catch-all).                                                              |
+| Error class                             | Meaning                                                                                             |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `FractalSDKAuthenticationError`         | An authentication error occurred. This typically means that the user is not properly authenticated. |
+| `FractalSDKApprovalOccurringError`      | An approval flow popup is already open for this hook instance.                                      |
+| `FractalSDKInvalidTransactionError`     | The transaction input was invalid.                                                                  |
+| `FractalSDKSignTransactionDeniedError`  | The transaction was denied.                                                                         |
+| `FractalSDKSignTransactionUnknownError` | An unknown error occurred (catch-all).                                                              |
