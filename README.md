@@ -17,7 +17,7 @@ npm install @fractalwagmi/fractal-sdk
 
 [SDK Demo Preview](https://sdk-demo.fractalpreview.com/)
 
-## Usage
+## Setup and Authentication
 
 ### 1. Import the global stylesheet
 
@@ -81,8 +81,6 @@ export function YourSignInComponent() {
 
 #### Customizations
 
-##### Variants
-
 By default, there are 2 button variants that we support:
 
 ```tsx
@@ -91,8 +89,6 @@ const YourComponent = () => {
   return <SignInWithFractal variant="dark">;
 }
 ```
-
-##### Custom Class Names
 
 You can make minor adjustments with your own class name to override any styles:
 
@@ -133,7 +129,10 @@ the `variant` and `buttonProps`.
 example above with the alternating button text,) because the `onClick` prop will
 invoke different logic based on the `signedIn` boolean.
 
-### 4. Use the hooks to access data
+## Data Hooks
+
+There are a wide variety of hooks that wrap our API functions to give you access
+to user data.
 
 ```tsx
 import {
@@ -160,12 +159,12 @@ export function YourWalletComponent() {
 }
 ```
 
-### 5. Other misc. Non-data related hooks:
+## Functional Hooks
 
-#### Signing Out
+### Signing Out
 
 If you need to programmatically sign the user out, you can use the `useSignOut`
-hook to do this:
+hook:
 
 ```tsx
 import { useSignOut } from '@fractalwagmi/fractal-sdk';
@@ -177,7 +176,7 @@ export function YourWalletComponent() {
 }
 ```
 
-#### Approving a Generic Transaction
+### Approving a Generic Transaction
 
 If you need the user to approve a generic transaction, you can create an
 unsigned transaction and initialize an approval popup flow for the user to
@@ -207,6 +206,6 @@ export function YourComponent({ someTransactionB58 }: YourComponentProps) {
 Keep in mind that a signed transaction does not mean that it has been posted to
 the chain yet. As of now, this hook only returns a signed transaction signature.
 
-If you need to know when a transaction completes, use
+If you need to know when a transaction completes, use the returned transaction signature and
 [Solana's JSON RPC API](https://docs.solana.com/developing/clients/jsonrpc-api#gettransaction)
 to accomplish this.
