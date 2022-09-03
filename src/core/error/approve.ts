@@ -1,4 +1,4 @@
-import { FractalSDKError } from 'core/error';
+import { FractalSDKError } from 'core/error/base';
 
 export class FractalSDKApprovalDeniedError extends FractalSDKError {
   name: string;

@@ -1,4 +1,4 @@
-import { FractalSDKError } from 'core/error';
+import { FractalSDKError } from 'core/error/base';
 
 export class FractalSDKInvalidTransactionError extends FractalSDKError {
   constructor(message: string) {
