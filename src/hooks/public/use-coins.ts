@@ -6,6 +6,7 @@ import { FractalSDKError } from 'core/error';
 import { maybeGetAccessToken } from 'core/token';
 import { PublicDataHookResponse } from 'hooks/public/types';
 import { useUser } from 'hooks/public/use-user';
+import { createCacheToken } from 'lib/util/cache-token';
 import { useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { Coin } from 'types';
@@ -13,17 +14,17 @@ import { Coin } from 'types';
 export const useCoins = (): PublicDataHookResponse<Coin[]> => {
   const { data: user } = useUser();
   const accessToken = maybeGetAccessToken();
-  const [fetchToken, setFetchToken] = useState(0);
+  const [cacheToken, setCacheToken] = useState(createCacheToken());
 
   const refetch = useCallback(() => {
-    setFetchToken(fetchToken + 1);
-  }, [fetchToken]);
+    setCacheToken(createCacheToken());
+  }, []);
 
-  const requestKey = user
-    ? [Endpoint.GET_COINS, user.userId, fetchToken]
+  const getCoinsRequestCacheKey = user
+    ? [Endpoint.GET_COINS, user.userId, cacheToken]
     : null;
   const { data, error: errorResponse } = useSWR(
-    requestKey,
+    getCoinsRequestCacheKey,
     async () =>
       (
         await sdkApiClient.v1.getCoins({
