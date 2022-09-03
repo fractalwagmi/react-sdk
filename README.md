@@ -126,6 +126,9 @@ const YourButtonComponent = () => {
 };
 ```
 
+`useAuthButtonProps` supports the same props as `SignInWithFractal` except for
+the `variant` and `buttonProps`.
+
 **Be sure to add support for both signed in and signed out states** (like in the
 example above with the alternating button text,) because the `onClick` prop will
 invoke different logic based on the `signedIn` boolean.
