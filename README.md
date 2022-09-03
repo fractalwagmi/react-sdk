@@ -108,7 +108,7 @@ const YourComponent = () => {
 You can go headless and render your own button with the help of the
 `useAuthButtonProps` hook.
 
-This option offers full control over your mark and styles:
+This option offers full control over your mark up and styles:
 
 ```tsx
 import { useAuthButtonProps, Scope } from '@fractalwagmi/fractal-sdk';
