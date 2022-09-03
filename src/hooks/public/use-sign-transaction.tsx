@@ -26,7 +26,6 @@ type SignTransactionErrors =
   | FractalSDKAuthenticationError
   | FractalSDKApprovalOccurringError
   | FractalSDKInvalidTransactionError
-  | FractalSDKInvalidTransactionError
   | FractalSDKSignTransactionDeniedError
   | FractalSDKSignTransactionUnknownError;
 
