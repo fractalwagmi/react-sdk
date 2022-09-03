@@ -36,6 +36,7 @@ interface UseSignTransactionParameters {
 }
 
 interface UseSignTransactionHookReturn {
+  approving: boolean;
   /** The transaction signature. */
   data: string | undefined;
   error: SignTransactionErrors | undefined;
@@ -196,6 +197,7 @@ export const useSignTransaction = ({
   }, []);
 
   return {
+    approving: Boolean(connection),
     data: signature,
     error: authorizeRequestError ?? signTransactionError,
     refetch,
