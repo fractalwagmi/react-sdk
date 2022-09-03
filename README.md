@@ -183,21 +183,42 @@ unsigned transaction and initialize an approval popup flow for the user to
 approve the transaction:
 
 ```tsx
-import { useSignTransaction } from '@fractalwagmi/fractal-sdk';
+import {
+  useSignTransaction,
+  FractalSDKSignTransactionDeniedError,
+} from '@fractalwagmi/fractal-sdk';
 
 interface YourComponentProps {
   someTransactionB58: string | undefined;
 }
 
 export function YourComponent({ someTransactionB58 }: YourComponentProps) {
-  const { data: signature, error } = useSignTransaction({
+  const {
+    data: signature,
+    error,
+    approving,
+    refetch,
+  } = useSignTransaction({
+    // One thing to keep in mind is that the `unsignedTransactionB58` input
+    // parameter is what controls the popup URL. Given the same
+    // `unsignedTransactionB58` input, the popup will only be opened once.
+    //
+    // If you need to re-request approval (because the user denied the
+    // transaction,) you can call the `refetch` function that is returned from
+    // the hook.
     unsignedTransactionB58: someTransactionB58,
   });
+
+  const denied = e instanceof FractalSDKSignTransactionDeniedError;
 
   return (
     <div>
       <p>Transaction Signature: {signature}</p>
       <p>An error occurred: {error.getUserFacingErrorMessage()}</p>
+      <p>Approval popup is currently {approving ? 'open' : 'closed'}</p>
+      {denied ? (
+        <button onClick={refetch}>Re-request an approval</button>
+      ) : null}
     </div>
   );
 }
