@@ -13,9 +13,10 @@ import { Events } from 'core/messaging';
 import { POPUP_HEIGHT_PX } from 'core/popup';
 import { maybeGetAccessToken } from 'core/token';
 import { usePopupConnection } from 'hooks/use-popup-connection';
+import { createCacheToken } from 'lib/util/cache-token';
 import { assertObject } from 'lib/util/guards';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 const MIN_POPUP_HEIGHT_PX = POPUP_HEIGHT_PX;
 const MAX_POPUP_WIDTH_PX = 850;
@@ -36,21 +37,33 @@ interface UseSignTransactionHookReturn {
   /** The transaction signature. */
   data: string | undefined;
   error: SignTransactionErrors | undefined;
+  /**
+   * A function to call to re-initiate the approval request for a given unsigned
+   * transaction.
+   *
+   * This is useful if a user denies a particular transaction, but you want to
+   * manually re-initiate the approval request again for the same unsigned transaction.
+   *
+   * An approval will not be sent multiple times for the same
+   * `unsignedTransactionB58` input by default (unless the page refreshes.)
+   */
+  refetch: () => void;
 }
 
 export const useSignTransaction = ({
   unsignedTransactionB58,
 }: UseSignTransactionParameters): UseSignTransactionHookReturn => {
-  const shouldInitiateRequest =
+  const maybeInitiateRequest =
     unsignedTransactionB58 !== undefined &&
     unsignedTransactionB58.trim() !== '';
 
+  const [cacheToken, setCacheToken] = useState(createCacheToken());
   const [signature, setSignature] = useState<string | undefined>(undefined);
   const [signTransactionError, setSignTransactionError] = useState<
     SignTransactionErrors | undefined
   >(undefined);
   const { close, connection, open } = usePopupConnection({
-    enabled: shouldInitiateRequest,
+    enabled: maybeInitiateRequest,
     heightPx: Math.max(
       MIN_POPUP_HEIGHT_PX,
       Math.floor(window.innerHeight * 0.8),
@@ -63,10 +76,19 @@ export const useSignTransaction = ({
     setSignTransactionError(undefined);
   }, [unsignedTransactionB58]);
 
-  const authorizeCacheKey = shouldInitiateRequest
-    ? [Endpoint.AUTHORIZE_TRANSACTION, unsignedTransactionB58, clientId]
+  const authorizeCacheKey = maybeInitiateRequest
+    ? [
+        Endpoint.AUTHORIZE_TRANSACTION,
+        unsignedTransactionB58,
+        clientId,
+        cacheToken,
+      ]
     : null;
-  const { data, error: authorizeRequestError } = useSWR<
+  // Using` useSWRImmutable` sets the revalidation booleans to `false`. This
+  // ensures we don't fetch a URL for a given unsignedTransaction that has
+  // already been requested. We invert control back to the caller to manually
+  // re-attempt if needed by using the `rerequest` function.
+  const { data, error: authorizeRequestError } = useSWRImmutable<
     FractalWebsdkApprovalAuthorizeTransactionResponse,
     SignTransactionErrors
   >(authorizeCacheKey, async () => {
@@ -132,7 +154,7 @@ export const useSignTransaction = ({
       return;
     }
 
-    if (shouldInitiateRequest) {
+    if (maybeInitiateRequest) {
       connection.on(Events.SIGNED_TRANSACTION, handleSignedTransaction);
       connection.on(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
       connection.on(Events.POPUP_CLOSED, handleSignedTransactionDenied);
@@ -150,19 +172,26 @@ export const useSignTransaction = ({
       );
     }
   }, [
-    shouldInitiateRequest,
+    maybeInitiateRequest,
     connection,
     handleSignedTransaction,
     handleSignedTransactionFailed,
   ]);
 
-  if (!connection && data?.url) {
-    open(data.url);
-  }
+  useEffect(() => {
+    if (data?.url) {
+      open(data.url);
+    }
+  }, [data?.url]);
+
+  const refetch = useCallback(() => {
+    setCacheToken(createCacheToken());
+  }, []);
 
   return {
     data: signature,
     error: authorizeRequestError ?? signTransactionError,
+    refetch,
   };
 };
 
