@@ -131,17 +131,16 @@ invoke different logic based on the `signedIn` boolean.
 
 ## General Error Handling
 
-All error classes are exported from the SDK directly and extend the
-`FractalSDKError` class. The `FractalSDKError` class extends the native JS
+All exported error classes extends `FractalSDKError` which extends the native JS
 `Error` class.
 
 All exported error classes have a `getUserFacingErrorMessage` method that
-returns a fallback a UI-friendly message, although we encourage you to handle
-each error case individually and render UI text that is appropriate for your
+returns a UI-friendly fallback message, but we encourage you to handle each
+error case individually and render UI text that is appropriate for your
 application.
 
-You may handle different error cases using an `instanceof` checks to infer the
-meaning of the error state:
+You may handle different error cases using `instanceof` checks to infer the
+meaning of the error state. Example:
 
 ```tsx
 import {
@@ -231,17 +230,27 @@ interface YourComponentProps {
 
 export function YourComponent({ someTransactionB58 }: YourComponentProps) {
   const {
+    // `data` is the transaction signature. This is populated when the user
+    // approves the transaction.
     data: signature,
-    error,
+
+    // Indicates whether the popup is currently open and the user is approving
+    // the transaction.
     approving,
+
+    // A function to call to initiate another approve transaction popup. This
+    // only needs to be called if you want to re-initiate another popup for
+    // the same `unsignedTransactionB58` input. See memo below.
     refetch,
+
+    // See "error handling" section below.
+    error,
   } = useSignTransaction({
-    // One thing to keep in mind is that the `unsignedTransactionB58` input
-    // parameter is what controls the popup URL. Given the same
-    // `unsignedTransactionB58` input, the popup will only be opened once.
+    // Given the same `unsignedTransactionB58` input, the popup will only be
+    // opened once.
     //
-    // If you need to re-request approval (because the user denied the
-    // transaction,) you can call the `refetch` function that is returned from
+    // If a user denies approval for a transaction and you need to re-request
+    // their approval, you can call the `refetch` function that is returned by
     // the hook.
     unsignedTransactionB58: someTransactionB58,
   });
@@ -268,15 +277,15 @@ If you need to know when a transaction completes, use the returned transaction s
 [Solana's JSON RPC API](https://docs.solana.com/developing/clients/jsonrpc-api#gettransaction)
 to accomplish this.
 
-#### Error Handling
+#### Error handling for `useSignTransaction`
 
-The `useSignTransaction` hook has multiple error states that can be returned in
-the `error` property:
+The hook returns an `error` property that is `undefined` until an error occurs.
+The possible errors are:
 
-| Error class                             | Meaning                                                                                             |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `FractalSDKAuthenticationError`         | An authentication error occurred. This typically means that the user is not properly authenticated. |
-| `FractalSDKApprovalOccurringError`      | An approval flow popup is already open for this hook instance.                                      |
-| `FractalSDKInvalidTransactionError`     | The transaction input was invalid.                                                                  |
-| `FractalSDKSignTransactionDeniedError`  | The transaction was denied.                                                                         |
-| `FractalSDKSignTransactionUnknownError` | An unknown error occurred (catch-all).                                                              |
+| Error class                             | Meaning                                                                                                                                                   |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FractalSDKAuthenticationError`         | An authentication error occurred. This typically means that the user is not properly authenticated.                                                       |
+| `FractalSDKApprovalOccurringError`      | An approval flow popup is already open for this hook instance. This error can occur if the `unsignedTransactionB58` input changes while `approving=true`. |
+| `FractalSDKInvalidTransactionError`     | The transaction input was invalid.                                                                                                                        |
+| `FractalSDKSignTransactionDeniedError`  | The transaction was denied.                                                                                                                               |
+| `FractalSDKSignTransactionUnknownError` | An unknown error occurred (catch-all).                                                                                                                    |
