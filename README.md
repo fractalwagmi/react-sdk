@@ -219,10 +219,7 @@ unsigned transaction and initialize an approval popup flow for the user to
 approve the transaction:
 
 ```tsx
-import {
-  useSignTransaction,
-  FractalSDKSignTransactionDeniedError,
-} from '@fractalwagmi/fractal-sdk';
+import { useSignTransaction } from '@fractalwagmi/fractal-sdk';
 
 interface YourComponentProps {
   someTransactionB58: string | undefined;
@@ -230,41 +227,27 @@ interface YourComponentProps {
 
 export function YourComponent({ someTransactionB58 }: YourComponentProps) {
   const {
-    // `data` is the transaction signature. This is populated when the user
-    // approves the transaction.
-    data: signature,
-
-    // Indicates whether the popup is currently open and the user is approving
-    // the transaction.
-    approving,
-
-    // A function to call to initiate another approve transaction popup. This
-    // only needs to be called if you want to re-initiate another popup for
-    // the same `unsignedTransactionB58` input. See memo below.
-    refetch,
-
-    // See "error handling" section below.
-    error,
-  } = useSignTransaction({
-    // Given the same `unsignedTransactionB58` input, the popup will only be
-    // opened once.
-    //
-    // If a user denies approval for a transaction and you need to re-request
-    // their approval, you can call the `refetch` function that is returned by
-    // the hook.
-    unsignedTransactionB58: someTransactionB58,
-  });
-
-  const denied = e instanceof FractalSDKSignTransactionDeniedError;
+    // An async function to run which request's user approval to sign a
+    // transaction.
+    signTransaction,
+  } = useSignTransaction();
 
   return (
     <div>
-      <p>Transaction Signature: {signature}</p>
-      <p>An error occurred: {error.getUserFacingErrorMessage()}</p>
-      <p>Approval popup is currently {approving ? 'open' : 'closed'}</p>
-      {denied ? (
-        <button onClick={refetch}>Re-request an approval</button>
-      ) : null}
+      <button
+        onClick={async () => {
+          try {
+            const { signature } = await signTransaction(someTransactionB58);
+            // This is the transaction signature for the signed transaction.
+            console.log('signature = ', signature);
+          } catch (err: unknown) {
+            // See memo below on error handling.
+            console.log('err = ', err);
+          }
+        }}
+      >
+        Request user approval for transaction
+      </button>
     </div>
   );
 }
@@ -279,8 +262,8 @@ to accomplish this.
 
 #### Error handling for `useSignTransaction`
 
-The hook returns an `error` property that is `undefined` until an error occurs.
-The possible errors are:
+The `signTransaction` function returned by `useSignTransaction` will potentially
+throw the following error classes:
 
 | Error class                             | Meaning                                                                                                                                                   |
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
