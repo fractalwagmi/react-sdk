@@ -150,18 +150,22 @@ import {
 } from '@fractalwagmi/fractal-sdk';
 
 const MyComponent = () => {
-  const { data: signature, error } = useSignTransaction({
-    unsignedTransactionB58: 'some-string',
-  });
+  const { signTransaction } = useSignTransaction();
 
-  if (error instanceof FractalSDKApprovalOccurringError) {
-    return <div>Approving...</div>;
-  }
-  if (error instanceof FractalSDKSignTransactionDeniedError) {
-    return <div>The transaction was denied.</div>;
-  }
+  const doSignTransaction = async () => {
+    try {
+      await signTransaction('some base58 transaction string');
+    } catch (err: unknown) {
+      if (error instanceof FractalSDKApprovalOccurringError) {
+        console.log('an approval is already occurring');
+      }
+      if (error instanceof FractalSDKSignTransactionDeniedError) {
+        console.log('transaction denied');
+      }
+    }
+  };
 
-  return <div>...</div>;
+  return <button onClick={() => doSignTransaction()}>...</button>;
 };
 ```
 
