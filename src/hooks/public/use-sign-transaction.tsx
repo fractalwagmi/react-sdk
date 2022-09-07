@@ -14,7 +14,7 @@ import { Events } from 'core/messaging';
 import { POPUP_HEIGHT_PX } from 'core/popup';
 import { maybeGetAccessToken } from 'core/token';
 import { usePopupConnection } from 'hooks/use-popup-connection';
-import { assertObject } from 'lib/util/guards';
+import { isObject } from 'lib/util/guards';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 
 const MIN_POPUP_HEIGHT_PX = POPUP_HEIGHT_PX;
@@ -167,7 +167,7 @@ interface PayloadWithSignature {
 function assertPayloadHasSignature(
   payload: unknown,
 ): payload is PayloadWithSignature {
-  if (!assertObject(payload)) {
+  if (!isObject(payload)) {
     return false;
   }
   if (!Object.prototype.hasOwnProperty.call(payload, 'signature')) {

@@ -4,7 +4,7 @@ import { FractalSDKApprovalDeniedError } from 'core/error/approve';
 import { Events } from 'core/messaging';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useUserSetter } from 'hooks/use-user-setter';
-import { assertObject } from 'lib/util/guards';
+import { isObject } from 'lib/util/guards';
 import { useCallback, useContext, useEffect } from 'react';
 import { BaseUser, User } from 'types';
 
@@ -94,7 +94,7 @@ interface ProjectApprovedPayload {
 function assertPayloadIsProjectApprovedPayload(
   payload: unknown,
 ): payload is ProjectApprovedPayload {
-  if (!assertObject(payload)) {
+  if (!isObject(payload)) {
     return false;
   }
   if (!Object.prototype.hasOwnProperty.call(payload, 'user')) {
