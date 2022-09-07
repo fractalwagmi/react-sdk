@@ -1,4 +1,4 @@
-import { FractalSdkWalletGetCoinsResponseCoin } from '@fractalwagmi/fractal-sdk-api';
+import { FractalSdkWalletGetCoinsResponseCoin } from '@fractalwagmi/ts-api';
 import { Coin } from 'types';
 
 export const transformCoins = (

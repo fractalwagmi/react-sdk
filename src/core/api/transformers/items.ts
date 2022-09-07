@@ -1,4 +1,4 @@
-import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/fractal-sdk-api';
+import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/ts-api';
 import { Item } from 'types';
 
 export const transformItems = (

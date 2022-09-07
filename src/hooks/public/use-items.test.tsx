@@ -1,4 +1,4 @@
-import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/fractal-sdk-api';
+import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/ts-api';
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
