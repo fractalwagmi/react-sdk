@@ -1,4 +1,4 @@
-# fractal-sdk
+# Fractal React SDK
 
 ## Before Integrating
 
@@ -10,7 +10,7 @@ integrating.
 ## Installation
 
 ```sh
-npm install @fractalwagmi/fractal-sdk
+npm install @fractalwagmi/react-sdk
 ```
 
 ## Example
@@ -25,7 +25,7 @@ If using the provided default button rather than your own UI, import our global
 stylesheet to ensure that the component renders correctly:
 
 ```
-import '@fractalwagmi/fractal-sdk/styles.css';
+import '@fractalwagmi/react-sdk/styles.css';
 ```
 
 ### 2. Set up the provider
@@ -33,7 +33,7 @@ import '@fractalwagmi/fractal-sdk/styles.css';
 Render the provider above any components that need access to data from the SDK.
 
 ```tsx
-import { FractalProvider } from '@fractalwagmi/fractal-sdk';
+import { FractalProvider } from '@fractalwagmi/react-sdk';
 
 const App = () => {
   return <FractalProvider clientId="YOUR_CLIENT_ID">...</FractalProvider>;
@@ -50,7 +50,7 @@ import {
   SignInWithFractal,
   User,
   FractalSDKError,
-} from '@fractalwagmi/fractal-sdk';
+} from '@fractalwagmi/react-sdk';
 
 export function YourSignInComponent() {
   return (
@@ -107,7 +107,7 @@ You can go headless and render your own button with the help of the
 This option offers full control over your mark up and styles:
 
 ```tsx
-import { useAuthButtonProps, Scope } from '@fractalwagmi/fractal-sdk';
+import { useAuthButtonProps, Scope } from '@fractalwagmi/react-sdk';
 
 const YourButtonComponent = () => {
   const { loading, signedIn, onClick } = useAuthButtonProps({
@@ -147,7 +147,7 @@ import {
   useSignTransaction,
   FractalSDKSignTransactionDeniedError,
   FractalSDKApprovalOccurringError,
-} from '@fractalwagmi/fractal-sdk';
+} from '@fractalwagmi/react-sdk';
 
 const MyComponent = () => {
   const { signTransaction } = useSignTransaction();
@@ -180,7 +180,7 @@ import {
   useItems,
   useUser,
   useUserWallet,
-} from '@fractalwagmi/fractal-sdk';
+} from '@fractalwagmi/react-sdk';
 
 export function YourWalletComponent() {
   // Returns user information like email, username, and id.
@@ -207,7 +207,7 @@ If you need to programmatically sign the user out, you can use the `useSignOut`
 hook:
 
 ```tsx
-import { useSignOut } from '@fractalwagmi/fractal-sdk';
+import { useSignOut } from '@fractalwagmi/react-sdk';
 
 export function YourWalletComponent() {
   const { signOut } = useSignOut();
@@ -223,7 +223,7 @@ unsigned transaction and initialize an approval popup flow for the user to
 approve the transaction:
 
 ```tsx
-import { useSignTransaction } from '@fractalwagmi/fractal-sdk';
+import { useSignTransaction } from '@fractalwagmi/react-sdk';
 
 interface YourComponentProps {
   someTransactionB58: string | undefined;

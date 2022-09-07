@@ -1,7 +1,7 @@
 {
-  "name": "@fractalwagmi/fractal-sdk",
+  "name": "@fractalwagmi/react-sdk",
   "version": "1.0.3",
-  "description": "Sign in with Fractal",
+  "description": "React SDK for signing in with Fractal",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -33,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fractalwagmi/fractal-sdk.git"
+    "url": "git+https://github.com/fractalwagmi/react-sdk.git"
   },
   "keywords": [
     "fractal",
@@ -45,9 +45,9 @@
     "gaming"
   ],
   "bugs": {
-    "url": "https://github.com/fractalwagmi/fractal-sdk/issues"
+    "url": "https://github.com/fractalwagmi/react-sdk/issues"
   },
-  "homepage": "https://github.com/fractalwagmi/fractal-sdk#readme",
+  "homepage": "https://github.com/fractalwagmi/react-sdk#readme",
   "peerDependencies": {
     "react": ">=17.0.3 || ^18",
     "react-dom": ">=17.0.3 || ^18"
@@ -55,9 +55,9 @@
   "dependencies": {
     "@emotion/css": "^11.10.0",
     "@fontsource/quattrocento-sans": "^4.5.9",
-    "@fractalwagmi/fractal-auth-api": "^0.0.22",
+    "@fractalwagmi/ts-auth-api": "^0.0.1",
     "@fractalwagmi/fractal-auth-private-web-sdk-api": "^0.0.2",
-    "@fractalwagmi/fractal-sdk-api": "^0.0.5",
+    "@fractalwagmi/ts-api": "^0.0.1",
     "@fractalwagmi/fractal-sdk-websdk-api": "^0.0.1",
     "jest": "^28.1.3",
     "jwt-decode": "^3.1.2",
