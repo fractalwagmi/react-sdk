@@ -12,3 +12,18 @@ export class FractalSDKError extends Error {
     return 'Something went wrong: ' + this.message;
   }
 }
+
+export class FractalSDKNetworkError extends Error {
+  name: string;
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKNetworkError';
+
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, FractalSDKNetworkError.prototype);
+  }
+
+  getUserFacingErrorMessage() {
+    return 'A network error occurred';
+  }
+}
