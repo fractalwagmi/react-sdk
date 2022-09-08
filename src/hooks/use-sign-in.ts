@@ -1,27 +1,30 @@
 import { FractalSDKContext } from 'context/fractal-sdk-context';
-import { FractalSDKError } from 'core/error';
+import {
+  FractalSDKAuthenticationUnknownError,
+  FractalSDKError,
+  FractalSDKNetworkError,
+} from 'core/error';
 import { FractalSDKApprovalDeniedError } from 'core/error/approve';
 import { Events } from 'core/messaging';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useUserSetter } from 'hooks/use-user-setter';
-import { assertObject } from 'lib/util/guards';
+import { isObject } from 'lib/util/guards';
+import { useGetAuthUrlMutation } from 'queries/auth';
 import { useCallback, useContext, useEffect } from 'react';
-import { BaseUser, User } from 'types';
+import { BaseUser, Scope, User } from 'types';
 
 interface UseSignInParameters {
   clientId: string;
-  code: string | undefined;
   onSignIn: (user: User) => void;
   onSignInFailed: (e: FractalSDKError) => void;
-  url: string | undefined;
+  scopes: Scope[] | undefined;
 }
 
 export const useSignIn = ({
   clientId,
-  code,
   onSignIn,
   onSignInFailed,
-  url,
+  scopes,
 }: UseSignInParameters) => {
   const { user } = useContext(FractalSDKContext);
   const { fetchAndSetUser } = useUserSetter();
@@ -32,17 +35,27 @@ export const useSignIn = ({
   } = usePopupConnection({
     enabled: !user,
   });
+  const getAuthUrlMutation = useGetAuthUrlMutation(clientId, scopes);
 
-  const signIn = useCallback(() => {
-    if (!url || !code) {
-      return;
+  const signIn = useCallback(async () => {
+    try {
+      const { url } = await getAuthUrlMutation.mutateAsync();
+      if (!connection) {
+        openPopup(url);
+        return;
+      }
+    } catch (err: unknown) {
+      if (err instanceof FractalSDKError) {
+        onSignInFailed(err);
+      } else {
+        onSignInFailed(
+          new FractalSDKNetworkError(
+            `An unexpected network error occurred. err = ${err}`,
+          ),
+        );
+      }
     }
-
-    if (!connection) {
-      openPopup(url);
-      return;
-    }
-  }, [clientId, code, url, onSignIn, onSignInFailed]);
+  }, [connection]);
 
   useEffect(() => {
     if (!connection) {
@@ -52,8 +65,11 @@ export const useSignIn = ({
     const handleProjectApproved = async (payload: unknown) => {
       try {
         if (!assertPayloadIsProjectApprovedPayload(payload)) {
-          // eslint-disable-next-line no-console
-          console.error('malformed payload. payload = ', payload);
+          onSignInFailed(
+            new FractalSDKAuthenticationUnknownError(
+              `Received malformed payload from popup. payload = ${payload}`,
+            ),
+          );
           return;
         }
         const userId = payload.user.userId;
@@ -63,7 +79,6 @@ export const useSignIn = ({
         closePopup();
         onSignIn(user);
       } catch (e: unknown) {
-        // TODO: Add sentry integration.
         onSignInFailed(new FractalSDKError('Sign in failed.'));
       }
     };
@@ -94,7 +109,7 @@ interface ProjectApprovedPayload {
 function assertPayloadIsProjectApprovedPayload(
   payload: unknown,
 ): payload is ProjectApprovedPayload {
-  if (!assertObject(payload)) {
+  if (!isObject(payload)) {
     return false;
   }
   if (!Object.prototype.hasOwnProperty.call(payload, 'user')) {

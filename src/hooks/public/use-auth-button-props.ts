@@ -2,7 +2,6 @@ import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { FractalSDKError } from 'core/error';
 import { maybeGetAccessToken, maybeGetBaseUser } from 'core/token';
 import { useSignOut } from 'hooks/public/use-sign-out';
-import { useAuthUrl } from 'hooks/use-auth-url';
 import { useSignIn } from 'hooks/use-sign-in';
 import { useUserSetter } from 'hooks/use-user-setter';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -52,17 +51,11 @@ export const useAuthButtonProps = ({
     [onSuccess],
   );
 
-  const { code, url } = useAuthUrl({
-    clientId,
-    onError: doError,
-    scopes,
-  });
   const { signIn } = useSignIn({
     clientId,
-    code,
     onSignIn: doSuccess,
     onSignInFailed: doError,
-    url,
+    scopes,
   });
 
   useEffect(() => {

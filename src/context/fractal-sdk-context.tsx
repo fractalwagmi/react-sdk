@@ -1,6 +1,9 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { clearIdAndTokenInLS } from 'core/token';
 import { createContext, useCallback, useState } from 'react';
 import { User, UserWallet } from 'types';
+
+const queryClient = new QueryClient();
 
 interface FractalSDKContextState {
   clientId: string;
@@ -50,7 +53,7 @@ export function FractalSDKContextProvider({
         userWallet,
       }}
     >
-      {children}
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </FractalSDKContext.Provider>
   );
 }
