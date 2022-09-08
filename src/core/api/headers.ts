@@ -2,7 +2,7 @@ import { CURRENT_SDK_VERSION } from 'config/build-variables';
 import { Endpoint } from 'core/api/endpoints';
 
 enum CustomHeader {
-  X_WEB_SDK_VERSION = 'x-web-sdk-version',
+  FRACTAL_WEB_SDK_VERSION = 'fractal-web-sdk-version',
 }
 
 export const ENDPOINTS_THAT_REQUIRE_AUTHENTICATION = new Set<Endpoint>([
@@ -38,6 +38,6 @@ export function maybeIncludeAuthorizationHeaders(
 export function getDefaultHeaders(headers: HeadersInit = {}): HeadersInit {
   return {
     ...headers,
-    [CustomHeader.X_WEB_SDK_VERSION]: CURRENT_SDK_VERSION,
+    [CustomHeader.FRACTAL_WEB_SDK_VERSION]: CURRENT_SDK_VERSION,
   };
 }
