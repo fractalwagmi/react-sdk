@@ -44,7 +44,7 @@ describe('useCoins', () => {
     mockMaybeGetAccessToken.mockReturnValue(TEST_ACCESS_TOKEN);
 
     mockGetCoins = jest.spyOn(sdkApiClient.v1, 'getCoins');
-    mockGetCoins.mockResolvedValue([]);
+    mockGetCoins.mockResolvedValue({ data: [] });
 
     mockUseUser = jest.spyOn(useUserModule, 'useUser');
     mockUseUser.mockReturnValue({
@@ -67,25 +67,28 @@ describe('useCoins', () => {
 
   it('returns the expected coins', async () => {
     mockGetCoins.mockResolvedValue({ data: { coins: [ITEM_1, ITEM_2] } });
-    const { result } = renderHook(() => useCoins(), { wrapper });
+    const { result, waitForValueToChange } = renderHook(() => useCoins(), {
+      wrapper,
+    });
     expect(result.current.data).toEqual([]);
 
-    await act(async () => void {});
+    await waitForValueToChange(() => result.current.data);
 
     expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
   it('returns a refetcher to trigger a new fetch', async () => {
     mockGetCoins.mockResolvedValue({ data: { coins: [ITEM_1] } });
-    const { result } = renderHook(() => useCoins(), { wrapper });
-    await act(async () => void {});
+    const { result, waitForValueToChange } = renderHook(() => useCoins(), {
+      wrapper,
+    });
+    await waitForValueToChange(() => result.current.data);
     expect(result.current.data).toEqual([ITEM_1]);
     mockGetCoins.mockResolvedValue({ data: { coins: [ITEM_1, ITEM_2] } });
 
-    await act(async () => {
-      result.current.refetch();
-    });
+    result.current.refetch();
 
+    await waitForValueToChange(() => result.current.data);
     expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
@@ -102,17 +105,5 @@ describe('useCoins', () => {
     await act(async () => result.current.refetch());
 
     expect(mockGetCoins).toHaveBeenCalledTimes(2);
-  });
-
-  it('attaches the correct access token to the request headers', async () => {
-    renderHook(() => useCoins(), { wrapper });
-    await act(async () => void {});
-    expect(mockGetCoins).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        headers: {
-          authorization: `Bearer ${TEST_ACCESS_TOKEN}`,
-        },
-      }),
-    );
   });
 });

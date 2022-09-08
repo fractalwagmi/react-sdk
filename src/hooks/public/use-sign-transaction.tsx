@@ -1,7 +1,5 @@
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
-import { Endpoint } from 'core/api/endpoints';
-import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { FractalSDKError } from 'core/error';
 import { FractalSDKApprovalOccurringError } from 'core/error/approve';
 import { FractalSDKAuthenticationError } from 'core/error/auth';
@@ -12,7 +10,6 @@ import {
 } from 'core/error/transaction';
 import { Events } from 'core/messaging';
 import { POPUP_HEIGHT_PX } from 'core/popup';
-import { maybeGetAccessToken } from 'core/token';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { isObject } from 'lib/util/guards';
 import { useCallback, useContext, useEffect, useRef } from 'react';
@@ -49,28 +46,17 @@ export const useSignTransaction = () => {
           `An approval flow for a previous transaction is already occurring`,
         );
       }
-      const accessToken = maybeGetAccessToken();
-      if (!accessToken) {
-        throw new FractalSDKAuthenticationError(
-          'Invalid or missing authentication token',
-        );
-      }
       try {
-        const response = await webSdkApiClient.websdk.authorize(
-          {
-            clientId,
-            unsigned: unsignedTransactionB58,
-          },
-          {
-            headers: maybeIncludeAuthorizationHeaders(
-              accessToken,
-              Endpoint.AUTHORIZE_TRANSACTION,
-            ),
-          },
-        );
+        const response = await webSdkApiClient.websdk.authorize({
+          clientId,
+          unsigned: unsignedTransactionB58,
+        });
 
         return response.data;
       } catch (err: unknown) {
+        if (err instanceof FractalSDKError) {
+          throw err;
+        }
         throw new FractalSDKInvalidTransactionError(
           `Unable to initiate sign transaction flow. ${err}`,
         );

@@ -1,25 +1,42 @@
-import { Endpoint } from 'core/api/endpoints';
-import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
+import { CURRENT_SDK_VERSION } from 'config/build-variables';
+import { getDefaultHeaders, getDefaultSecureHeaders } from 'core/api/headers';
+import { FractalSDKAuthenticationError } from 'core/error';
+import { TEST_ACCESS_TOKEN } from 'hooks/__data__/constants';
 
-const ACCESS_TOKEN = 'foobar';
+const LS_KEY_ACCESS_TOKEN = 'QhiUizqDML';
 
-describe('maybeIncludeAuthorizationHeaders', () => {
+beforeEach(() => {
+  localStorage.setItem(LS_KEY_ACCESS_TOKEN, TEST_ACCESS_TOKEN);
+});
+
+afterEach(() => {
+  localStorage.clear();
+});
+
+describe('getDefaultSecureHeaders', () => {
   it('returns an object with authorization header attached', () => {
-    expect(
-      maybeIncludeAuthorizationHeaders(ACCESS_TOKEN, Endpoint.GET_COINS),
-    ).toEqual({
-      authorization: `Bearer ${ACCESS_TOKEN}`,
-    });
+    expect(getDefaultSecureHeaders()).toEqual(
+      expect.objectContaining({
+        authorization: `Bearer ${TEST_ACCESS_TOKEN}`,
+      }),
+    );
   });
 
-  it('can use an existing object', () => {
-    expect(
-      maybeIncludeAuthorizationHeaders(ACCESS_TOKEN, Endpoint.GET_COINS, {
-        foo: 'bar',
+  it('throws an error if no accessToken exists', () => {
+    localStorage.clear();
+    expect(() => {
+      getDefaultSecureHeaders();
+    }).toThrow(FractalSDKAuthenticationError);
+  });
+});
+
+describe('getDefaultHeaders', () => {
+  it('returns an object with the sdk version attached', () => {
+    expect(getDefaultHeaders()).toEqual(
+      expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'fractal-web-sdk-version': CURRENT_SDK_VERSION,
       }),
-    ).toEqual({
-      authorization: `Bearer ${ACCESS_TOKEN}`,
-      foo: 'bar',
-    });
+    );
   });
 });

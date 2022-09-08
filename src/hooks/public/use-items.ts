@@ -15,7 +15,10 @@ export const useItems = (): PublicDataHookResponse<Item[]> => {
   const refetch = useCallback(() => {
     refetchQuery();
   }, []);
-  const items = useMemo(() => transformItems(data?.items ?? []), [data?.items]);
+  const items = useMemo(
+    () => (data?.items === undefined ? undefined : transformItems(data.items)),
+    [data?.items],
+  );
 
   let error: FractalSDKError | undefined;
   if (errorResponse) {

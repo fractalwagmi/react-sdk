@@ -1,25 +1,26 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
+import { LS_KEY_ACCESS_TOKEN, LS_KEY_USER_ID } from 'core/token';
+import { TEST_ACCESS_TOKEN } from 'hooks/__data__/constants';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
 import { useUserSetter } from 'hooks/use-user-setter';
 import { act } from 'react-dom/test-utils';
 
 jest.mock('core/api/client');
-jest.mock('core/api/headers');
 
-const TEST_ACCESS_TOKEN = 'foo';
 const TEST_USER_ID = 'bar';
 const TEST_EMAIL = 'foo@bar.com';
 const TEST_USERNAME = 'foo_bar';
 const TEST_SOLANA_PUBLIC_KEY = 'solana-key';
-const EXPECTED_AUTHORIZATION_HEADER = {
-  authorization: `Bearer ${TEST_ACCESS_TOKEN}`,
-};
 const DEFAULT_PARAMS = {
   userId: TEST_USER_ID,
 };
+
+afterEach(() => {
+  localStorage.clear();
+});
 
 describe('useUserSetter', () => {
   let mockGetInfo: jest.Mock;
@@ -40,14 +41,19 @@ describe('useUserSetter', () => {
 
     await result.current.fetchAndSetUser(DEFAULT_PARAMS, TEST_ACCESS_TOKEN);
 
-    expect(mockGetInfo).lastCalledWith(
-      expect.objectContaining({
-        headers: EXPECTED_AUTHORIZATION_HEADER,
-      }),
-    );
+    expect(mockGetInfo).lastCalledWith();
   });
 
   describe('the setter', () => {
+    it('stores the user ID and access token in localStorage', async () => {
+      const { result } = renderHook(() => useUserSetter());
+
+      await result.current.fetchAndSetUser(DEFAULT_PARAMS, TEST_ACCESS_TOKEN);
+
+      expect(localStorage.getItem(LS_KEY_ACCESS_TOKEN)).toBeDefined();
+      expect(localStorage.getItem(LS_KEY_USER_ID)).toBeDefined();
+    });
+
     it('returns an object with fractal user', async () => {
       const { result } = renderHook(() => useUserSetter());
 

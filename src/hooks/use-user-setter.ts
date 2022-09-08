@@ -1,7 +1,5 @@
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
-import { Endpoint } from 'core/api/endpoints';
-import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { storeIdAndTokenInLS } from 'core/token';
 import { useCallback, useContext } from 'react';
 import { UserWallet, BaseUser, User } from 'types';
@@ -11,12 +9,7 @@ export const useUserSetter = () => {
 
   const fetchAndSetUser = useCallback(
     async (baseUser: BaseUser, accessToken: string) => {
-      const { data } = await sdkApiClient.v1.getInfo({
-        headers: maybeIncludeAuthorizationHeaders(
-          accessToken,
-          Endpoint.GET_INFO,
-        ),
-      });
+      const { data } = await sdkApiClient.v1.getInfo();
 
       const user: User = {
         ...baseUser,

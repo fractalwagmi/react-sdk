@@ -2,7 +2,7 @@ import { Api as PrivateWebSdkApi } from '@fractalwagmi/fractal-auth-private-web-
 import { Api as WebSdkApi } from '@fractalwagmi/fractal-sdk-websdk-api';
 import { Api as SdkApi } from '@fractalwagmi/ts-api';
 import { Api as AuthApi } from '@fractalwagmi/ts-auth-api';
-import { getDefaultHeaders } from 'core/api/headers';
+import { getDefaultHeaders, getDefaultSecureHeaders } from 'core/api/headers';
 
 export const AUTH_API_ROOT_URL = 'https://auth-api.fractal.is';
 export const SDK_API_ROOT_URL = 'https://api.fractal.is';
@@ -12,6 +12,7 @@ export const authApiClient = new AuthApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: AUTH_API_ROOT_URL,
+  securityWorker: () => getDefaultSecureHeaders(),
 });
 
 export const sdkApiClient = new SdkApi({
@@ -19,6 +20,7 @@ export const sdkApiClient = new SdkApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: SDK_API_ROOT_URL,
+  securityWorker: () => getDefaultSecureHeaders(),
 });
 
 export const authPrivateWebSdkApiClient = new PrivateWebSdkApi({
@@ -26,6 +28,7 @@ export const authPrivateWebSdkApiClient = new PrivateWebSdkApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: AUTH_API_ROOT_URL,
+  securityWorker: () => getDefaultSecureHeaders(),
 });
 
 export const webSdkApiClient = new WebSdkApi({
@@ -33,4 +36,5 @@ export const webSdkApiClient = new WebSdkApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: SDK_API_ROOT_URL,
+  securityWorker: () => getDefaultSecureHeaders(),
 });
