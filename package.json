@@ -9,6 +9,7 @@
     "test": "jest",
     "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
     "prepare": "husky install && ts-patch install",
+    "prebuild": "npm run prebuild:local",
     "build": "npm run build:esm && npm run build:cjs && npm run build:styles",
     "build:esm": "tsc-esm",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
@@ -19,7 +20,8 @@
     "postbuild:local": "[ ! -d node_modules/react ] || mv node_modules/react node_modules/react.disabled",
     "lint": "eslint --fix",
     "pretest": "npm run prebuild:local",
-    "posttest": "npm run postbuild:local"
+    "posttest": "npm run postbuild:local",
+    "prepublishOnly": "npm run build"
   },
   "exports": {
     ".": {
