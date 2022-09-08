@@ -1,4 +1,9 @@
+import { CURRENT_SDK_VERSION } from 'config/build-variables';
 import { Endpoint } from 'core/api/endpoints';
+
+enum CustomHeader {
+  X_WEB_SDK_VERSION = 'x-web-sdk-version',
+}
 
 export const ENDPOINTS_THAT_REQUIRE_AUTHENTICATION = new Set<Endpoint>([
   Endpoint.AUTHORIZE_TRANSACTION,
@@ -27,5 +32,12 @@ export function maybeIncludeAuthorizationHeaders(
   return {
     ...headers,
     authorization: `Bearer ${accessToken}`,
+  };
+}
+
+export function getDefaultHeaders(headers: HeadersInit = {}): HeadersInit {
+  return {
+    ...headers,
+    [CustomHeader.X_WEB_SDK_VERSION]: CURRENT_SDK_VERSION,
   };
 }
