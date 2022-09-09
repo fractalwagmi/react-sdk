@@ -9,6 +9,13 @@ export const useUserSetter = () => {
 
   const fetchAndSetUser = useCallback(
     async (baseUser: BaseUser, accessToken: string) => {
+      // We need to first store the token in LS since `getInfo` requires it to
+      // be set.
+      storeIdAndTokenInLS({
+        accessToken,
+        userId: baseUser.userId,
+      });
+
       const { data } = await sdkApiClient.v1.getInfo();
 
       const user: User = {
@@ -19,11 +26,6 @@ export const useUserSetter = () => {
       const userWallet: UserWallet = {
         solanaPublicKeys: data.accountPublicKey ? [data.accountPublicKey] : [],
       };
-
-      storeIdAndTokenInLS({
-        accessToken,
-        userId: user.userId,
-      });
       setUser(user);
       setUserWallet(userWallet);
 

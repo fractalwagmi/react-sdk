@@ -78,8 +78,16 @@ export const useSignIn = ({
         const { user } = await fetchAndSetUser(baseUser, accessToken);
         closePopup();
         onSignIn(user);
-      } catch (e: unknown) {
-        onSignInFailed(new FractalSDKError('Sign in failed.'));
+      } catch (err: unknown) {
+        if (err instanceof FractalSDKError) {
+          onSignInFailed(err);
+          return;
+        }
+        onSignInFailed(
+          new FractalSDKAuthenticationUnknownError(
+            `Sign in failed. err = ${err}`,
+          ),
+        );
       }
     };
 
