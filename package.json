@@ -12,7 +12,7 @@
     "prebuild": "npm run clean",
     "build": "npm run build:esm && npm run build:cjs && npm run build:styles && npm run build:variables",
     "build:variables": "scripts/replace-build-variables.sh",
-    "build:esm": "tsc-esm",
+    "build:esm": "node scripts/build/index.js",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
     "build:styles": "cp src/styles.css dist/styles.css",
     "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > dist/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > dist/esm/package.json",
@@ -20,8 +20,6 @@
     "build:local": "npm run build",
     "postbuild:local": "[ ! -d node_modules/react ] || mv node_modules/react node_modules/react.disabled",
     "lint": "eslint --fix",
-    "pretest": "npm run prebuild:local",
-    "posttest": "npm run postbuild:local",
     "prepublishOnly": "npm run build"
   },
   "exports": {

@@ -2,7 +2,7 @@ import { FractalSdkWalletGetItemsResponse } from '@fractalwagmi/ts-api';
 import { useQuery } from '@tanstack/react-query';
 import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
-import { useUser } from 'hooks';
+import { useUser } from 'hooks/public/use-user';
 
 enum ItemApiKey {
   GET_ITEMS = 'GET_ITEMS',

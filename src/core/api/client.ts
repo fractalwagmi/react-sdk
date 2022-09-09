@@ -12,7 +12,9 @@ export const authApiClient = new AuthApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: AUTH_API_ROOT_URL,
-  securityWorker: () => getDefaultSecureHeaders(),
+  securityWorker: () => ({
+    headers: getDefaultSecureHeaders(),
+  }),
 });
 
 export const sdkApiClient = new SdkApi({
@@ -20,7 +22,9 @@ export const sdkApiClient = new SdkApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: SDK_API_ROOT_URL,
-  securityWorker: () => getDefaultSecureHeaders(),
+  securityWorker: () => ({
+    headers: getDefaultSecureHeaders(),
+  }),
 });
 
 export const authPrivateWebSdkApiClient = new PrivateWebSdkApi({
@@ -28,7 +32,9 @@ export const authPrivateWebSdkApiClient = new PrivateWebSdkApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: AUTH_API_ROOT_URL,
-  securityWorker: () => getDefaultSecureHeaders(),
+  securityWorker: () => ({
+    headers: getDefaultSecureHeaders(),
+  }),
 });
 
 export const webSdkApiClient = new WebSdkApi({
@@ -36,5 +42,7 @@ export const webSdkApiClient = new WebSdkApi({
     headers: getDefaultHeaders(),
   },
   baseUrl: SDK_API_ROOT_URL,
-  securityWorker: () => getDefaultSecureHeaders(),
+  securityWorker: () => ({
+    headers: getDefaultSecureHeaders(),
+  }),
 });
