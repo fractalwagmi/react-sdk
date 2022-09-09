@@ -54,7 +54,7 @@ describe('useItems', () => {
     mockMaybeGetAccessToken.mockReturnValue(TEST_ACCESS_TOKEN);
 
     mockGetWalletItems = jest.spyOn(sdkApiClient.v1, 'getWalletItems');
-    mockGetWalletItems.mockResolvedValue([]);
+    mockGetWalletItems.mockResolvedValue({ data: [] });
 
     mockGetUser = jest.spyOn(useUserModule, 'useUser');
     mockGetUser.mockReturnValue({
@@ -77,25 +77,28 @@ describe('useItems', () => {
 
   it('returns the expected items', async () => {
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1, ITEM_2] } });
-    const { result } = renderHook(() => useItems(), { wrapper });
-    expect(result.current.data).toEqual([]);
+    const { result, waitForValueToChange } = renderHook(() => useItems(), {
+      wrapper,
+    });
+    expect(result.current.data).toEqual(undefined);
 
-    await act(async () => void {});
+    await waitForValueToChange(() => result.current.data);
 
     expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
   it('returns a refetcher to trigger a new fetch', async () => {
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1] } });
-    const { result } = renderHook(() => useItems(), { wrapper });
-    await act(async () => void {});
+    const { result, waitForValueToChange } = renderHook(() => useItems(), {
+      wrapper,
+    });
+    await waitForValueToChange(() => result.current.data);
     expect(result.current.data).toEqual([ITEM_1]);
     mockGetWalletItems.mockResolvedValue({ data: { items: [ITEM_1, ITEM_2] } });
 
-    await act(async () => {
-      result.current.refetch();
-    });
+    result.current.refetch();
 
+    await waitForValueToChange(() => result.current.data);
     expect(result.current.data).toEqual([ITEM_1, ITEM_2]);
   });
 
@@ -112,17 +115,5 @@ describe('useItems', () => {
     await act(async () => result.current.refetch());
 
     expect(mockGetWalletItems).toHaveBeenCalledTimes(2);
-  });
-
-  it('attaches the correct access token to the request headers', async () => {
-    renderHook(() => useItems(), { wrapper });
-    await act(async () => void {});
-    expect(mockGetWalletItems).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        headers: {
-          authorization: `Bearer ${TEST_ACCESS_TOKEN}`,
-        },
-      }),
-    );
   });
 });

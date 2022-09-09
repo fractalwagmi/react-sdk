@@ -2,8 +2,8 @@ import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { secondsInMs } from 'lib/util/time';
 import { BaseUser } from 'types';
 
-const LS_KEY_USER_ID = 'xjnSUQnpZU';
-const LS_KEY_ACCESS_TOKEN = 'QhiUizqDML';
+export const LS_KEY_USER_ID = 'xjnSUQnpZU';
+export const LS_KEY_ACCESS_TOKEN = 'QhiUizqDML';
 
 interface StoreIdAndTokenParameters {
   accessToken: string;
