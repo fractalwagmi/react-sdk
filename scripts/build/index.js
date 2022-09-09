@@ -11,11 +11,13 @@ import { compile, patch } from '@digitak/tsc-esm';
 
 compile();
 patch([
-  // We need to manually patch react/jsx-runtime since only version 17.0.3+ of
-  // react has the "exports" field on the package.json defined correctly for
-  // tsc-esm to be able to recognize this import and patch it correctly.
+  // We need to manually patch react/jsx-runtime since tsc-esm doesn't know how
+  // to resolve the fields defined by React's package.json's "exports" field.
+  //
+  // We don't add a .js extension (leave it alone) as the "exports" fields takes
+  // care of the aliasing (in versions 17.0.3+).
   {
     find: /^react\/jsx-runtime$/,
-    replacement: 'react/jsx-runtime.js',
+    replacement: 'react/jsx-runtime',
   },
 ]);

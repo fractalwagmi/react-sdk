@@ -52,8 +52,8 @@
   },
   "homepage": "https://github.com/fractalwagmi/react-sdk#readme",
   "peerDependencies": {
-    "react": "^17 || ^18",
-    "react-dom": "^17 || ^18"
+    "react": ">=17.0.3 || ^18",
+    "react-dom": ">=17.0.3 || ^18"
   },
   "dependencies": {
     "@emotion/css": "^11.10.0",
