@@ -18,9 +18,11 @@ export const useCoins = (): PublicDataHookResponse<Coin[]> => {
   const coins = useMemo(() => transformCoins(data?.coins ?? []), [data?.coins]);
 
   let error: FractalSDKError | undefined;
-  if (errorResponse) {
+  if (errorResponse && !(errorResponse instanceof FractalSDKError)) {
     // TODO(ENG-394): Enumerate possible errors.
-    error = new FractalSDKError('Unable to retrieve coins');
+    error = new FractalSDKError(
+      `Unable to retrieve coins err = ${errorResponse}`,
+    );
   }
 
   return {

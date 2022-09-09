@@ -21,9 +21,11 @@ export const useItems = (): PublicDataHookResponse<Item[]> => {
   );
 
   let error: FractalSDKError | undefined;
-  if (errorResponse) {
+  if (errorResponse && !(errorResponse instanceof FractalSDKError)) {
     // TODO(ENG-394): Enumerate possible errors.
-    error = new FractalSDKError('Unable to retrieve items');
+    error = new FractalSDKError(
+      `Unable to retrieve items err = ${errorResponse}`,
+    );
   }
 
   return {
