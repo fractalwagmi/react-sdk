@@ -12,7 +12,7 @@
     "prebuild": "npm run clean",
     "build": "npm run build:esm && npm run build:cjs && npm run build:styles && npm run build:variables",
     "build:variables": "scripts/replace-build-variables.sh",
-    "build:esm": "tsc-esm",
+    "build:esm": "node scripts/build/index.js",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --target es6",
     "build:styles": "cp src/styles.css dist/styles.css",
     "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > dist/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > dist/esm/package.json",
@@ -52,8 +52,8 @@
   },
   "homepage": "https://github.com/fractalwagmi/react-sdk#readme",
   "peerDependencies": {
-    "react": ">=17.0.3 || ^18",
-    "react-dom": ">=17.0.3 || ^18"
+    "react": "^17 || ^18",
+    "react-dom": "^17 || ^18"
   },
   "dependencies": {
     "@emotion/css": "^11.10.0",
