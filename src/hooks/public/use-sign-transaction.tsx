@@ -1,4 +1,3 @@
-import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
 import { FractalSDKError } from 'core/error';
 import { FractalSDKApprovalOccurringError } from 'core/error/approve';
@@ -12,7 +11,7 @@ import { Events } from 'core/messaging';
 import { POPUP_HEIGHT_PX } from 'core/popup';
 import { usePopupConnection } from 'hooks/use-popup-connection';
 import { isObject } from 'lib/util/guards';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const MIN_POPUP_HEIGHT_PX = POPUP_HEIGHT_PX;
 const MAX_POPUP_WIDTH_PX = 850;
@@ -25,7 +24,6 @@ type SignTransactionErrors =
   | FractalSDKSignTransactionUnknownError;
 
 export const useSignTransaction = () => {
-  const { clientId } = useContext(FractalSDKContext);
   const promiseResolversRef = useRef<{
     reject: (err: SignTransactionErrors) => void;
     resolve: (value: { signature: string }) => void;
@@ -48,7 +46,6 @@ export const useSignTransaction = () => {
       }
       try {
         const response = await webSdkApiClient.websdk.authorize({
-          clientId,
           unsigned: unsignedTransactionB58,
         });
 
