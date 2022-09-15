@@ -2,7 +2,7 @@ import {
   FractalSDKError,
   FractalSDKSignTransactionUnknownError,
 } from 'core/error';
-import { useSignTransaction } from 'hooks';
+import { useSignTransaction } from 'hooks/public/use-sign-transaction';
 import { useGenerateBuyTransactionMutation } from 'queries/items';
 import { useCallback } from 'react';
 
