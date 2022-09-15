@@ -1,4 +1,5 @@
 export * from 'hooks/public/use-auth-button-props';
+export * from 'hooks/public/use-buy-item';
 export * from 'hooks/public/use-coins';
 export * from 'hooks/public/use-items';
 export * from 'hooks/public/use-sign-out';
