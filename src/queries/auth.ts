@@ -2,6 +2,7 @@ import { FractalAuthPrivateWebSdkGetApprovalUrlResponse } from '@fractalwagmi/fr
 import { useMutation } from '@tanstack/react-query';
 import { authPrivateWebSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
+import { FractalSDKAuthenticationUnknownError } from 'core/error';
 import { Scope } from 'types';
 
 const DEFAULT_SCOPE = [Scope.IDENTIFY];
@@ -32,10 +33,15 @@ async function getAuthUrl(
   clientId: string,
   scopes: Scope[],
 ): Promise<FractalAuthPrivateWebSdkGetApprovalUrlResponse> {
-  return (
+  const response =
     await authPrivateWebSdkApiClient.privateWebSdk.getApprovalUrl({
       clientId,
       scope: scopes,
-    })
-  ).data;
+    });
+  if (response.error) {
+    throw new FractalSDKAuthenticationUnknownError(
+      `There was an issue generating the approval url. error = ${response.error.message}`,
+    );
+  }
+  return response.data;
 }

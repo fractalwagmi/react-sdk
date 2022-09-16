@@ -2,6 +2,7 @@ import { FractalSdkWalletGetCoinsResponse } from '@fractalwagmi/ts-api';
 import { useQuery } from '@tanstack/react-query';
 import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
+import { FractalSDKGetCoinsUnknownError } from 'core/error';
 import { useUser } from 'hooks/public/use-user';
 
 enum CoinApiKey {
@@ -29,7 +30,11 @@ const CoinApi = {
 };
 
 async function getCoins(): Promise<FractalSdkWalletGetCoinsResponse> {
-  // TODO: Update to throw a FractalSDKError instance instead of throwing
-  // anything.
-  return (await sdkApiClient.v1.getCoins()).data;
+  const response = await sdkApiClient.v1.getCoins();
+  if (response.error) {
+    throw new FractalSDKGetCoinsUnknownError(
+      `There was an error fetching coins. err = ${response.error.message}`,
+    );
+  }
+  return response.data;
 }
