@@ -1,5 +1,5 @@
 import { transformItems } from 'core/api/transformers/items';
-import { FractalSDKError } from 'core/error';
+import { FractalSDKError, FractalSDKGetItemsUnknownError } from 'core/error';
 import { PublicDataHookResponse } from 'hooks/public/types';
 import { useGetItemsQuery } from 'queries/items';
 import { useCallback, useMemo } from 'react';
@@ -22,8 +22,7 @@ export const useItems = (): PublicDataHookResponse<Item[]> => {
 
   let error: FractalSDKError | undefined;
   if (errorResponse && !(errorResponse instanceof FractalSDKError)) {
-    // TODO(ENG-394): Enumerate possible errors.
-    error = new FractalSDKError(
+    error = new FractalSDKGetItemsUnknownError(
       `Unable to retrieve items err = ${errorResponse}`,
     );
   }

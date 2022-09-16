@@ -1,7 +1,4 @@
-import {
-  FractalSDKError,
-  FractalSDKSignTransactionUnknownError,
-} from 'core/error';
+import { FractalSDKBuyItemUnknownError, FractalSDKError } from 'core/error';
 import { useSignTransaction } from 'hooks/public/use-sign-transaction';
 import { useGenerateBuyTransactionMutation } from 'queries/items';
 import { useCallback } from 'react';
@@ -39,9 +36,7 @@ export const useBuyItem = () => {
         if (err instanceof FractalSDKError) {
           throw err;
         }
-        // TODO: Enumerate all possible errors for any grpc errors that come
-        // from `generateBuyTransaction`.
-        throw new FractalSDKSignTransactionUnknownError(
+        throw new FractalSDKBuyItemUnknownError(
           `An unknown error occured while attempting to buy ${tokenId}. ` +
             `err = ${err}`,
         );

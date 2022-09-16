@@ -1,5 +1,5 @@
 import { transformCoins } from 'core/api/transformers/coins';
-import { FractalSDKError } from 'core/error';
+import { FractalSDKError, FractalSDKGetCoinsUnknownError } from 'core/error';
 import { PublicDataHookResponse } from 'hooks/public/types';
 import { useGetCoinsQuery } from 'queries/coins';
 import { useCallback, useMemo } from 'react';
@@ -19,8 +19,7 @@ export const useCoins = (): PublicDataHookResponse<Coin[]> => {
 
   let error: FractalSDKError | undefined;
   if (errorResponse && !(errorResponse instanceof FractalSDKError)) {
-    // TODO(ENG-394): Enumerate possible errors.
-    error = new FractalSDKError(
+    error = new FractalSDKGetCoinsUnknownError(
       `Unable to retrieve coins err = ${errorResponse}`,
     );
   }
