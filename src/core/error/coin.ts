@@ -5,8 +5,6 @@ export class FractalSDKGetCoinsUnknownError extends FractalSDKError {
   constructor(message: string) {
     super(message);
     this.name = 'FractalSDKGetCoinsUnknownError';
-
-    // 👇️ because we are extending a built-in class
     Object.setPrototypeOf(this, FractalSDKGetCoinsUnknownError.prototype);
   }
 
