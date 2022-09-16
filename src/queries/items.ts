@@ -84,7 +84,7 @@ async function getItems(): Promise<FractalSdkWalletGetItemsResponse> {
   const response = await sdkApiClient.v1.getWalletItems();
   if (response.error) {
     throw new FractalSDKGetItemsUnknownError(
-      `There was an issue generating the approval url. error = ${response.error.message}`,
+      `There was an issue fetching items. error = ${response.error.message}`,
     );
   }
   return response.data;
@@ -102,7 +102,7 @@ async function generateBuyTransaction({
   });
   if (response.error) {
     throw new FractalSDKBuyItemUnknownError(
-      `There was an issue generating the approval url. error = ${response.error.message}`,
+      `There was an issue generating the buy transaction. error = ${response.error.message}`,
     );
   }
   return response.data;
