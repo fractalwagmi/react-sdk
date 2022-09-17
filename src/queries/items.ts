@@ -5,7 +5,11 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
-import { FractalSDKAuthenticationError } from 'core/error';
+import {
+  FractalSDKAuthenticationError,
+  FractalSDKBuyItemUnknownError,
+} from 'core/error';
+import { FractalSDKGetItemsUnknownError } from 'core/error/item';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
 
@@ -77,10 +81,13 @@ const CoinApi = {
 };
 
 async function getItems(): Promise<FractalSdkWalletGetItemsResponse> {
-  // TODO: Update to throw a FractalSDKError instance instead of throwing
-  // anything.
-  const result = (await sdkApiClient.v1.getWalletItems()).data;
-  return result;
+  const response = await sdkApiClient.v1.getWalletItems();
+  if (response.error) {
+    throw new FractalSDKGetItemsUnknownError(
+      `There was an issue fetching items. error = ${response.error.message}`,
+    );
+  }
+  return response.data;
 }
 
 async function generateBuyTransaction({
@@ -88,12 +95,15 @@ async function generateBuyTransaction({
   tokenId,
   walletId,
 }: GenerateBuyTransactionParameters): Promise<FractalSdkMarketplaceGetTokenBuyTransactionResponse> {
-  // TODO: Update to throw a FractalSDKError instance instead of throwing
-  // anything.
-  const result = await sdkApiClient.v1.tokenBuyTransaction({
+  const response = await sdkApiClient.v1.tokenBuyTransaction({
     quantity,
     tokenId,
     walletId,
   });
-  return result.data;
+  if (response.error) {
+    throw new FractalSDKBuyItemUnknownError(
+      `There was an issue generating the buy transaction. error = ${response.error.message}`,
+    );
+  }
+  return response.data;
 }

@@ -13,7 +13,7 @@ export class FractalSDKError extends Error {
   }
 }
 
-export class FractalSDKNetworkError extends Error {
+export class FractalSDKNetworkError extends FractalSDKError {
   name: string;
   constructor(message: string) {
     super(message);
