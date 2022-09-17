@@ -1,4 +1,4 @@
-import { FractalSDKBuyItemUnknownError, FractalSDKError } from 'core/error';
+import { FractalSDKError, FractalSDKListItemUnknownError } from 'core/error';
 import { useSignTransaction } from 'hooks/public/use-sign-transaction';
 import { useGenerateListTransactionMutation } from 'queries/items';
 import { useCallback } from 'react';
@@ -41,7 +41,7 @@ export const useListItem = () => {
         if (err instanceof FractalSDKError) {
           throw err;
         }
-        throw new FractalSDKBuyItemUnknownError(
+        throw new FractalSDKListItemUnknownError(
           `An unknown error occured while attempting to buy ${tokenId}. ` +
             `err = ${err}`,
         );
