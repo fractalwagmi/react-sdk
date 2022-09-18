@@ -245,7 +245,7 @@ interface Props {
   price: string;
 }
 
-export function YourListFor5aleButton({
+export function YourListForSaleButton({
   tokenAddress,
   price,
   quantity,
