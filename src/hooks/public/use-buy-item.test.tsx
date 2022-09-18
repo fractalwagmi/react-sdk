@@ -4,7 +4,7 @@ import { useBuyItem } from 'hooks/public/use-buy-item';
 import * as useSignTransactionModule from 'hooks/public/use-sign-transaction';
 import * as itemQueriesModule from 'queries/items';
 
-const TEST_TOKEN_ID = 'test-token-id';
+const TEST_TOKEN_ADDRESS = 'test-token-address';
 const TEST_TRANSACTION = 'test-transaction';
 const TEST_TRANSACTION_SIGNATURE = 'test-transaction-signature';
 
@@ -54,12 +54,12 @@ describe('useBuyItem', () => {
       wrapper,
     });
 
-    result.current.buyItem({ tokenId: TEST_TOKEN_ID });
+    result.current.buyItem({ tokenAddress: TEST_TOKEN_ADDRESS });
 
     expect(mockMutateForBuyTransaction).toHaveBeenCalledTimes(1);
     expect(mockMutateForBuyTransaction).toHaveBeenCalledWith({
       quantity: 1,
-      tokenId: TEST_TOKEN_ID,
+      tokenId: TEST_TOKEN_ADDRESS,
     });
   });
 
@@ -68,12 +68,12 @@ describe('useBuyItem', () => {
       wrapper,
     });
 
-    result.current.buyItem({ quantity: 5, tokenId: TEST_TOKEN_ID });
+    result.current.buyItem({ quantity: 5, tokenAddress: TEST_TOKEN_ADDRESS });
 
     expect(mockMutateForBuyTransaction).toHaveBeenCalledTimes(1);
     expect(mockMutateForBuyTransaction).toHaveBeenCalledWith({
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenId: TEST_TOKEN_ADDRESS,
     });
   });
 
@@ -87,7 +87,10 @@ describe('useBuyItem', () => {
       wrapper,
     });
 
-    await result.current.buyItem({ quantity: 5, tokenId: TEST_TOKEN_ID });
+    await result.current.buyItem({
+      quantity: 5,
+      tokenAddress: TEST_TOKEN_ADDRESS,
+    });
 
     expect(mockSignTransaction).toHaveBeenCalledTimes(1);
     expect(mockSignTransaction).toHaveBeenCalledWith(SOME_TRANSACTION);
@@ -102,7 +105,7 @@ describe('useBuyItem', () => {
 
     const actual = await result.current.buyItem({
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(actual.signature).toEqual(SOME_SIGNATURE);

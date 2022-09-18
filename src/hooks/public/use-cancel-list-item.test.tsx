@@ -4,7 +4,7 @@ import { useCancelListItem } from 'hooks/public/use-cancel-list-item';
 import * as useSignTransactionModule from 'hooks/public/use-sign-transaction';
 import * as itemQueriesModule from 'queries/items';
 
-const TEST_TOKEN_ID = 'test-token-id';
+const TEST_TOKEN_ADDRESS = 'test-token-address';
 const TEST_TRANSACTION = 'test-transaction';
 const TEST_TRANSACTION_SIGNATURE = 'test-transaction-signature';
 
@@ -54,12 +54,12 @@ describe('useCancelListItem', () => {
       wrapper,
     });
 
-    result.current.cancelListItem({ tokenId: TEST_TOKEN_ID });
+    result.current.cancelListItem({ tokenAddress: TEST_TOKEN_ADDRESS });
 
     expect(mockMutateForCancelListTransaction).toHaveBeenCalledTimes(1);
     expect(mockMutateForCancelListTransaction).toHaveBeenCalledWith({
       quantity: 1,
-      tokenId: TEST_TOKEN_ID,
+      tokenId: TEST_TOKEN_ADDRESS,
     });
   });
 
@@ -68,12 +68,15 @@ describe('useCancelListItem', () => {
       wrapper,
     });
 
-    result.current.cancelListItem({ quantity: 5, tokenId: TEST_TOKEN_ID });
+    result.current.cancelListItem({
+      quantity: 5,
+      tokenAddress: TEST_TOKEN_ADDRESS,
+    });
 
     expect(mockMutateForCancelListTransaction).toHaveBeenCalledTimes(1);
     expect(mockMutateForCancelListTransaction).toHaveBeenCalledWith({
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenId: TEST_TOKEN_ADDRESS,
     });
   });
 
@@ -89,7 +92,7 @@ describe('useCancelListItem', () => {
 
     await result.current.cancelListItem({
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(mockSignTransaction).toHaveBeenCalledTimes(1);
@@ -105,7 +108,7 @@ describe('useCancelListItem', () => {
 
     const actual = await result.current.cancelListItem({
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(actual.signature).toEqual(SOME_SIGNATURE);

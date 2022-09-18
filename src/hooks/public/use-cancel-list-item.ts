@@ -15,7 +15,7 @@ export interface CancelListItemParameters {
   quantity?: number;
 
   /** The token address of the item being cancelled. */
-  tokenId: string;
+  tokenAddress: string;
 }
 
 export const useCancelListItem = () => {
@@ -26,12 +26,12 @@ export const useCancelListItem = () => {
   const cancelListItem = useCallback(
     async ({
       quantity = 1,
-      tokenId,
+      tokenAddress,
     }: CancelListItemParameters): Promise<{ signature: string }> => {
       try {
         const { transaction } = await generateCancelListTransaction({
           quantity,
-          tokenId,
+          tokenId: tokenAddress,
         });
         const { signature } = await signTransaction(transaction);
         return { signature };
@@ -40,7 +40,7 @@ export const useCancelListItem = () => {
           throw err;
         }
         throw new FractalSDKCancelListItemUnknownError(
-          `An unknown error occured while attempting to buy ${tokenId}. ` +
+          `An unknown error occured while attempting to buy ${tokenAddress}. ` +
             `err = ${err}`,
         );
       }

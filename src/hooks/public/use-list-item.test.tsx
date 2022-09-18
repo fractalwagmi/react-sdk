@@ -4,7 +4,7 @@ import { useListItem } from 'hooks/public/use-list-item';
 import * as useSignTransactionModule from 'hooks/public/use-sign-transaction';
 import * as itemQueriesModule from 'queries/items';
 
-const TEST_TOKEN_ID = 'test-token-id';
+const TEST_TOKEN_ADDRESS = 'test-token-address';
 const TEST_TRANSACTION = 'test-transaction';
 const TEST_TRANSACTION_SIGNATURE = 'test-transaction-signature';
 
@@ -54,13 +54,16 @@ describe('useListItem', () => {
       wrapper,
     });
 
-    result.current.listItem({ price: '0.02', tokenId: TEST_TOKEN_ID });
+    result.current.listItem({
+      price: '0.02',
+      tokenAddress: TEST_TOKEN_ADDRESS,
+    });
 
     expect(mockMutateForListTransaction).toHaveBeenCalledTimes(1);
     expect(mockMutateForListTransaction).toHaveBeenCalledWith({
       price: '0.02',
       quantity: 1,
-      tokenId: TEST_TOKEN_ID,
+      tokenId: TEST_TOKEN_ADDRESS,
     });
   });
 
@@ -72,7 +75,7 @@ describe('useListItem', () => {
     result.current.listItem({
       price: '0.02',
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(mockMutateForListTransaction).toHaveBeenCalledTimes(1);
@@ -91,7 +94,7 @@ describe('useListItem', () => {
     result.current.listItem({
       price: '0.53',
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(mockMutateForListTransaction).toHaveBeenCalledTimes(1);
@@ -115,7 +118,7 @@ describe('useListItem', () => {
     await result.current.listItem({
       price: '0.02',
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(mockSignTransaction).toHaveBeenCalledTimes(1);
@@ -132,7 +135,7 @@ describe('useListItem', () => {
     const actual = await result.current.listItem({
       price: '0.02',
       quantity: 5,
-      tokenId: TEST_TOKEN_ID,
+      tokenAddress: TEST_TOKEN_ADDRESS,
     });
 
     expect(actual.signature).toEqual(SOME_SIGNATURE);
