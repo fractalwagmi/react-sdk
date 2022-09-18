@@ -201,7 +201,8 @@ export function YourWalletComponent() {
 
 ## Marketplace Hooks
 
-In order to facilitate buying, listing, and cancelling listings on the Fractal marketplace, the SDK exposes hooks for this:
+The SDK has first-class support for marketplace functionality, like buying,
+listing, and cancelling listings on the Fractal marketplace.
 
 ### Buying an Item
 
@@ -297,6 +298,11 @@ export function YourCancelListingButton({ tokenAddress }: Props) {
       onClick={async () => {
         const { signature } = await cancelListItem({
           tokenAddress,
+
+          // Like `useListItem`, this hook supports a `quantity` prop that
+          // defaults to 1. No need to set this unless you are dealing with an
+          // SFT.
+          quantity: 1,
         });
         console.log('signature = ', signature);
       }}
