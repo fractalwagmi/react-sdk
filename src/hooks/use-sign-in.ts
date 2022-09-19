@@ -1,3 +1,4 @@
+import { usePopupConnection, PopupEvent } from '@fractalwagmi/popup-connection';
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import {
   FractalSDKAuthenticationUnknownError,
@@ -5,8 +6,6 @@ import {
   FractalSDKNetworkError,
 } from 'core/error';
 import { FractalSDKApprovalDeniedError } from 'core/error/approve';
-import { Events } from 'core/messaging';
-import { usePopupConnection } from 'hooks/use-popup-connection';
 import { useUserSetter } from 'hooks/use-user-setter';
 import { isObject } from 'lib/util/guards';
 import { useGetAuthUrlMutation } from 'queries/auth';
@@ -95,12 +94,12 @@ export const useSignIn = ({
       onSignInFailed(new FractalSDKApprovalDeniedError('Sign in refused.'));
     };
 
-    connection.on(Events.PROJECT_APPROVED, handleProjectApproved);
-    connection.on(Events.POPUP_CLOSED, handlePopupClosed);
+    connection.on(PopupEvent.PROJECT_APPROVED, handleProjectApproved);
+    connection.on(PopupEvent.POPUP_CLOSED, handlePopupClosed);
 
     return () => {
-      connection.off(Events.PROJECT_APPROVED, handleProjectApproved);
-      connection.off(Events.POPUP_CLOSED, handlePopupClosed);
+      connection.off(PopupEvent.PROJECT_APPROVED, handleProjectApproved);
+      connection.off(PopupEvent.POPUP_CLOSED, handlePopupClosed);
     };
   }, [connection]);
 
