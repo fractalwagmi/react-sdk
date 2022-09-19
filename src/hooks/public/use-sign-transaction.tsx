@@ -1,3 +1,8 @@
+import {
+  usePopupConnection,
+  PopupEvent,
+  DEFAULT_POPUP_HEIGHT_PX,
+} from '@fractalwagmi/popup-connection';
 import { webSdkApiClient } from 'core/api/client';
 import { FractalSDKError } from 'core/error';
 import { FractalSDKApprovalOccurringError } from 'core/error/approve';
@@ -7,13 +12,10 @@ import {
   FractalSDKSignTransactionUnknownError,
   FractalSDKInvalidTransactionError,
 } from 'core/error/transaction';
-import { Events } from 'core/messaging';
-import { POPUP_HEIGHT_PX } from 'core/popup';
-import { usePopupConnection } from 'hooks/use-popup-connection';
 import { isObject } from 'lib/util/guards';
 import { useCallback, useEffect, useRef } from 'react';
 
-const MIN_POPUP_HEIGHT_PX = POPUP_HEIGHT_PX;
+const MIN_POPUP_HEIGHT_PX = DEFAULT_POPUP_HEIGHT_PX;
 const MAX_POPUP_WIDTH_PX = 850;
 
 type SignTransactionErrors =
@@ -98,11 +100,11 @@ export const useSignTransaction = () => {
     if (!connection) {
       return;
     }
-    connection.on(Events.SIGNED_TRANSACTION, handleSignedTransaction);
-    connection.on(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
-    connection.on(Events.POPUP_CLOSED, handleSignedTransactionDenied);
+    connection.on(PopupEvent.SIGNED_TRANSACTION, handleSignedTransaction);
+    connection.on(PopupEvent.TRANSACTION_DENIED, handleSignedTransactionDenied);
+    connection.on(PopupEvent.POPUP_CLOSED, handleSignedTransactionDenied);
     connection.on(
-      Events.FAILED_TO_SIGN_TRANSACTION,
+      PopupEvent.FAILED_TO_SIGN_TRANSACTION,
       handleSignedTransactionFailed,
     );
   }, [
