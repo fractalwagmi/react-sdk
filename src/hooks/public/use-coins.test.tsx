@@ -7,7 +7,6 @@ import { TEST_ACCESS_TOKEN, TEST_FRACTAL_USER } from 'hooks/__data__/constants';
 import { useCoins } from 'hooks/public/use-coins';
 import * as useUserModule from 'hooks/public/use-user';
 import { act } from 'react-dom/test-utils';
-import { SWRConfig } from 'swr';
 
 jest.mock('core/api/client');
 jest.mock('hooks/public/use-user');
@@ -52,11 +51,9 @@ describe('useCoins', () => {
     } as ReturnType<typeof useUserModule.useUser>);
 
     wrapper = ({ children }) => (
-      <SWRConfig value={{ provider: () => new Map() }}>
-        <FractalSDKContextProvider clientId="abc">
-          {children}
-        </FractalSDKContextProvider>
-      </SWRConfig>
+      <FractalSDKContextProvider clientId="abc">
+        {children}
+      </FractalSDKContextProvider>
     );
   });
 
