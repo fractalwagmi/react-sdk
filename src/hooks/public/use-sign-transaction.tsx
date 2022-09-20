@@ -2,6 +2,7 @@ import {
   usePopupConnection,
   PopupEvent,
   DEFAULT_POPUP_HEIGHT_PX,
+  Platform,
 } from '@fractalwagmi/popup-connection';
 import { webSdkApiClient } from 'core/api/client';
 import { FractalSDKError } from 'core/error';
@@ -36,6 +37,7 @@ export const useSignTransaction = () => {
       MIN_POPUP_HEIGHT_PX,
       Math.floor(window.innerHeight * 0.8),
     ),
+    platform: Platform.REACT_SDK,
     widthPx: Math.min(MAX_POPUP_WIDTH_PX, Math.floor(window.innerWidth * 0.8)),
   });
 
