@@ -5,14 +5,14 @@ import { useCallback } from 'react';
 
 export interface BuyItemParameters {
   /**
-   * The quantity of `tokenId`s to purchase.
+   * The quantity of `tokenAddress`s to purchase.
    *
    * Defaults to 1. (This should be 1 for all NFTs).
    */
   quantity?: number;
 
   /** The token address of the item being purchased. */
-  tokenId: string;
+  tokenAddress: string;
 }
 
 export const useBuyItem = () => {
@@ -23,12 +23,12 @@ export const useBuyItem = () => {
   const buyItem = useCallback(
     async ({
       quantity = 1,
-      tokenId,
+      tokenAddress,
     }: BuyItemParameters): Promise<{ signature: string }> => {
       try {
         const { transaction } = await generateBuyTransaction({
           quantity,
-          tokenId,
+          tokenId: tokenAddress,
         });
         const { signature } = await signTransaction(transaction);
         return { signature };
@@ -37,7 +37,7 @@ export const useBuyItem = () => {
           throw err;
         }
         throw new FractalSDKBuyItemUnknownError(
-          `An unknown error occured while attempting to buy ${tokenId}. ` +
+          `An unknown error occured while attempting to buy ${tokenAddress}. ` +
             `err = ${err}`,
         );
       }
