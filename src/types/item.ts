@@ -8,3 +8,21 @@ export interface ItemFile {
   type: string;
   uri: string;
 }
+
+export interface ForSaleItem {
+  id: string;
+  imageUrl: string;
+  listTime?: MarketplaceTime;
+  name: string;
+  price?: MarketplacePrice;
+}
+
+export interface MarketplacePrice {
+  amount: string;
+  unit: string;
+}
+
+export interface MarketplaceTime {
+  epochMillis: string;
+  time: string;
+}
