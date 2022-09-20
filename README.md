@@ -199,7 +199,126 @@ export function YourWalletComponent() {
 }
 ```
 
-## Functional Hooks
+## Marketplace Hooks
+
+The SDK has first-class support for marketplace functionality, like buying,
+listing, and cancelling listings on the Fractal marketplace.
+
+### Buying an Item
+
+```tsx
+import { useBuyItem } from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+}
+
+export function YourBuyButton({ tokenAddress }: Props) {
+  const { buyItem } = useBuyItem();
+  return (
+    <button
+      onClick={async () => {
+        const { signature } = await buyItem({
+          tokenAddress,
+        });
+        console.log('signature = ', signature);
+      }}
+    >
+      Buy Item
+    </button>
+  );
+}
+```
+
+This will generate a buy transaction and request user approval. Like the
+`useSignTransaction` hook, this hook returns the transaction signature and is
+resolved as soon as the user approves the transaction, not when the transaction
+is posted to the chain.
+
+### Listing an Item For Sale
+
+```tsx
+import { useListItem } from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+  price: string;
+}
+
+export function YourListForSaleButton({
+  tokenAddress,
+  price,
+  quantity,
+}: Props) {
+  const { listItem } = useListItem();
+  return (
+    <button
+      onClick={async () => {
+        const { signature } = await listItem({
+          tokenAddress,
+
+          // The price is a string like '0.02'.
+          price,
+
+          // The quantity defaults to `1` as it assumes the address being listed
+          // is an NFT. This prop is made available for when support for SFTs
+          // is more widely available.
+          quantity: 1,
+        });
+        console.log('signature = ', signature);
+      }}
+    >
+      List item for sale
+    </button>
+  );
+}
+```
+
+This will generate a list-item-for-sale transaction and request user approval.
+Like the `useSignTransaction` hook, this hook returns the transaction signature
+and is resolved as soon as the user approves the transaction, not when the
+transaction is posted to the chain.
+
+### Cancelling an item listing
+
+The `useCancelListItem` hook can be used to cancel the action done in
+`useListItem`:
+
+```tsx
+import { useCancelListItem } from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+}
+
+export function YourCancelListingButton({ tokenAddress }: Props) {
+  const { cancelListItem } = useCancelListItem();
+  return (
+    <button
+      onClick={async () => {
+        const { signature } = await cancelListItem({
+          tokenAddress,
+
+          // Like `useListItem`, this hook supports a `quantity` prop that
+          // defaults to 1. No need to set this unless you are dealing with an
+          // SFT.
+          quantity: 1,
+        });
+        console.log('signature = ', signature);
+      }}
+    >
+      Cancel item listing
+    </button>
+  );
+}
+```
+
+This will generate a transaction for cancelling an item listing and request user
+approval. Like the `useSignTransaction` hook, this hook returns the transaction
+signature and is resolved as soon as the user approves the transaction, not when
+the transaction is posted to the chain.
+
+## Other Functional Hooks
 
 ### Signing Out
 
