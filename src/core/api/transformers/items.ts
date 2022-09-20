@@ -1,5 +1,6 @@
+import { FractalWebsdkMarketplaceGetForSaleItemsResponseItem } from '@fractalwagmi/fractal-sdk-websdk-api';
 import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/ts-api';
-import { Item } from 'types';
+import { Item, ForSaleItem } from 'types';
 
 export const transformItems = (
   sdkApiWalletItems: FractalSdkWalletGetItemsResponseItem[],
@@ -12,4 +13,10 @@ export const transformItems = (
   // the SDK API ever makes changes to its data model or introduces any
   // breaking changes.
   return sdkApiWalletItems;
+};
+
+export const trasnformForSaleItems = (
+  sdkApiForSaleItems: FractalWebsdkMarketplaceGetForSaleItemsResponseItem[],
+): ForSaleItem[] => {
+  return sdkApiForSaleItems;
 };
