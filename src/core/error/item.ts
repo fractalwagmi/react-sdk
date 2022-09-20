@@ -32,6 +32,18 @@ export class FractalSDKListItemUnknownError extends FractalSDKError {
   }
 
   getUserFacingErrorMessage() {
-    return 'An unknown error occured while buying item. Please try again in a few minutes.';
+    return 'An unknown error occured while listing item. Please try again in a few minutes.';
+  }
+}
+
+export class FractalSDKCancelListItemUnknownError extends FractalSDKError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKCancelListItemUnknownError';
+    Object.setPrototypeOf(this, FractalSDKCancelListItemUnknownError.prototype);
+  }
+
+  getUserFacingErrorMessage() {
+    return 'An unknown error occured while cancelling item listing. Please try again in a few minutes.';
   }
 }

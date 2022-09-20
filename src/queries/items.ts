@@ -1,5 +1,6 @@
 import {
   FractalSdkMarketplaceGetTokenBuyTransactionResponse,
+  FractalSdkMarketplaceGetTokenCancelSellTransactionResponse,
   FractalSdkMarketplaceGetTokenSellTransactionResponse,
   FractalSdkWalletGetItemsResponse,
 } from '@fractalwagmi/ts-api';
@@ -10,13 +11,18 @@ import {
   FractalSDKAuthenticationError,
   FractalSDKBuyItemUnknownError,
 } from 'core/error';
-import { FractalSDKGetItemsUnknownError } from 'core/error/item';
+import {
+  FractalSDKGetItemsUnknownError,
+  FractalSDKListItemUnknownError,
+  FractalSDKCancelListItemUnknownError,
+} from 'core/error/item';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
 
 enum ItemApiKey {
   GENERATE_BUY_TRANSACTION = 'GENERATE_BUY_TRANSACTION',
   GENERATE_LIST_TRANSACTION = 'GENERATE_LIST_TRANSACTION',
+  GENERATE_CANCEL_LIST_TRANSACTION = 'GENERATE_CANCEL_LIST_TRANSACTION',
   GET_ITEMS = 'GET_ITEMS',
 }
 
@@ -33,33 +39,13 @@ interface GenerateListTransactionParameters {
   walletId: string;
 }
 
+interface GenerateCancelListTransactionParameters {
+  quantity: number;
+  tokenId: string;
+  walletId: string;
+}
+
 export const ItemApiKeys = {
-  generateBuyTransaction: ({
-    quantity,
-    tokenId,
-    walletId,
-  }: Partial<GenerateBuyTransactionParameters>) =>
-    [
-      ApiFeature.ITEMS,
-      ItemApiKey.GENERATE_BUY_TRANSACTION,
-      tokenId,
-      walletId,
-      quantity,
-    ] as const,
-  generateListTransaction: ({
-    price,
-    quantity,
-    tokenId,
-    walletId,
-  }: Partial<GenerateListTransactionParameters>) =>
-    [
-      ApiFeature.ITEMS,
-      ItemApiKey.GENERATE_LIST_TRANSACTION,
-      tokenId,
-      walletId,
-      quantity,
-      price,
-    ] as const,
   getItems: (userId: string | undefined) =>
     [ApiFeature.ITEMS, ItemApiKey.GET_ITEMS, userId] as const,
 };
@@ -123,8 +109,32 @@ export const useGenerateListTransactionMutation = () => {
   );
 };
 
+export const useGenerateCancelListTransactionMutation = () => {
+  const { data: userWallet } = useUserWallet();
+  return useMutation(
+    async ({
+      quantity,
+      tokenId,
+    }: Omit<GenerateCancelListTransactionParameters, 'walletId'>) => {
+      const walletId = userWallet?.solanaPublicKeys[0];
+      if (!walletId) {
+        throw new FractalSDKAuthenticationError(
+          'Missing wallet address.' +
+            `Expected a non-empty string but received ${walletId}`,
+        );
+      }
+      return CoinApi.generateCancelListTransaction({
+        quantity,
+        tokenId,
+        walletId,
+      });
+    },
+  );
+};
+
 const CoinApi = {
   generateBuyTransaction,
+  generateCancelListTransaction,
   generateListTransaction,
   getItems,
 };
@@ -170,8 +180,26 @@ async function generateListTransaction({
     walletId,
   });
   if (response.error) {
-    throw new FractalSDKBuyItemUnknownError(
+    throw new FractalSDKListItemUnknownError(
       `There was an issue generating the list transaction. error = ${response.error.message}`,
+    );
+  }
+  return response.data;
+}
+
+async function generateCancelListTransaction({
+  quantity = 1,
+  tokenId,
+  walletId,
+}: GenerateCancelListTransactionParameters): Promise<FractalSdkMarketplaceGetTokenCancelSellTransactionResponse> {
+  const response = await sdkApiClient.v1.tokenCancelSellTransaction({
+    quantity,
+    tokenId,
+    walletId,
+  });
+  if (response.error) {
+    throw new FractalSDKCancelListItemUnknownError(
+      `There was an issue generating the cancel list transaction. error = ${response.error.message}`,
     );
   }
   return response.data;
