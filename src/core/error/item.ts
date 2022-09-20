@@ -23,3 +23,15 @@ export class FractalSDKBuyItemUnknownError extends FractalSDKError {
     return 'An unknown error occured while buying item. Please try again in a few minutes.';
   }
 }
+
+export class FractalSDKListItemUnknownError extends FractalSDKError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKListItemUnknownError';
+    Object.setPrototypeOf(this, FractalSDKListItemUnknownError.prototype);
+  }
+
+  getUserFacingErrorMessage() {
+    return 'An unknown error occured while buying item. Please try again in a few minutes.';
+  }
+}

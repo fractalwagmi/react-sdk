@@ -1,5 +1,6 @@
 import {
   FractalSdkMarketplaceGetTokenBuyTransactionResponse,
+  FractalSdkMarketplaceGetTokenSellTransactionResponse,
   FractalSdkWalletGetItemsResponse,
 } from '@fractalwagmi/ts-api';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -15,11 +16,19 @@ import { useUserWallet } from 'hooks/public/use-user-wallet';
 
 enum ItemApiKey {
   GENERATE_BUY_TRANSACTION = 'GENERATE_BUY_TRANSACTION',
+  GENERATE_LIST_TRANSACTION = 'GENERATE_LIST_TRANSACTION',
   GET_ITEMS = 'GET_ITEMS',
 }
 
 interface GenerateBuyTransactionParameters {
   quantity: number;
+  tokenId: string;
+  walletId: string;
+}
+
+interface GenerateListTransactionParameters {
+  price: string;
+  quantity?: number;
   tokenId: string;
   walletId: string;
 }
@@ -36,6 +45,20 @@ export const ItemApiKeys = {
       tokenId,
       walletId,
       quantity,
+    ] as const,
+  generateListTransaction: ({
+    price,
+    quantity,
+    tokenId,
+    walletId,
+  }: Partial<GenerateListTransactionParameters>) =>
+    [
+      ApiFeature.ITEMS,
+      ItemApiKey.GENERATE_LIST_TRANSACTION,
+      tokenId,
+      walletId,
+      quantity,
+      price,
     ] as const,
   getItems: (userId: string | undefined) =>
     [ApiFeature.ITEMS, ItemApiKey.GET_ITEMS, userId] as const,
@@ -66,7 +89,32 @@ export const useGenerateBuyTransactionMutation = () => {
             `Expected a non-empty string but received ${walletId}`,
         );
       }
-      return generateBuyTransaction({
+      return CoinApi.generateBuyTransaction({
+        quantity,
+        tokenId,
+        walletId,
+      });
+    },
+  );
+};
+
+export const useGenerateListTransactionMutation = () => {
+  const { data: userWallet } = useUserWallet();
+  return useMutation(
+    async ({
+      price,
+      quantity,
+      tokenId,
+    }: Omit<GenerateListTransactionParameters, 'walletId'>) => {
+      const walletId = userWallet?.solanaPublicKeys[0];
+      if (!walletId) {
+        throw new FractalSDKAuthenticationError(
+          'Missing wallet address.' +
+            `Expected a non-empty string but received ${walletId}`,
+        );
+      }
+      return CoinApi.generateListTransaction({
+        price,
         quantity,
         tokenId,
         walletId,
@@ -77,6 +125,7 @@ export const useGenerateBuyTransactionMutation = () => {
 
 const CoinApi = {
   generateBuyTransaction,
+  generateListTransaction,
   getItems,
 };
 
@@ -103,6 +152,26 @@ async function generateBuyTransaction({
   if (response.error) {
     throw new FractalSDKBuyItemUnknownError(
       `There was an issue generating the buy transaction. error = ${response.error.message}`,
+    );
+  }
+  return response.data;
+}
+
+async function generateListTransaction({
+  price,
+  quantity = 1,
+  tokenId,
+  walletId,
+}: GenerateListTransactionParameters): Promise<FractalSdkMarketplaceGetTokenSellTransactionResponse> {
+  const response = await sdkApiClient.v1.tokenSellTransaction({
+    price,
+    quantity,
+    tokenId,
+    walletId,
+  });
+  if (response.error) {
+    throw new FractalSDKBuyItemUnknownError(
+      `There was an issue generating the list transaction. error = ${response.error.message}`,
     );
   }
   return response.data;
