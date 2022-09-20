@@ -1,4 +1,8 @@
-import { usePopupConnection, PopupEvent } from '@fractalwagmi/popup-connection';
+import {
+  usePopupConnection,
+  PopupEvent,
+  Platform,
+} from '@fractalwagmi/popup-connection';
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import {
   FractalSDKAuthenticationUnknownError,
@@ -33,6 +37,7 @@ export const useSignIn = ({
     open: openPopup,
   } = usePopupConnection({
     enabled: !user,
+    platform: Platform.REACT_SDK,
   });
   const getAuthUrlMutation = useGetAuthUrlMutation(clientId, scopes);
 
