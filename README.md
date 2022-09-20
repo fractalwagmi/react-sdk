@@ -169,10 +169,10 @@ const MyComponent = () => {
 };
 ```
 
-## Data Hooks
+## Wallet Data Hooks
 
-There are a wide variety of hooks that wrap our API functions to give you access
-to user data.
+There are a variety of hooks that wrap our API functions to give you access
+to wallet hooks:
 
 ```tsx
 import {
@@ -203,6 +203,20 @@ export function YourWalletComponent() {
 
 The SDK has first-class support for marketplace functionality, like buying,
 listing, and cancelling listings on the Fractal marketplace.
+
+### Fetching Items For Sale
+
+```tsx
+import { useItemsForSale } from '@fractalwagmi/react-sdk';
+
+export function YourComponent() {
+  const { data, error, refetch } = useItemsForSale();
+
+  console.log('data = ', data);
+
+  return <div>...</div>;
+}
+```
 
 ### Buying an Item
 
