@@ -12,6 +12,21 @@ export class FractalSDKGetItemsUnknownError extends FractalSDKError {
   }
 }
 
+export class FractalSDKGetItemsForSaleUnknownError extends FractalSDKError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKGetItemsForSaleUnknownError';
+    Object.setPrototypeOf(
+      this,
+      FractalSDKGetItemsForSaleUnknownError.prototype,
+    );
+  }
+
+  getUserFacingErrorMessage() {
+    return 'An unknown error occured while fetching items for sale. Please try again in a few minutes.';
+  }
+}
+
 export class FractalSDKBuyItemUnknownError extends FractalSDKError {
   constructor(message: string) {
     super(message);

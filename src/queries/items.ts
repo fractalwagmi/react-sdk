@@ -1,3 +1,4 @@
+import { FractalWebsdkMarketplaceGetForSaleItemsResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
 import {
   FractalSdkMarketplaceGetTokenBuyTransactionResponse,
   FractalSdkMarketplaceGetTokenCancelSellTransactionResponse,
@@ -5,7 +6,7 @@ import {
   FractalSdkWalletGetItemsResponse,
 } from '@fractalwagmi/ts-api';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { sdkApiClient } from 'core/api/client';
+import { sdkApiClient, webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import {
   FractalSDKAuthenticationError,
@@ -15,6 +16,7 @@ import {
   FractalSDKGetItemsUnknownError,
   FractalSDKListItemUnknownError,
   FractalSDKCancelListItemUnknownError,
+  FractalSDKGetItemsForSaleUnknownError,
 } from 'core/error/item';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
@@ -24,6 +26,13 @@ enum ItemApiKey {
   GENERATE_LIST_TRANSACTION = 'GENERATE_LIST_TRANSACTION',
   GENERATE_CANCEL_LIST_TRANSACTION = 'GENERATE_CANCEL_LIST_TRANSACTION',
   GET_ITEMS = 'GET_ITEMS',
+  GET_ITEMS_FOR_SALE = 'GET_ITEMS_FOR_SALE',
+}
+
+export interface GetItemsForSaleParams {
+  limit?: number | undefined;
+  sortDirection?: 'ASCENDING' | 'DESCENDING';
+  sortField?: 'LIST_TIME' | 'PRICE';
 }
 
 interface GenerateBuyTransactionParameters {
@@ -48,6 +57,18 @@ interface GenerateCancelListTransactionParameters {
 export const ItemApiKeys = {
   getItems: (userId: string | undefined) =>
     [ApiFeature.ITEMS, ItemApiKey.GET_ITEMS, userId] as const,
+  getItemsForSale: ({
+    limit,
+    sortDirection,
+    sortField,
+  }: GetItemsForSaleParams) =>
+    [
+      ApiFeature.ITEMS,
+      ItemApiKey.GET_ITEMS_FOR_SALE,
+      limit,
+      sortDirection,
+      sortField,
+    ] as const,
 };
 
 export const useGetItemsQuery = () => {
@@ -56,6 +77,19 @@ export const useGetItemsQuery = () => {
     ItemApiKeys.getItems(user?.userId),
     async () => CoinApi.getItems(),
     {
+      enabled: user !== undefined,
+    },
+  );
+};
+
+export const useGetItemsForSaleQuery = (params: GetItemsForSaleParams) => {
+  const { data: user } = useUser();
+  return useQuery(
+    ItemApiKeys.getItemsForSale(params),
+    async () => CoinApi.getItemsForSale(params),
+    {
+      // We require a user to be logged in to make this call because the API
+      // requires an API access token.
       enabled: user !== undefined,
     },
   );
@@ -137,6 +171,7 @@ const CoinApi = {
   generateCancelListTransaction,
   generateListTransaction,
   getItems,
+  getItemsForSale,
 };
 
 async function getItems(): Promise<FractalSdkWalletGetItemsResponse> {
@@ -144,6 +179,26 @@ async function getItems(): Promise<FractalSdkWalletGetItemsResponse> {
   if (response.error) {
     throw new FractalSDKGetItemsUnknownError(
       `There was an issue fetching items. error = ${response.error.message}`,
+    );
+  }
+  return response.data;
+}
+
+async function getItemsForSale({
+  limit,
+  sortDirection,
+  sortField,
+}: GetItemsForSaleParams): Promise<FractalWebsdkMarketplaceGetForSaleItemsResponse> {
+  const response = await webSdkApiClient.websdk.getForSaleItems({
+    /* eslint-disable @typescript-eslint/naming-convention */
+    limit,
+    'sort.direction': sortDirection,
+    'sort.field': sortField,
+    /* eslint-enable @typescript-eslint/naming-convention */
+  });
+  if (response.error) {
+    throw new FractalSDKGetItemsForSaleUnknownError(
+      `There was an issue fetching items for sale. error = ${response.error.message}`,
     );
   }
   return response.data;
