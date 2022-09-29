@@ -16,13 +16,19 @@ export const CoinApiKeys = {
 
 export const useGetCoinsQuery = () => {
   const { data: user } = useUser();
-  return useQuery(
+  const query = useQuery(
     CoinApiKeys.getCoins(user?.userId),
     async () => CoinApi.getCoins(),
     {
       enabled: user !== undefined,
     },
   );
+
+  if (user === undefined) {
+    query.remove();
+  }
+
+  return query;
 };
 
 const CoinApi = {
