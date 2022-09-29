@@ -15,7 +15,7 @@ npm install @fractalwagmi/react-sdk
 
 ## Example
 
-[SDK Demo Preview](https://sdk-demo.fractalpreview.com/)
+[SDK Demo Preview](https://react-sdk-demo.fractalpreview.com/)
 
 ## Setup and Authentication
 
