@@ -73,18 +73,24 @@ export const ItemApiKeys = {
 
 export const useGetItemsQuery = () => {
   const { data: user } = useUser();
-  return useQuery(
+  const query = useQuery(
     ItemApiKeys.getItems(user?.userId),
     async () => CoinApi.getItems(),
     {
       enabled: user !== undefined,
     },
   );
+
+  if (user === undefined) {
+    query.remove();
+  }
+
+  return query;
 };
 
 export const useGetItemsForSaleQuery = (params: GetItemsForSaleParams) => {
   const { data: user } = useUser();
-  return useQuery(
+  const query = useQuery(
     ItemApiKeys.getItemsForSale(params),
     async () => CoinApi.getItemsForSale(params),
     {
@@ -93,6 +99,12 @@ export const useGetItemsForSaleQuery = (params: GetItemsForSaleParams) => {
       enabled: user !== undefined,
     },
   );
+
+  if (user === undefined) {
+    query.remove();
+  }
+
+  return query;
 };
 
 export const useGenerateBuyTransactionMutation = () => {
