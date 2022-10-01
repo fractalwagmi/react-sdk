@@ -1,6 +1,7 @@
 export interface Item {
   files: ItemFile[];
   id: string;
+  isForSale: boolean;
   name: string;
 }
 
