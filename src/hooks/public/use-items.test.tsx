@@ -24,6 +24,7 @@ const ITEM_1: FractalSdkWalletGetItemsResponseItem = {
     },
   ],
   id: 'foo-id',
+  isForSale: true,
   name: 'foo',
 };
 
@@ -39,6 +40,7 @@ const ITEM_2: FractalSdkWalletGetItemsResponseItem = {
     },
   ],
   id: 'bar-id',
+  isForSale: false,
   name: 'bar',
 };
 

@@ -20,7 +20,7 @@
     "build:local": "npm run build",
     "postbuild:local": "[ ! -d node_modules/react ] || mv node_modules/react node_modules/react.disabled",
     "lint": "eslint --fix",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run test && npm run build"
   },
   "exports": {
     ".": {
@@ -59,7 +59,7 @@
     "@fractalwagmi/fractal-auth-private-web-sdk-api": "^0.0.2",
     "@fractalwagmi/fractal-sdk-websdk-api": "^0.0.3",
     "@fractalwagmi/popup-connection": "^1.0.10",
-    "@fractalwagmi/ts-api": "^0.0.1",
+    "@fractalwagmi/ts-api": "^0.0.2",
     "@fractalwagmi/ts-auth-api": "^0.0.1",
     "@tanstack/react-query": "^4.2.3",
     "jwt-decode": "^3.1.2"
