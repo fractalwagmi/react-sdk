@@ -437,7 +437,7 @@ interface Props {
   onFail: () => void;
 }
 
-export function YourComponent({ tokenAddress, onComplete, onFail }: Props) {
+export function BuyItem({ tokenAddress, onComplete, onFail }: Props) {
   const { buyItem } = useBuyItem();
   const { waitForTransaction } = useWaitForTransaction();
 
@@ -456,7 +456,7 @@ export function YourComponent({ tokenAddress, onComplete, onFail }: Props) {
     }
   };
 
-  return <button onClick={handleClick}>...</button>;
+  return <button onClick={handleClick}>Buy Item</button>;
 }
 ```
 
@@ -470,7 +470,7 @@ interface Props {
   transactionSignature: string;
 }
 
-export function YourComponent({ transactionSignature }: Props) {
+export function TransactionStatusDisplay({ transactionSignature }: Props) {
   const { status, error } = useTransactionStatus(transactionSignature);
 
   if (error) {
