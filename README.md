@@ -412,13 +412,15 @@ throw the following error classes:
 
 ### Waiting for a Transaction To Post To The Chain
 
-A signed and sent transaction can take a variable amount of time to post to the
-chain. For this reason, we always quickly resolve the signature after a user
-approves a transaction.
+A signed transaction that is sent to the chain can take a variable amount of
+time to post to the chain. All of the tranasction hooks we expose like
+`useSignTransaction` and `useBuyItem` return a callback that resolves to a
+transaction signature once the user has approved the transaction, not
+when the transaction has posted to the chain.
 
 There will be cases where you want to block, or want to add a UI affordance for
-a "pending" transaction state while the transaction is being posted to the
-chain. For this, you can use one of the following hooks:
+a "pending" transaction state (like a loading spinner) while the transaction is
+being posted to the chain. For this, you can use one of the following hooks:
 
 - `useWaitForTransaction` - returns an async callback
 - `useTransactionStatus` - returns an updating status object
