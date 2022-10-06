@@ -3,14 +3,7 @@ export { FractalSDKContextProvider as FractalProvider } from 'context/fractal-sd
 export type { SignInProps } from 'components/sign-in';
 
 export * from 'core/error';
-export { Scope } from 'types';
-export type {
-  User,
-  UserWallet,
-  Coin,
-  Item,
-  ForSaleItem,
-  TransactionStatus,
-} from 'types';
+export { Scope, TransactionStatus } from 'types';
+export type { User, UserWallet, Coin, Item, ForSaleItem } from 'types';
 
 export * from 'hooks/public';
