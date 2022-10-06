@@ -4,6 +4,7 @@ import { webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import { FractalSDKGetCoinsUnknownError } from 'core/error';
 import { useUser } from 'hooks/public/use-user';
+import { isNotNullOrUndefined } from 'lib/util/guards';
 import { secondsInMs } from 'lib/util/time';
 import { useEffect, useState } from 'react';
 
@@ -21,23 +22,23 @@ export const TransactionApiKeys = {
 };
 
 export const useGetTransactionStatusPollerQuery = (signature: string) => {
-  const [stopPolling, setStopPolling] = useState(false);
+  const [shouldPoll, setShouldPoll] = useState(true);
   const { data: user } = useUser();
   const query = useQuery(
     TransactionApiKeys.getTransactionStatus(signature),
     async () => TransactionApi.getTransactionStatus(signature),
     {
-      enabled: user !== undefined,
-      refetchInterval: stopPolling ? false : secondsInMs(2),
+      enabled: isNotNullOrUndefined(user),
+      refetchInterval: shouldPoll ? secondsInMs(2) : false,
       refetchOnWindowFocus: false,
     },
   );
 
   useEffect(() => {
-    if (!stopPolling && query.data?.confirmed?.success !== undefined) {
-      setStopPolling(true);
+    if (shouldPoll && query.data?.confirmed?.success !== undefined) {
+      setShouldPoll(false);
     }
-  }, [stopPolling, query]);
+  }, [shouldPoll, query]);
 
   useEffect(() => {
     if (user === undefined) {
