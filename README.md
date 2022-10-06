@@ -494,8 +494,8 @@ export function TransactionStatusDisplay({ transactionSignature }: Props) {
 Both the `useTransactionStatus` hook and `useWaitForTransaction` emit the same
 errors:
 
-| Error Class                              | Meaning                                                                                             |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `FractalSDKAuthenticationError`          | An authentication error occurred. This typically means that the user is not properly authenticated. |
-| `FractalSDKTransactionFetchInvalidError` | An invalid transaction signature was provided.                                                      |
-| `FractalSDKTransactionFetchUnknownError` | Catch-all unknown error occurred during fetching of the transaction status.                         |
+| Error Class                                    | Meaning                                                                                             |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `FractalSDKAuthenticationError`                | An authentication error occurred. This typically means that the user is not properly authenticated. |
+| `FractalSDKTransactionStatusFetchInvalidError` | An invalid transaction signature was provided.                                                      |
+| `FractalSDKTransactionStatusFetchUnknownError` | Catch-all unknown error occurred during fetching of the transaction status.                         |

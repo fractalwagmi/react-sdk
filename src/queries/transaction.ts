@@ -2,10 +2,14 @@ import { FractalWebsdkTransactionGetTransactionStatusResponse } from '@fractalwa
 import { useQuery } from '@tanstack/react-query';
 import { webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
-import { FractalSDKGetCoinsUnknownError } from 'core/error';
+import {
+  FractalSDKTransactionStatusFetchInvalidError,
+  FractalSDKTransactionStatusFetchUnknownError,
+} from 'core/error';
 import { useUser } from 'hooks/public/use-user';
 import { isNotNullOrUndefined } from 'lib/util/guards';
 import { secondsInMs } from 'lib/util/time';
+import { Status as GrpcStatusCode } from 'nice-grpc-common';
 import { useEffect, useState } from 'react';
 
 enum TransactionApiKey {
@@ -59,8 +63,14 @@ async function getTransactionStatus(
 ): Promise<FractalWebsdkTransactionGetTransactionStatusResponse> {
   const response = await webSdkApiClient.websdk.getTransactionStatus(signature);
   if (response.error) {
-    throw new FractalSDKGetCoinsUnknownError(
-      `There was an error fetching coins. err = ${response.error.message}`,
+    if (response.error.code === GrpcStatusCode.INVALID_ARGUMENT) {
+      throw new FractalSDKTransactionStatusFetchInvalidError(
+        'Invalid argument supplied for fetching transaction status. ' +
+          `Supplied signature:\n${signature}`,
+      );
+    }
+    throw new FractalSDKTransactionStatusFetchUnknownError(
+      `There was an error fetching transaction status. err = ${response.error.message}`,
     );
   }
   return response.data;
