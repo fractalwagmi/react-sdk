@@ -35,7 +35,8 @@ export const useGetTransactionStatusPollerQuery = (signature: string) => {
   );
 
   useEffect(() => {
-    if (shouldPoll && query.data?.confirmed?.success !== undefined) {
+    const isTransactionPending = query.data?.confirmed === undefined;
+    if (shouldPoll && !isTransactionPending) {
       setShouldPoll(false);
     }
   }, [shouldPoll, query]);

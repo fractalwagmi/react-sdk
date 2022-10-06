@@ -37,7 +37,7 @@ beforeEach(() => {
     .getTransactionStatus as jest.Mock;
   mockGetTransactionStatus.mockResolvedValue({
     data: {
-      confirmed: {},
+      confirmed: undefined,
     } as FractalWebsdkTransactionGetTransactionStatusResponse,
   });
 
@@ -73,7 +73,7 @@ describe('useGetTransactionStatusPoller', () => {
     const mockRemove = jest.fn();
     spyUseQuery.mockReturnValue({
       data: {
-        confirmed: {},
+        confirmed: undefined,
       },
       error: undefined,
       remove: mockRemove,
@@ -115,8 +115,7 @@ describe('useGetTransactionStatusPoller', () => {
       () => useGetTransactionStatusPollerQuery(TEST_SIGNATURE),
       { wrapper },
     );
-    expect(spyUseQuery).toHaveBeenCalledTimes(1);
-    expect(spyUseQuery).toHaveBeenCalledWith(
+    expect(spyUseQuery).toHaveBeenLastCalledWith(
       expect.any(Array),
       expect.any(Function),
       expect.objectContaining({
