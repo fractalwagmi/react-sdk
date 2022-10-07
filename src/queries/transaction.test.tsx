@@ -4,11 +4,17 @@ import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { webSdkApiClient } from 'core/api/client';
 import { TEST_FRACTAL_USER } from 'hooks/__data__/constants';
 import { useUser } from 'hooks/public/use-user';
-import { useGetTransactionStatusPollerQuery } from 'queries/transaction';
+import {
+  useGetTransactionStatusPollerQuery,
+  useTransactionStatusPoller,
+} from 'queries/transaction';
 
 jest.mock('hooks/public/use-user');
 jest.mock('core/api/client');
 jest.mock('core/api/client');
+
+type TransactionStatusResponse =
+  FractalWebsdkTransactionGetTransactionStatusResponse;
 
 const TWO_SECONDS_MS = 2000;
 const TEST_SIGNATURE = 'test-signature';
@@ -38,7 +44,7 @@ beforeEach(() => {
   mockGetTransactionStatus.mockResolvedValue({
     data: {
       confirmed: undefined,
-    } as FractalWebsdkTransactionGetTransactionStatusResponse,
+    } as TransactionStatusResponse,
   });
 
   spyUseQuery = jest.spyOn(reactQuery, 'useQuery');
@@ -157,5 +163,70 @@ describe('useGetTransactionStatusPoller', () => {
         refetchOnWindowFocus: false,
       }),
     );
+  });
+});
+
+describe('useTransactionStatusPoller', () => {
+  it('returns a successful status', async () => {
+    mockGetTransactionStatus.mockResolvedValue({
+      data: { confirmed: { success: true } } as TransactionStatusResponse,
+    });
+    const { result } = renderHook(() => useTransactionStatusPoller(), {
+      wrapper,
+    });
+    const success = await result.current(TEST_SIGNATURE);
+
+    expect(success).toBe(true);
+  });
+
+  it('returns an unsuccessful status', async () => {
+    mockGetTransactionStatus.mockResolvedValue({
+      data: { confirmed: { success: false } } as TransactionStatusResponse,
+    });
+    const { result } = renderHook(() => useTransactionStatusPoller(), {
+      wrapper,
+    });
+
+    const success = await result.current(TEST_SIGNATURE);
+
+    expect(success).toBe(false);
+  });
+
+  // Note: I attempted to get this test to behave correctly by using fake timers
+  // but that ended up being a bigger headache than imagined. A lot of different
+  // downstream dependencies are using `setTimeout`, and understanding how using
+  // a fake timer affects those downstream dependencies was not worth figuring
+  // out.
+  it('should poll until confirmed', async () => {
+    mockGetTransactionStatus.mockResolvedValue({
+      data: { confirmed: undefined } as TransactionStatusResponse,
+    });
+    const { result } = renderHook(() => useTransactionStatusPoller(), {
+      wrapper,
+    });
+
+    // We deliberately send a short interval to speed up the test.
+    await act(async () => {
+      const testPromise = result.current(TEST_SIGNATURE, /* intervalMs= */ 10);
+
+      await new Promise<void>(resolve => {
+        setTimeout(() => {
+          mockGetTransactionStatus.mockResolvedValue({
+            data: { confirmed: { success: true } } as TransactionStatusResponse,
+          });
+          resolve();
+        }, 1000);
+      });
+
+      const success = await testPromise;
+      expect(success).toBe(true);
+      // This just does a loose sanity check that polling did indeed occur.
+      // Though technically 1000 (one second ms) divided by 10 ms (injected
+      // interval) is 100 times, the actual setTimeout callback in the
+      // code-under-test runs closer to somewhere between 80 and 90 times.
+      // Testing against this exact count is flaky, so we opt for > 50 to avoid
+      // flakiness.
+      expect(mockGetTransactionStatus.mock.calls.length).toBeGreaterThan(50);
+    });
   });
 });
