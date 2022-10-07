@@ -10,7 +10,10 @@ import { useUser } from 'hooks/public/use-user';
 import { isNotNullOrUndefined } from 'lib/util/guards';
 import { secondsInMs } from 'lib/util/time';
 import { Status as GrpcStatusCode } from 'nice-grpc-common';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+type TransactionStatusResponse =
+  FractalWebsdkTransactionGetTransactionStatusResponse;
 
 enum TransactionApiKey {
   GET_TRANSACTION_STATUS = 'GET_TRANSACTION_STATUS',
@@ -54,15 +57,50 @@ export const useGetTransactionStatusPollerQuery = (signature: string) => {
   return query;
 };
 
+export const useTransactionStatusPoller = () => {
+  const poller = useCallback(
+    async (signature: string, intervalMs: number = secondsInMs(2)) => {
+      let resolve: (success: boolean) => void;
+      let reject: (err: unknown) => void;
+
+      const fetchStatusAndQueueRefetchIfUnconfirmed = async () => {
+        try {
+          const response = await getTransactionStatus(signature);
+          if (response.confirmed === undefined) {
+            window.setTimeout(() => {
+              fetchStatusAndQueueRefetchIfUnconfirmed();
+            }, intervalMs);
+            return;
+          }
+          resolve(response.confirmed.success);
+        } catch (err: unknown) {
+          reject(err);
+        }
+      };
+
+      return new Promise<boolean>((resolver, rejector) => {
+        resolve = resolver;
+        reject = rejector;
+
+        fetchStatusAndQueueRefetchIfUnconfirmed();
+      });
+    },
+    [],
+  );
+
+  return poller;
+};
+
 const TransactionApi = {
   getTransactionStatus,
 };
 
 async function getTransactionStatus(
   signature: string,
-): Promise<FractalWebsdkTransactionGetTransactionStatusResponse> {
+): Promise<TransactionStatusResponse> {
   const response = await webSdkApiClient.websdk.getTransactionStatus(signature);
   if (response.error) {
+    // TODO(kan): Add unit test for this condition.
     if (response.error.code === GrpcStatusCode.INVALID_ARGUMENT) {
       throw new FractalSDKTransactionStatusFetchInvalidError(
         'Invalid argument supplied for fetching transaction status. ' +
