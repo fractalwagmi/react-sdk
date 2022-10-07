@@ -1,4 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
+import {
+  FractalSDKTransactionStatusFetchInvalidError,
+  FractalSDKTransactionStatusFetchUnknownError,
+} from 'core/error';
 import { useWaitForTransactionStatus } from 'hooks/public/use-wait-for-transaction-status';
 import { useTransactionStatusPoller } from 'queries/transaction';
 import { TransactionStatus } from 'types';
@@ -42,4 +46,49 @@ describe('useWaitForTransactionStatus', () => {
 
     expect(status).toBe(TransactionStatus.FAIL);
   });
+
+  it(
+    'rethrows the same error if the error is an instance of ' +
+      'FractalSDKError',
+    async () => {
+      mockPollForTransactionStatus.mockRejectedValue(
+        new FractalSDKTransactionStatusFetchInvalidError('Some unknown error'),
+      );
+      const { result } = renderHook(() => useWaitForTransactionStatus());
+
+      let error: unknown;
+      try {
+        await result.current.waitForTransactionStatus(TEST_SIGNATURE);
+      } catch (err: unknown) {
+        error = err;
+      }
+
+      expect(error).toBeInstanceOf(
+        FractalSDKTransactionStatusFetchInvalidError,
+      );
+    },
+  );
+
+  it(
+    'falls back to throwing an instance of ' +
+      'FractalSDKTransactionStatusFetchUnknownError if an unknown error is ' +
+      'encountered',
+    async () => {
+      mockPollForTransactionStatus.mockRejectedValue(
+        new Error('Some unknown error'),
+      );
+      const { result } = renderHook(() => useWaitForTransactionStatus());
+
+      let error: unknown;
+      try {
+        await result.current.waitForTransactionStatus(TEST_SIGNATURE);
+      } catch (err: unknown) {
+        error = err;
+      }
+
+      expect(error).toBeInstanceOf(
+        FractalSDKTransactionStatusFetchUnknownError,
+      );
+    },
+  );
 });
