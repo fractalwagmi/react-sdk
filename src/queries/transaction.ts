@@ -100,7 +100,6 @@ async function getTransactionStatus(
 ): Promise<TransactionStatusResponse> {
   const response = await webSdkApiClient.websdk.getTransactionStatus(signature);
   if (response.error) {
-    // TODO(kan): Add unit test for this condition.
     if (response.error.code === GrpcStatusCode.INVALID_ARGUMENT) {
       throw new FractalSDKTransactionStatusFetchInvalidError(
         'Invalid argument supplied for fetching transaction status. ' +

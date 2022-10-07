@@ -2,8 +2,13 @@ import { FractalWebsdkTransactionGetTransactionStatusResponse } from '@fractalwa
 import * as reactQuery from '@tanstack/react-query';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { webSdkApiClient } from 'core/api/client';
+import {
+  FractalSDKTransactionStatusFetchInvalidError,
+  FractalSDKTransactionStatusFetchUnknownError,
+} from 'core/error';
 import { TEST_FRACTAL_USER } from 'hooks/__data__/constants';
 import { useUser } from 'hooks/public/use-user';
+import { Status as GrpcStatusCode } from 'nice-grpc-common';
 import {
   useGetTransactionStatusPollerQuery,
   useTransactionStatusPoller,
@@ -205,8 +210,8 @@ describe('useTransactionStatusPoller', () => {
       wrapper,
     });
 
-    // We deliberately send a short interval to speed up the test.
     await act(async () => {
+      // We deliberately send a short interval to speed up the test.
       const testPromise = result.current(TEST_SIGNATURE, /* intervalMs= */ 10);
 
       await new Promise<void>(resolve => {
@@ -229,4 +234,56 @@ describe('useTransactionStatusPoller', () => {
       expect(mockGetTransactionStatus.mock.calls.length).toBeGreaterThan(50);
     });
   });
+
+  it(
+    'throws an instance of FractalSDKTransactionStatusFetchInvalidError if ' +
+      'an INVALID_ARGUMENT grpc status code is returned',
+    async () => {
+      mockGetTransactionStatus.mockResolvedValue({
+        error: {
+          code: GrpcStatusCode.INVALID_ARGUMENT,
+        },
+      });
+      const { result } = renderHook(() => useTransactionStatusPoller(), {
+        wrapper,
+      });
+      let error: unknown;
+
+      try {
+        await result.current(TEST_SIGNATURE);
+      } catch (err: unknown) {
+        error = err;
+      }
+
+      expect(error).toBeInstanceOf(
+        FractalSDKTransactionStatusFetchInvalidError,
+      );
+    },
+  );
+
+  it(
+    'throws an instance of FractalSDKTransactionStatusFetchUnknownError if ' +
+      'an unrecognized status is returned',
+    async () => {
+      mockGetTransactionStatus.mockResolvedValue({
+        error: {
+          code: GrpcStatusCode.INTERNAL,
+        },
+      });
+      const { result } = renderHook(() => useTransactionStatusPoller(), {
+        wrapper,
+      });
+      let error: unknown;
+
+      try {
+        await result.current(TEST_SIGNATURE);
+      } catch (err: unknown) {
+        error = err;
+      }
+
+      expect(error).toBeInstanceOf(
+        FractalSDKTransactionStatusFetchUnknownError,
+      );
+    },
+  );
 });
