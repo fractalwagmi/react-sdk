@@ -34,7 +34,7 @@ export const isFalsy = <T extends string | number | boolean | null | undefined>(
   return isNullOrUndefined(value);
 };
 
-export function assertObject(value: unknown): value is Record<string, unknown> {
+export function isObject(value: unknown): value is Record<string, unknown> {
   if (value === null) {
     return false;
   }

@@ -1,7 +1,10 @@
-import { FractalSDKContext } from 'context/fractal-sdk-context';
+import {
+  usePopupConnection,
+  PopupEvent,
+  DEFAULT_POPUP_HEIGHT_PX,
+  Platform,
+} from '@fractalwagmi/popup-connection';
 import { webSdkApiClient } from 'core/api/client';
-import { Endpoint } from 'core/api/endpoints';
-import { maybeIncludeAuthorizationHeaders } from 'core/api/headers';
 import { FractalSDKError } from 'core/error';
 import { FractalSDKApprovalOccurringError } from 'core/error/approve';
 import { FractalSDKAuthenticationError } from 'core/error/auth';
@@ -10,14 +13,10 @@ import {
   FractalSDKSignTransactionUnknownError,
   FractalSDKInvalidTransactionError,
 } from 'core/error/transaction';
-import { Events } from 'core/messaging';
-import { POPUP_HEIGHT_PX } from 'core/popup';
-import { maybeGetAccessToken } from 'core/token';
-import { usePopupConnection } from 'hooks/use-popup-connection';
-import { assertObject } from 'lib/util/guards';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { isObject } from 'lib/util/guards';
+import { useCallback, useEffect, useRef } from 'react';
 
-const MIN_POPUP_HEIGHT_PX = POPUP_HEIGHT_PX;
+const MIN_POPUP_HEIGHT_PX = DEFAULT_POPUP_HEIGHT_PX;
 const MAX_POPUP_WIDTH_PX = 850;
 
 type SignTransactionErrors =
@@ -28,7 +27,6 @@ type SignTransactionErrors =
   | FractalSDKSignTransactionUnknownError;
 
 export const useSignTransaction = () => {
-  const { clientId } = useContext(FractalSDKContext);
   const promiseResolversRef = useRef<{
     reject: (err: SignTransactionErrors) => void;
     resolve: (value: { signature: string }) => void;
@@ -39,6 +37,7 @@ export const useSignTransaction = () => {
       MIN_POPUP_HEIGHT_PX,
       Math.floor(window.innerHeight * 0.8),
     ),
+    platform: Platform.REACT_SDK,
     widthPx: Math.min(MAX_POPUP_WIDTH_PX, Math.floor(window.innerWidth * 0.8)),
   });
 
@@ -49,28 +48,16 @@ export const useSignTransaction = () => {
           `An approval flow for a previous transaction is already occurring`,
         );
       }
-      const accessToken = maybeGetAccessToken();
-      if (!accessToken) {
-        throw new FractalSDKAuthenticationError(
-          'Invalid or missing authentication token',
-        );
-      }
       try {
-        const response = await webSdkApiClient.websdk.authorize(
-          {
-            clientId,
-            unsigned: unsignedTransactionB58,
-          },
-          {
-            headers: maybeIncludeAuthorizationHeaders(
-              accessToken,
-              Endpoint.AUTHORIZE_TRANSACTION,
-            ),
-          },
-        );
+        const response = await webSdkApiClient.websdk.authorize({
+          unsigned: unsignedTransactionB58,
+        });
 
         return response.data;
       } catch (err: unknown) {
+        if (err instanceof FractalSDKError) {
+          throw err;
+        }
         throw new FractalSDKInvalidTransactionError(
           `Unable to initiate sign transaction flow. ${err}`,
         );
@@ -115,11 +102,11 @@ export const useSignTransaction = () => {
     if (!connection) {
       return;
     }
-    connection.on(Events.SIGNED_TRANSACTION, handleSignedTransaction);
-    connection.on(Events.TRANSACTION_DENIED, handleSignedTransactionDenied);
-    connection.on(Events.POPUP_CLOSED, handleSignedTransactionDenied);
+    connection.on(PopupEvent.SIGNED_TRANSACTION, handleSignedTransaction);
+    connection.on(PopupEvent.TRANSACTION_DENIED, handleSignedTransactionDenied);
+    connection.on(PopupEvent.POPUP_CLOSED, handleSignedTransactionDenied);
     connection.on(
-      Events.FAILED_TO_SIGN_TRANSACTION,
+      PopupEvent.FAILED_TO_SIGN_TRANSACTION,
       handleSignedTransactionFailed,
     );
   }, [
@@ -167,7 +154,7 @@ interface PayloadWithSignature {
 function assertPayloadHasSignature(
   payload: unknown,
 ): payload is PayloadWithSignature {
-  if (!assertObject(payload)) {
+  if (!isObject(payload)) {
     return false;
   }
   if (!Object.prototype.hasOwnProperty.call(payload, 'signature')) {

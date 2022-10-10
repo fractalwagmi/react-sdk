@@ -38,3 +38,33 @@ export class FractalSDKSignTransactionUnknownError extends FractalSDKError {
     return 'An unknown error occured while signing the transaction. Please try again in a few minutes.';
   }
 }
+
+export class FractalSDKTransactionStatusFetchInvalidError extends FractalSDKError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKTransactionStatusFetchInvalidError';
+    Object.setPrototypeOf(
+      this,
+      FractalSDKTransactionStatusFetchInvalidError.prototype,
+    );
+  }
+
+  getUserFacingErrorMessage() {
+    return 'An unknown error occured while fetching the transaction status. Please try again in a few minutes.';
+  }
+}
+
+export class FractalSDKTransactionStatusFetchUnknownError extends FractalSDKError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKTransactionStatusFetchUnknownError';
+    Object.setPrototypeOf(
+      this,
+      FractalSDKTransactionStatusFetchUnknownError.prototype,
+    );
+  }
+
+  getUserFacingErrorMessage() {
+    return 'An unknown error occured while fetching the transaction status. Please try again in a few minutes.';
+  }
+}

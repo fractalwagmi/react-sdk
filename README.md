@@ -169,10 +169,10 @@ const MyComponent = () => {
 };
 ```
 
-## Data Hooks
+## Wallet Data Hooks
 
-There are a wide variety of hooks that wrap our API functions to give you access
-to user data.
+There are a variety of hooks that wrap our API functions to give you access
+to wallet hooks:
 
 ```tsx
 import {
@@ -189,7 +189,8 @@ export function YourWalletComponent() {
   // Returns the user's wallet information like solana public keys.
   const { data: userWallet } = useUserWallet();
 
-  // Returns the items in the user's wallet.
+  // Returns the items in the user's wallet and whether each item is currently
+  // listed for sale or not.
   const { data: items } = useItems();
 
   // Returns the coins in the user's wallet.
@@ -199,7 +200,140 @@ export function YourWalletComponent() {
 }
 ```
 
-## Functional Hooks
+## Marketplace Hooks
+
+The SDK has first-class support for marketplace functionality, like buying,
+listing, and cancelling listings on the Fractal marketplace.
+
+### Fetching Items For Sale
+
+```tsx
+import { useItemsForSale } from '@fractalwagmi/react-sdk';
+
+export function YourComponent() {
+  const { data, error, refetch } = useItemsForSale();
+
+  console.log('data = ', data);
+
+  return <div>...</div>;
+}
+```
+
+### Buying an Item
+
+```tsx
+import { useBuyItem } from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+}
+
+export function YourBuyButton({ tokenAddress }: Props) {
+  const { buyItem } = useBuyItem();
+  return (
+    <button
+      onClick={async () => {
+        const { signature } = await buyItem({
+          tokenAddress,
+        });
+        console.log('signature = ', signature);
+      }}
+    >
+      Buy Item
+    </button>
+  );
+}
+```
+
+This will generate a buy transaction and request user approval. Like the
+`useSignTransaction` hook, this hook returns the transaction signature and is
+resolved as soon as the user approves the transaction, not when the transaction
+is posted to the chain.
+
+### Listing an Item For Sale
+
+```tsx
+import { useListItem } from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+  price: string;
+}
+
+export function YourListForSaleButton({
+  tokenAddress,
+  price,
+  quantity,
+}: Props) {
+  const { listItem } = useListItem();
+  return (
+    <button
+      onClick={async () => {
+        const { signature } = await listItem({
+          tokenAddress,
+
+          // The price is a string like '0.02'.
+          price,
+
+          // The quantity defaults to `1` as it assumes the address being listed
+          // is an NFT. This prop is made available for when support for SFTs
+          // is more widely available.
+          quantity: 1,
+        });
+        console.log('signature = ', signature);
+      }}
+    >
+      List item for sale
+    </button>
+  );
+}
+```
+
+This will generate a list-item-for-sale transaction and request user approval.
+Like the `useSignTransaction` hook, this hook returns the transaction signature
+and is resolved as soon as the user approves the transaction, not when the
+transaction is posted to the chain.
+
+### Cancelling an item listing
+
+The `useCancelListItem` hook can be used to cancel the action done in
+`useListItem`:
+
+```tsx
+import { useCancelListItem } from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+}
+
+export function YourCancelListingButton({ tokenAddress }: Props) {
+  const { cancelListItem } = useCancelListItem();
+  return (
+    <button
+      onClick={async () => {
+        const { signature } = await cancelListItem({
+          tokenAddress,
+
+          // Like `useListItem`, this hook supports a `quantity` prop that
+          // defaults to 1. No need to set this unless you are dealing with an
+          // SFT.
+          quantity: 1,
+        });
+        console.log('signature = ', signature);
+      }}
+    >
+      Cancel item listing
+    </button>
+  );
+}
+```
+
+This will generate a transaction for cancelling an item listing and request user
+approval. Like the `useSignTransaction` hook, this hook returns the transaction
+signature and is resolved as soon as the user approves the transaction, not when
+the transaction is posted to the chain.
+
+## Other Functional Hooks
 
 ### Signing Out
 
@@ -258,11 +392,10 @@ export function YourComponent({ someTransactionB58 }: YourComponentProps) {
 ```
 
 Keep in mind that a signed transaction does not mean that it has been posted to
-the chain yet. As of now, this hook only returns a signed transaction signature.
+the chain yet. This hook only returns a transaction signature.
 
-If you need to know when a transaction completes, use the returned transaction signature and
-[Solana's JSON RPC API](https://docs.solana.com/developing/clients/jsonrpc-api#gettransaction)
-to accomplish this.
+If you need to know when a transaction completes, use the
+`useWaitForTransaction` or `useTransactionStatus` hooks described below.
 
 #### Error handling for `useSignTransaction`
 
@@ -276,3 +409,93 @@ throw the following error classes:
 | `FractalSDKInvalidTransactionError`     | The transaction input was invalid.                                                                                                                        |
 | `FractalSDKSignTransactionDeniedError`  | The transaction was denied.                                                                                                                               |
 | `FractalSDKSignTransactionUnknownError` | An unknown error occurred (catch-all).                                                                                                                    |
+
+### Waiting for a Transaction To Post To The Chain
+
+A signed transaction that is sent to the chain can take a variable amount of
+time to post to the chain. All of the tranasction hooks we expose like
+`useSignTransaction` and `useBuyItem` return a callback that resolves to a
+transaction signature once the user has approved the transaction, not
+when the transaction has posted to the chain.
+
+There will be cases where you want to block, or want to add a UI affordance for
+a "pending" transaction state (like a loading spinner) while the transaction is
+being posted to the chain. For this, you can use one of the following hooks:
+
+- `useWaitForTransaction` - returns an async callback
+- `useTransactionStatus` - returns an updating status object
+
+```tsx
+import {
+  useWaitForTransaction,
+  TransactionStatus,
+} from '@fractalwagmi/react-sdk';
+
+interface Props {
+  tokenAddress: string;
+  onComplete: () => void;
+  onFail: () => void;
+}
+
+export function BuyItem({ tokenAddress, onComplete, onFail }: Props) {
+  const { buyItem } = useBuyItem();
+  const { waitForTransaction } = useWaitForTransaction();
+
+  const handleClick = async () => {
+    const { signature } = await buyItem(tokenAddress);
+
+    try {
+      const status = await waitForTransaction(signature);
+      if (status === TransactionStatus.SUCCESS) {
+        onComplete();
+      } else if (status === TransactionStatus.FAILED) {
+        onFail();
+      }
+    } catch (err: unknown) {
+      // See memo on error handling below.
+    }
+  };
+
+  return <button onClick={handleClick}>Buy Item</button>;
+}
+```
+
+```tsx
+import {
+  TransactionStatus,
+  useTransactionStatus,
+} from '@fractalwagmi/react-sdk';
+
+interface Props {
+  transactionSignature: string;
+}
+
+export function TransactionStatusDisplay({ transactionSignature }: Props) {
+  const { status, error } = useTransactionStatus(transactionSignature);
+
+  if (error) {
+    // See memo on error handling below.
+  }
+
+  if (status === TransactionStatus.PENDING) {
+    return <div>Loading...</div>;
+  }
+
+  if (status === TransactionStatus.FAILED) {
+    return <div>Transaction Failed</div>;
+  }
+
+  return <div>Transaction Success</div>;
+}
+```
+
+#### Error Handling for Transaction Statuses
+
+Both the `useTransactionStatus` hook and `useWaitForTransaction` emit the same
+errors:
+
+| Error Class                                    | Meaning                                                                                             |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `FractalSDKAuthenticationError`                | An authentication error occurred. This typically means that the user is not properly authenticated. |
+| `FractalSDKTransactionStatusFetchInvalidError` | An invalid transaction signature was provided.                                                      |
+| `FractalSDKTransactionStatusFetchUnknownError` | Catch-all unknown error occurred during fetching of the transaction status.                         |
