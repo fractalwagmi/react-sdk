@@ -17,6 +17,10 @@ npm install @fractalwagmi/react-sdk
 
 [SDK Demo Preview](https://react-sdk-demo.fractalpreview.com/)
 
+## Changelog
+
+A full version changelog is available in the [changelog](/CHANGELOG.md).
+
 ## Setup and Authentication
 
 ### 1. Import the global stylesheet
