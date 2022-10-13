@@ -20,6 +20,7 @@ import {
 } from 'core/error/item';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
+import { isNotNullOrUndefined } from 'lib/util/guards';
 
 enum ItemApiKey {
   GENERATE_BUY_TRANSACTION = 'GENERATE_BUY_TRANSACTION',
@@ -57,17 +58,19 @@ interface GenerateCancelListTransactionParameters {
 export const ItemApiKeys = {
   getItems: (userId: string | undefined) =>
     [ApiFeature.ITEMS, ItemApiKey.GET_ITEMS, userId] as const,
-  getItemsForSale: ({
-    limit,
-    sortDirection,
-    sortField,
-  }: GetItemsForSaleParams) =>
+  getItemsForSale: (
+    { limit, sortDirection, sortField }: GetItemsForSaleParams,
+    userId: string | undefined,
+  ) =>
     [
       ApiFeature.ITEMS,
       ItemApiKey.GET_ITEMS_FOR_SALE,
       limit,
       sortDirection,
       sortField,
+      // We use the `userId` as a key to ensure react query invalidates the
+      // cache whenever the user logs out.
+      userId,
     ] as const,
 };
 
@@ -77,7 +80,7 @@ export const useGetItemsQuery = () => {
     ItemApiKeys.getItems(user?.userId),
     async () => CoinApi.getItems(),
     {
-      enabled: user !== undefined,
+      enabled: isNotNullOrUndefined(user),
     },
   );
 
@@ -91,12 +94,12 @@ export const useGetItemsQuery = () => {
 export const useGetItemsForSaleQuery = (params: GetItemsForSaleParams) => {
   const { data: user } = useUser();
   const query = useQuery(
-    ItemApiKeys.getItemsForSale(params),
+    ItemApiKeys.getItemsForSale(params, user?.userId),
     async () => CoinApi.getItemsForSale(params),
     {
       // We require a user to be logged in to make this call because the API
       // requires an API access token.
-      enabled: user !== undefined,
+      enabled: isNotNullOrUndefined(user),
     },
   );
 
