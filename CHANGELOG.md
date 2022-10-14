@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## [1.1.1] - 2022-10-14
+
+- Adds a [bugfix](https://github.com/fractalwagmi/react-sdk/issues/100) for for-sale items not being removed from the client-side data cache when a user logs out.
+
 ## [1.1.0] - 2022-10-11
 
 #### Added
