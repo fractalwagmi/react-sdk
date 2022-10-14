@@ -4,6 +4,7 @@ import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import { FractalSDKGetCoinsUnknownError } from 'core/error';
 import { useUser } from 'hooks/public/use-user';
+import { isNotNullOrUndefined } from 'lib/util/guards';
 
 enum CoinApiKey {
   GET_COINS = 'GET_COINS',
@@ -20,7 +21,7 @@ export const useGetCoinsQuery = () => {
     CoinApiKeys.getCoins(user?.userId),
     async () => CoinApi.getCoins(),
     {
-      enabled: user !== undefined,
+      enabled: isNotNullOrUndefined(user),
     },
   );
 
