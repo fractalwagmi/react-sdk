@@ -1,3 +1,4 @@
+import { isObject } from '@fractalwagmi/fractal-ts-lib';
 import {
   usePopupConnection,
   PopupEvent,
@@ -13,7 +14,6 @@ import {
   FractalSDKSignTransactionUnknownError,
   FractalSDKInvalidTransactionError,
 } from 'core/error/transaction';
-import { isObject } from 'lib/util/guards';
 import { useCallback, useEffect, useRef } from 'react';
 
 const MIN_POPUP_HEIGHT_PX = DEFAULT_POPUP_HEIGHT_PX;

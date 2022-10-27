@@ -58,6 +58,7 @@
     "@fontsource/quattrocento-sans": "^4.5.9",
     "@fractalwagmi/fractal-auth-private-web-sdk-api": "^0.0.3",
     "@fractalwagmi/fractal-sdk-websdk-api": "^0.0.6",
+    "@fractalwagmi/fractal-ts-lib": "^1.0.1",
     "@fractalwagmi/popup-connection": "^1.0.10",
     "@fractalwagmi/ts-api": "^0.0.2",
     "@fractalwagmi/ts-auth-api": "^0.0.1",
