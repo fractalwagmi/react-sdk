@@ -1,4 +1,5 @@
 import { FractalWebsdkTransactionGetTransactionStatusResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
+import { isNotNullOrUndefined } from '@fractalwagmi/fractal-ts-lib';
 import { useQuery } from '@tanstack/react-query';
 import { webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
@@ -7,7 +8,6 @@ import {
   FractalSDKTransactionStatusFetchUnknownError,
 } from 'core/error';
 import { useUser } from 'hooks/public/use-user';
-import { isNotNullOrUndefined } from 'lib/util/guards';
 import { secondsInMs } from 'lib/util/time';
 import { Status as GrpcStatusCode } from 'nice-grpc-common';
 import { useCallback, useEffect, useState } from 'react';

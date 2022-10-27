@@ -1,4 +1,5 @@
 import { FractalWebsdkMarketplaceGetForSaleItemsResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
+import { isNotNullOrUndefined } from '@fractalwagmi/fractal-ts-lib';
 import {
   FractalSdkMarketplaceGetTokenBuyTransactionResponse,
   FractalSdkMarketplaceGetTokenCancelSellTransactionResponse,
@@ -20,7 +21,6 @@ import {
 } from 'core/error/item';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
-import { isNotNullOrUndefined } from 'lib/util/guards';
 
 enum ItemApiKey {
   GENERATE_BUY_TRANSACTION = 'GENERATE_BUY_TRANSACTION',
