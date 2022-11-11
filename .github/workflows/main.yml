@@ -31,8 +31,6 @@ jobs:
           cache: 'npm'
       - name: Setup NPM
         run: 'echo "$NPM_RC" > .npmrc'
-        env:
-          NPM_RC: //registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}
       - name: Install dependencies
         # We currently have a peer dependency issue with react, but that's ok
         # since it is a dev dependency (used for unit testing) that conflicts
