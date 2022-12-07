@@ -44,6 +44,7 @@ export const useAuthButtonProps = ({
 
   const doSuccess = useCallback(
     (user: User) => {
+      setIsAuthenticating(false);
       if (!onSuccess) {
         return;
       }
@@ -76,7 +77,6 @@ export const useAuthButtonProps = ({
       setFetchingUser(true);
       await fetchAndSetUser(baseUserFromLS, accessTokenFromLS);
       setFetchingUser(false);
-      setIsAuthenticating(false);
     };
 
     refreshUser();
