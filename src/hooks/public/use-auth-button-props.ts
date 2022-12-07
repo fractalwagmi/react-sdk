@@ -27,6 +27,7 @@ export const useAuthButtonProps = ({
   scopes,
 }: UseAuthButtonPropsParameters = {}): HeadlessAuthButtonProps => {
   const [fetchingUser, setFetchingUser] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { clientId, user } = useContext(FractalSDKContext);
   const { fetchAndSetUser } = useUserSetter();
   const { signOut } = useSignOut();
@@ -75,6 +76,7 @@ export const useAuthButtonProps = ({
       setFetchingUser(true);
       await fetchAndSetUser(baseUserFromLS, accessTokenFromLS);
       setFetchingUser(false);
+      setIsAuthenticating(false);
     };
 
     refreshUser();
@@ -86,12 +88,13 @@ export const useAuthButtonProps = ({
       signOut();
       onSignOut?.();
     } else {
+      setIsAuthenticating(true);
       signIn();
     }
   }, [signedIn, signOut, signIn]);
 
   return {
-    loading: fetchingUser,
+    loading: isAuthenticating,
     onClick,
     signedIn,
   };
