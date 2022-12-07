@@ -1,12 +1,13 @@
 {
   "name": "@fractalwagmi/react-sdk",
-  "version": "1.1.3",
+  "version": "1.1.5",
   "description": "React SDK for signing in with Fractal",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
     "test": "jest",
+    "watch:test": "jest --watch",
     "clean": "rm -rf dist && rm -rf *.tsbuildinfo",
     "prepare": "husky install && ts-patch install",
     "prebuild": "npm run clean",
