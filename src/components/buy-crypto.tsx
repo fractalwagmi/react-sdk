@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const BuyCrypto: FC<Props> = ({ buttonProps = {}, theme = 'light' }) => {
-  const { openOnrampWindow } = useOnramp();
+  const { openOnrampWindow } = useOnramp({ theme });
 
   return (
     <Button {...buttonProps} theme={theme} onClick={openOnrampWindow}>
