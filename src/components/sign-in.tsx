@@ -1,7 +1,8 @@
-import { AuthButton, AuthButtonProps } from 'components/auth-button';
+import { AuthButton } from 'components/auth-button';
+import { ButtonProps } from 'components/button';
 import {
-  UseAuthButtonPropsParameters,
   useAuthButtonProps,
+  UseAuthButtonPropsParameters,
 } from 'hooks/public/use-auth-button-props';
 import React, { HTMLAttributes } from 'react';
 
@@ -16,7 +17,7 @@ export interface SignInProps extends UseAuthButtonPropsParameters {
    *
    * Possible values: 'light' | 'dark'. Defaults to 'light'.
    */
-  variant?: AuthButtonProps['variant'];
+  variant?: ButtonProps['theme'];
 }
 
 export const SignIn = ({
