@@ -1,8 +1,8 @@
 import { Button, ButtonProps } from 'components/button';
-import { useOnramp } from 'hooks';
+import { useOnramp, UseOnrampOptions } from 'hooks';
 import { FC, HTMLAttributes } from 'react';
 
-interface Props {
+interface Props extends UseOnrampOptions {
   /**
    * Any additional props for <button> that should be passed to the default
    * sign-in button.
@@ -16,8 +16,17 @@ interface Props {
   theme?: ButtonProps['theme'];
 }
 
-export const BuyCrypto: FC<Props> = ({ buttonProps = {}, theme = 'light' }) => {
-  const { openOnrampWindow } = useOnramp({ theme });
+export const BuyCrypto: FC<Props> = ({
+  buttonProps = {},
+  theme = 'light',
+  onRejected,
+  onFulfillmentComplete,
+}) => {
+  const { openOnrampWindow } = useOnramp({
+    onFulfillmentComplete,
+    onRejected,
+    theme,
+  });
 
   return (
     <Button {...buttonProps} theme={theme} onClick={openOnrampWindow}>
