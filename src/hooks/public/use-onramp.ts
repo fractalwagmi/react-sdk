@@ -1,15 +1,19 @@
-import { Platform, usePopupConnection } from '@fractalwagmi/popup-connection';
+import {
+  Platform,
+  PopupEvent,
+  usePopupConnection,
+} from '@fractalwagmi/popup-connection';
 import { ButtonProps } from 'components/button';
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { FractalSDKError } from 'core/error';
 import { FractalSDKOnrampUnknownError } from 'core/error/onramp';
 import { Awaitable } from 'hooks/public/types';
-import { useCallback, useContext, useRef } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 
 const ONRAMP_URL = 'https://fractal.is/onramp';
 
 const MIN_POPUP_HEIGHT_PX = 672;
-const MAX_POPUP_WIDTH_PX = 850;
+const MAX_POPUP_WIDTH_PX = 800;
 
 type OnrampErrors = FractalSDKError | FractalSDKOnrampUnknownError;
 
@@ -40,42 +44,53 @@ export const useOnramp = (
 ) => {
   const { clientId, user } = useContext(FractalSDKContext);
 
-  const promiseResolversRef = useRef<{
-    reject: (err: OnrampErrors) => void;
-    resolve: () => void;
-  } | null>(null);
-
-  const { open: openPopup } = usePopupConnection({
+  const { connection, open: openPopup } = usePopupConnection({
     enabled: !user,
     heightPx: Math.max(
       MIN_POPUP_HEIGHT_PX,
       Math.floor(window.innerHeight * 0.8),
     ),
     platform: Platform.REACT_SDK,
-    widthPx: Math.min(MAX_POPUP_WIDTH_PX, Math.floor(window.innerWidth * 0.5)),
+    widthPx: Math.min(MAX_POPUP_WIDTH_PX, Math.floor(window.innerWidth * 0.6)),
   });
 
-  const openOnrampWindow = useCallback(async () => {
-    await (async () => {
-      try {
-        openPopup(`${ONRAMP_URL}?clientId=${clientId}&theme=${theme}`);
-        onFulfillmentComplete?.();
-      } catch (err: unknown) {
-        const onrampErr = asOnrampError(err);
-        if (onRejected) {
-          onRejected(onrampErr);
-          return;
-        }
-        throw onrampErr;
-      }
-    })();
+  const handleOnRejected = useCallback((err: unknown) => {
+    const onrampErr = asOnrampError(err);
+    onRejected?.(onrampErr);
+  }, []);
 
-    return new Promise<void>((resolve, reject) => {
-      promiseResolversRef.current = {
-        reject,
-        resolve,
-      };
-    });
+  useEffect(() => {
+    if (!connection) {
+      return;
+    }
+    if (onFulfillmentComplete) {
+      connection.on(
+        PopupEvent.ONRAMP_FULFILLMENT_COMPLETE,
+        onFulfillmentComplete,
+      );
+    }
+    if (onRejected) {
+      connection.on(PopupEvent.ONRAMP_REJECTED, handleOnRejected);
+    }
+
+    return () => {
+      if (!connection) {
+        return;
+      }
+      if (onFulfillmentComplete) {
+        connection.off(
+          PopupEvent.ONRAMP_FULFILLMENT_COMPLETE,
+          onFulfillmentComplete,
+        );
+      }
+      if (onRejected) {
+        connection.off(PopupEvent.ONRAMP_REJECTED, handleOnRejected);
+      }
+    };
+  }, [connection]);
+
+  const openOnrampWindow = useCallback(async () => {
+    openPopup(`${ONRAMP_URL}?clientId=${clientId}&theme=${theme}`);
   }, []);
 
   return { openOnrampWindow };
