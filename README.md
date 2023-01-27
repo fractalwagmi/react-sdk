@@ -337,6 +337,58 @@ approval. Like the `useSignTransaction` hook, this hook returns the transaction
 signature and is resolved as soon as the user approves the transaction, not when
 the transaction is posted to the chain.
 
+## Onramp
+
+To expose onramp capability for end-users, you can use the `useOnramp` hook:
+
+```tsx
+import { useOnramp } from '@fractalwagmi/react-sdk';
+
+export function YourOnrampButtonComponent() {
+  const { openOnrampWindow } = useOnramp();
+
+  return <button onClick={openOnrampWindow}>Buy Crypto</button>;
+}
+```
+
+The `useOnramp` hook accepts several arguments for (optional) configuration:
+
+| Prop                    | Type / Description                                                                                                                                                                                       | Default     |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `onFulfillmentComplete` | `() => void`<br/>A callback function to call when an onramp session is fulfilled.<br />Fulfillment occurs when crypto has arrived in the user's wallet.                                                  | `undefined` |
+| `onRejected`            | `(err: OnrampErrors) => void`<br/>A callback to invoke after an onramp session was rejected for a known reason.<br />Possible reasons may include KYC failure, sanctions screening issues, fraud checks. | `undefined` |
+| `theme`                 | The theme variant to use for the onramp experience (can be `light` or `dark`).                                                                                                                           | `light`     | 
+
+
+For convenience, we have also exposed a Fractal-themed `Button` component: `<BuyCrypto />`:
+```tsx
+import { BuyCrypto } from '@fractalwagmi/react-sdk';
+
+export function YourOnrampButtonComponent() {
+  return <BuyCrypto />;
+}
+```
+
+This component accepts the same set of props as described above, as well as `buttonProps`, which support any additional
+props you may want to use to configure the button component (`HTMLAttributes<HTMLButtonElement>`).
+
+One example use case of the optional `onFulfillmentComplete` / `onRejected` callbacks could be to trigger a refetch of
+displayed wallet funds, or to show a success/error message to users within a native experience.
+
+### Onramp Access
+
+In order to use the onramp feature, users must be signed in to Fractal Wallet. If that is not the case, invoking the
+`openOnrampWindow` callback will throw an error and the `<BuyCrypto />` component will render `null` in place of the
+button.
+
+Our onramp provider (Stripe) is currently in early stages of pilot rollout, so it is worth noting that users in
+some regions will not be eligible to buy crypto, or may have restrictions to a subset of cryptos for their geographical
+region, which is based on IP detection + KYC verification. At the time of writing, only users in the US are eligible for
+the onramp feature, though we hope to expand on this in the near future.
+
+If you have any feedback on the current implementation or new feature requests, please reach out to us. We'd love to hear 
+from you!
+
 ## Other Functional Hooks
 
 ### Signing Out
