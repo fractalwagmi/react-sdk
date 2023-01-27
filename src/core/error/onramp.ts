@@ -12,3 +12,16 @@ export class FractalSDKOnrampUnknownError extends FractalSDKError {
     return 'The onramp session concluded with an unknown error.';
   }
 }
+
+export class FractalSDKOnrampAuthError extends FractalSDKError {
+  name: string;
+  constructor(message: string) {
+    super(message);
+    this.name = 'FractalSDKOnrampAuthError';
+    Object.setPrototypeOf(this, FractalSDKOnrampAuthError.prototype);
+  }
+
+  getUserFacingErrorMessage() {
+    return 'You must be signed in to purchase crypto.';
+  }
+}

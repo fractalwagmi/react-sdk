@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from 'components/button';
+import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { useOnramp, UseOnrampOptions } from 'hooks';
-import { FC, HTMLAttributes } from 'react';
+import { FC, HTMLAttributes, useContext } from 'react';
 
 interface Props extends UseOnrampOptions {
   /**
@@ -22,11 +23,16 @@ export const BuyCrypto: FC<Props> = ({
   onRejected,
   onFulfillmentComplete,
 }) => {
+  const { user } = useContext(FractalSDKContext);
   const { openOnrampWindow } = useOnramp({
     onFulfillmentComplete,
     onRejected,
     theme,
   });
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <Button {...buttonProps} theme={theme} onClick={openOnrampWindow}>

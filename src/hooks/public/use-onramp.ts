@@ -6,7 +6,10 @@ import {
 import { ButtonProps } from 'components/button';
 import { FractalSDKContext } from 'context/fractal-sdk-context';
 import { FractalSDKError } from 'core/error';
-import { FractalSDKOnrampUnknownError } from 'core/error/onramp';
+import {
+  FractalSDKOnrampAuthError,
+  FractalSDKOnrampUnknownError,
+} from 'core/error/onramp';
 import { Awaitable } from 'hooks/public/types';
 import { useCallback, useContext, useEffect } from 'react';
 
@@ -15,7 +18,10 @@ const ONRAMP_URL = 'https://fractal.is/onramp';
 const MIN_POPUP_HEIGHT_PX = 672;
 const MAX_POPUP_WIDTH_PX = 800;
 
-type OnrampErrors = FractalSDKError | FractalSDKOnrampUnknownError;
+type OnrampErrors =
+  | FractalSDKError
+  | FractalSDKOnrampUnknownError
+  | FractalSDKOnrampAuthError;
 
 export interface UseOnrampOptions {
   /**
@@ -30,7 +36,7 @@ export interface UseOnrampOptions {
    */
   onRejected?: (err: OnrampErrors) => Awaitable<void>;
   /**
-   * The button style variant to use.
+   * The theme variant to use for the onramp experience.
    *
    * Possible values: 'light' | 'dark'. Defaults to 'light'.
    */
@@ -90,6 +96,11 @@ export const useOnramp = (
   }, [connection]);
 
   const openOnrampWindow = useCallback(async () => {
+    if (!user) {
+      throw new FractalSDKOnrampAuthError(
+        'User must be signed in to a Fractal Wallet to start an onramp session',
+      );
+    }
     openPopup(`${ONRAMP_URL}?clientId=${clientId}&theme=${theme}`);
   }, []);
 
