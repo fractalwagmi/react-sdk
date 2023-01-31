@@ -34,7 +34,7 @@ export const useUserSetter = () => {
         userWallet,
       };
     },
-    [],
+    [setUser, setUserWallet],
   );
 
   return {

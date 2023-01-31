@@ -14,7 +14,7 @@ export const useItems = (): PublicDataHookResponse<Item[]> => {
 
   const refetch = useCallback(() => {
     refetchQuery();
-  }, []);
+  }, [refetchQuery]);
   const items = useMemo(
     () => (data?.items === undefined ? undefined : transformItems(data.items)),
     [data?.items],

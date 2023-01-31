@@ -15,6 +15,8 @@
   ],
   "extends": [
     "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
     "plugin:typescript-sort-keys/recommended",
@@ -95,6 +97,10 @@
         }
       ]
     }],
-    "@typescript-eslint/prefer-includes": "warn"
+    "@typescript-eslint/prefer-includes": "warn",
+
+    // React
+    "react/react-in-jsx-scope": "off",
+    "react-hooks/exhaustive-deps": "error"
   }
 }
