@@ -139,7 +139,7 @@ export const useSignTransaction = () => {
         };
       });
     },
-    [fetchAuthorizeUrl],
+    [fetchAuthorizeUrl, open],
   );
 
   return {

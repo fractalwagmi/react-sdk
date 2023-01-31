@@ -59,7 +59,7 @@ export const useSignIn = ({
         );
       }
     }
-  }, [connection]);
+  }, [connection, getAuthUrlMutation, onSignInFailed, openPopup]);
 
   useEffect(() => {
     if (!connection) {
@@ -106,7 +106,7 @@ export const useSignIn = ({
       connection.off(PopupEvent.PROJECT_APPROVED, handleProjectApproved);
       connection.off(PopupEvent.POPUP_CLOSED, handlePopupClosed);
     };
-  }, [connection]);
+  }, [closePopup, connection, fetchAndSetUser, onSignIn, onSignInFailed]);
 
   return { signIn };
 };

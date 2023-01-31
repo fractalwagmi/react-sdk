@@ -47,7 +47,7 @@ export const useListItem = () => {
         );
       }
     },
-    [],
+    [generateListTransaction, signTransaction],
   );
 
   return { listItem };

@@ -45,7 +45,7 @@ export const useCancelListItem = () => {
         );
       }
     },
-    [],
+    [generateCancelListTransaction, signTransaction],
   );
 
   return { cancelListItem };

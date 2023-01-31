@@ -14,7 +14,7 @@ export const useCoins = (): PublicDataHookResponse<Coin[]> => {
 
   const refetch = useCallback(() => {
     refetchQuery();
-  }, []);
+  }, [refetchQuery]);
   const coins = useMemo(() => transformCoins(data?.coins ?? []), [data?.coins]);
 
   let error: FractalSDKError | undefined;
