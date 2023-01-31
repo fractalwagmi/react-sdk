@@ -80,7 +80,7 @@ export const useAuthButtonProps = ({
     };
 
     refreshUser();
-  }, [user, fetchingUser]);
+  }, [user, fetchingUser, fetchAndSetUser]);
 
   const signedIn = Boolean(user);
   const onClick = useCallback(() => {
@@ -91,7 +91,7 @@ export const useAuthButtonProps = ({
       setIsAuthenticating(true);
       signIn();
     }
-  }, [signedIn, signOut, signIn]);
+  }, [signedIn, signOut, onSignOut, signIn]);
 
   return {
     loading: isAuthenticating,

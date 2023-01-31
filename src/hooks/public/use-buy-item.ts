@@ -42,7 +42,7 @@ export const useBuyItem = () => {
         );
       }
     },
-    [],
+    [generateBuyTransaction, signTransaction],
   );
 
   return { buyItem };

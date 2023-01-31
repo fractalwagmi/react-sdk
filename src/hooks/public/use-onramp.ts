@@ -60,10 +60,13 @@ export const useOnramp = (
     widthPx: Math.min(MAX_POPUP_WIDTH_PX, Math.floor(window.innerWidth * 0.6)),
   });
 
-  const handleOnRejected = useCallback((err: unknown) => {
-    const onrampErr = asOnrampError(err);
-    onRejected?.(onrampErr);
-  }, []);
+  const handleOnRejected = useCallback(
+    (err: unknown) => {
+      const onrampErr = asOnrampError(err);
+      onRejected?.(onrampErr);
+    },
+    [onRejected],
+  );
 
   useEffect(() => {
     if (!connection) {
@@ -93,7 +96,7 @@ export const useOnramp = (
         connection.off(PopupEvent.ONRAMP_REJECTED, handleOnRejected);
       }
     };
-  }, [connection]);
+  }, [connection, handleOnRejected, onFulfillmentComplete, onRejected]);
 
   const openOnrampWindow = useCallback(async () => {
     if (!user) {
@@ -102,7 +105,7 @@ export const useOnramp = (
       );
     }
     openPopup(`${ONRAMP_URL}?clientId=${clientId}&theme=${theme}`);
-  }, [user, clientId, theme]);
+  }, [clientId, openPopup, theme, user]);
 
   return { openOnrampWindow };
 };
