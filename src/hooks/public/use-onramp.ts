@@ -102,7 +102,7 @@ export const useOnramp = (
       );
     }
     openPopup(`${ONRAMP_URL}?clientId=${clientId}&theme=${theme}`);
-  }, []);
+  }, [user, clientId, theme]);
 
   return { openOnrampWindow };
 };
