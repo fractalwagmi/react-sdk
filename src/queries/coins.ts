@@ -1,5 +1,5 @@
+import { FractalSdkWalletGetCoinsResponse } from '@fractalwagmi/fractal-sdk-public-api';
 import { isNotNullOrUndefined } from '@fractalwagmi/fractal-ts-lib';
-import { FractalSdkWalletGetCoinsResponse } from '@fractalwagmi/ts-api';
 import { useQuery } from '@tanstack/react-query';
 import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';

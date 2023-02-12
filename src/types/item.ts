@@ -1,4 +1,7 @@
+import { FractalSdkCommonChain } from '@fractalwagmi/fractal-sdk-public-api';
+
 export interface Item {
+  chain: FractalSdkCommonChain;
   files: ItemFile[];
   id: string;
   isForSale: boolean;

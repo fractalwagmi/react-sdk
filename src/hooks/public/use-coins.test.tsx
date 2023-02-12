@@ -1,4 +1,7 @@
-import { FractalSdkWalletGetCoinsResponseCoin } from '@fractalwagmi/ts-api';
+import {
+  FractalSdkCommonChain,
+  FractalSdkWalletGetCoinsResponseCoin,
+} from '@fractalwagmi/fractal-sdk-public-api';
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
@@ -14,7 +17,7 @@ jest.mock('core/token');
 
 const ITEM_1: FractalSdkWalletGetCoinsResponseCoin = {
   address: 'test-address-1',
-  amount: 'test-amount-1',
+  chain: FractalSdkCommonChain.SOLANA,
   decimals: 111,
   logoUri: 'test-logo-1-uri.com',
   name: 'test-name-1',
@@ -24,7 +27,7 @@ const ITEM_1: FractalSdkWalletGetCoinsResponseCoin = {
 
 const ITEM_2: FractalSdkWalletGetCoinsResponseCoin = {
   address: 'test-address-2',
-  amount: 'test-amount-2',
+  chain: FractalSdkCommonChain.SOLANA,
   decimals: 222,
   logoUri: 'test-logo-2-uri.com',
   name: 'test-name-2',
