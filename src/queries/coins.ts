@@ -1,5 +1,6 @@
 import { FractalSdkWalletGetCoinsResponse } from '@fractalwagmi/fractal-sdk-public-api';
 import { useQuery } from '@tanstack/react-query';
+
 import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import { FractalSDKGetCoinsUnknownError } from 'core/error';
