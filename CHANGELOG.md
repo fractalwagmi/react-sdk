@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## [1.2.0] - 2023-02-13
+
+- Adds a `chain` field on exported `Item` and `Coin` type.
+
+## [1.1.7] - 2023-01-28
+
+- Adds hook for fiat onramp.
 
 ## [1.1.1] - 2022-10-14
 
