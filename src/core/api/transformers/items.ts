@@ -1,5 +1,5 @@
+import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/fractal-sdk-public-api';
 import { FractalWebsdkMarketplaceGetForSaleItemsResponseItem } from '@fractalwagmi/fractal-sdk-websdk-api';
-import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/ts-api';
 import { Item, ForSaleItem } from 'types';
 
 export const transformItems = (
