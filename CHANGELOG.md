@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.2.0] - 2023-02-13
+## [1.2.1] - 2023-02-13
 
 - Adds a `chain` field on exported `Item` and `Coin` type.
 
