@@ -1,4 +1,3 @@
-import { isObject } from '@fractalwagmi/fractal-ts-lib';
 import {
   usePopupConnection,
   PopupEvent,
@@ -12,6 +11,7 @@ import {
 } from 'core/error';
 import { FractalSDKApprovalDeniedError } from 'core/error/approve';
 import { useUserSetter } from 'hooks/use-user-setter';
+import { isObject } from 'lib/guards';
 import { useGetAuthUrlMutation } from 'queries/auth';
 import { useCallback, useContext, useEffect } from 'react';
 import { BaseUser, Scope, User } from 'types';

@@ -1,4 +1,4 @@
-import { FractalSdkPublicMarketplaceGetForSaleItemsResponseItem } from '@fractalwagmi/ts-api';
+import { FractalSdkSolanaGetForSaleItemsResponseItem } from '@fractalwagmi/fractal-sdk-public-api';
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
@@ -12,7 +12,7 @@ jest.mock('core/token');
 jest.mock('core/api/client');
 jest.mock('hooks/public/use-user');
 
-const ITEM_1: FractalSdkPublicMarketplaceGetForSaleItemsResponseItem = {
+const ITEM_1: FractalSdkSolanaGetForSaleItemsResponseItem = {
   id: 'foo-id',
   imageUrl: 'https://google.com/foo.png',
   listTime: {
@@ -26,7 +26,7 @@ const ITEM_1: FractalSdkPublicMarketplaceGetForSaleItemsResponseItem = {
   },
 };
 
-const ITEM_2: FractalSdkPublicMarketplaceGetForSaleItemsResponseItem = {
+const ITEM_2: FractalSdkSolanaGetForSaleItemsResponseItem = {
   id: 'bar-id',
   imageUrl: 'https://google.com/bar.png',
   listTime: {

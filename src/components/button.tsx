@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
-import { assertUnreachable } from '@fractalwagmi/fractal-ts-lib';
 import { FractalFLogo } from 'components/fractal-f-logo';
 import { getDefaultButtonStyles } from 'components/styles';
+import { assertUnreachable } from 'lib/assertions';
 import { FC } from 'react';
 
 export interface ButtonProps

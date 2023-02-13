@@ -1,6 +1,6 @@
 import { Api as PrivateWebSdkApi } from '@fractalwagmi/fractal-auth-private-web-sdk-api';
+import { Api as SdkApi } from '@fractalwagmi/fractal-sdk-public-api';
 import { Api as WebSdkApi } from '@fractalwagmi/fractal-sdk-websdk-api';
-import { Api as SdkApi } from '@fractalwagmi/ts-api';
 import { Api as AuthApi } from '@fractalwagmi/ts-auth-api';
 import { getDefaultHeaders, getDefaultSecureHeaders } from 'core/api/headers';
 

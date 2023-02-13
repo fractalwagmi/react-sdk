@@ -1,11 +1,10 @@
-import { FractalWebsdkMarketplaceGetForSaleItemsResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
-import { isNotNullOrUndefined } from '@fractalwagmi/fractal-ts-lib';
 import {
-  FractalSdkMarketplaceGetTokenBuyTransactionResponse,
-  FractalSdkMarketplaceGetTokenCancelSellTransactionResponse,
-  FractalSdkMarketplaceGetTokenSellTransactionResponse,
+  FractalSdkSolanaGetTokenBuyTransactionResponse,
+  FractalSdkSolanaGetTokenCancelSellTransactionResponse,
+  FractalSdkSolanaGetTokenSellTransactionResponse,
   FractalSdkWalletGetItemsResponse,
-} from '@fractalwagmi/ts-api';
+} from '@fractalwagmi/fractal-sdk-public-api';
+import { FractalWebsdkMarketplaceGetForSaleItemsResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { sdkApiClient, webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
@@ -21,6 +20,7 @@ import {
 } from 'core/error/item';
 import { useUser } from 'hooks/public/use-user';
 import { useUserWallet } from 'hooks/public/use-user-wallet';
+import { isNotNullOrUndefined } from 'lib/guards';
 
 enum ItemApiKey {
   GENERATE_BUY_TRANSACTION = 'GENERATE_BUY_TRANSACTION',
@@ -201,8 +201,8 @@ async function getItems(): Promise<FractalSdkWalletGetItemsResponse> {
 
 async function getItemsForSale({
   limit,
-  sortDirection,
-  sortField,
+  sortDirection = 'DESCENDING',
+  sortField = 'LIST_TIME',
 }: GetItemsForSaleParams): Promise<FractalWebsdkMarketplaceGetForSaleItemsResponse> {
   const response = await webSdkApiClient.websdk.getForSaleItems({
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -223,7 +223,7 @@ async function generateBuyTransaction({
   quantity,
   tokenId,
   walletId,
-}: GenerateBuyTransactionParameters): Promise<FractalSdkMarketplaceGetTokenBuyTransactionResponse> {
+}: GenerateBuyTransactionParameters): Promise<FractalSdkSolanaGetTokenBuyTransactionResponse> {
   const response = await sdkApiClient.v1.tokenBuyTransaction({
     quantity,
     tokenId,
@@ -242,7 +242,7 @@ async function generateListTransaction({
   quantity = 1,
   tokenId,
   walletId,
-}: GenerateListTransactionParameters): Promise<FractalSdkMarketplaceGetTokenSellTransactionResponse> {
+}: GenerateListTransactionParameters): Promise<FractalSdkSolanaGetTokenSellTransactionResponse> {
   const response = await sdkApiClient.v1.tokenSellTransaction({
     price,
     quantity,
@@ -261,7 +261,7 @@ async function generateCancelListTransaction({
   quantity = 1,
   tokenId,
   walletId,
-}: GenerateCancelListTransactionParameters): Promise<FractalSdkMarketplaceGetTokenCancelSellTransactionResponse> {
+}: GenerateCancelListTransactionParameters): Promise<FractalSdkSolanaGetTokenCancelSellTransactionResponse> {
   const response = await sdkApiClient.v1.tokenCancelSellTransaction({
     quantity,
     tokenId,

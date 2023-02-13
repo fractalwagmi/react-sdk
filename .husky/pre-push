@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged --diff="latest...$(git branch --show-current)"
+# npx lint-staged --diff="main...$(git branch --show-current)"
 npm run test

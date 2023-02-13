@@ -1,4 +1,7 @@
-import { FractalSdkWalletGetItemsResponseItem } from '@fractalwagmi/ts-api';
+import {
+  FractalSdkCommonChain,
+  FractalSdkWalletGetItemsResponseItem,
+} from '@fractalwagmi/fractal-sdk-public-api';
 import { renderHook } from '@testing-library/react-hooks/dom';
 import { FractalSDKContextProvider } from 'context/fractal-sdk-context';
 import { sdkApiClient } from 'core/api/client';
@@ -13,6 +16,7 @@ jest.mock('core/api/client');
 jest.mock('hooks/public/use-user');
 
 const ITEM_1: FractalSdkWalletGetItemsResponseItem = {
+  chain: FractalSdkCommonChain.SOLANA,
   files: [
     {
       type: 'jpeg',
@@ -29,6 +33,7 @@ const ITEM_1: FractalSdkWalletGetItemsResponseItem = {
 };
 
 const ITEM_2: FractalSdkWalletGetItemsResponseItem = {
+  chain: FractalSdkCommonChain.SOLANA,
   files: [
     {
       type: 'jpeg',
