@@ -33,7 +33,7 @@ export const useItemsForSale = ({
   });
   const refetch = useCallback(() => {
     refetchQuery();
-  }, []);
+  }, [refetchQuery]);
   const items = useMemo(
     () =>
       data?.items === undefined ? undefined : trasnformForSaleItems(data.items),

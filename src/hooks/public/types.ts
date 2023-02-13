@@ -5,3 +5,5 @@ export interface PublicDataHookResponse<T> {
   error: FractalSDKError | undefined;
   refetch: () => void;
 }
+
+export type Awaitable<T> = T | Promise<T>;

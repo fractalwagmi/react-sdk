@@ -17,22 +17,25 @@ export const useWaitForTransactionStatus = (): {
   waitForTransactionStatus: (signature: string) => Promise<TransactionStatus>;
 } => {
   const pollForTransactionStatus = useTransactionStatusPoller();
-  const waitForTransactionStatus = useCallback(async (signature: string) => {
-    try {
-      const success = await pollForTransactionStatus(signature);
-      if (success) {
-        return TransactionStatus.SUCCESS;
+  const waitForTransactionStatus = useCallback(
+    async (signature: string) => {
+      try {
+        const success = await pollForTransactionStatus(signature);
+        if (success) {
+          return TransactionStatus.SUCCESS;
+        }
+        return TransactionStatus.FAIL;
+      } catch (err: unknown) {
+        if (err instanceof FractalSDKError) {
+          throw err;
+        }
+        throw new FractalSDKTransactionStatusFetchUnknownError(
+          'An unknown error occured while fetching the status of a signature',
+        );
       }
-      return TransactionStatus.FAIL;
-    } catch (err: unknown) {
-      if (err instanceof FractalSDKError) {
-        throw err;
-      }
-      throw new FractalSDKTransactionStatusFetchUnknownError(
-        'An unknown error occured while fetching the status of a signature',
-      );
-    }
-  }, []);
+    },
+    [pollForTransactionStatus],
+  );
 
   return {
     waitForTransactionStatus,

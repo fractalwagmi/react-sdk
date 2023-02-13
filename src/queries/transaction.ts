@@ -52,7 +52,7 @@ export const useGetTransactionStatusPollerQuery = (signature: string) => {
     if (user === undefined) {
       query.remove();
     }
-  }, [user]);
+  }, [query, user]);
 
   return query;
 };
