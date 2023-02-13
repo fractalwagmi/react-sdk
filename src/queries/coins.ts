@@ -1,10 +1,10 @@
 import { FractalSdkWalletGetCoinsResponse } from '@fractalwagmi/fractal-sdk-public-api';
-import { isNotNullOrUndefined } from '@fractalwagmi/fractal-ts-lib';
 import { useQuery } from '@tanstack/react-query';
 import { sdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import { FractalSDKGetCoinsUnknownError } from 'core/error';
 import { useUser } from 'hooks/public/use-user';
+import { isNotNullOrUndefined } from 'lib/guards';
 
 enum CoinApiKey {
   GET_COINS = 'GET_COINS',
