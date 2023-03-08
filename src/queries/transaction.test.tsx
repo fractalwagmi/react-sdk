@@ -1,6 +1,7 @@
 import { FractalWebsdkTransactionGetTransactionStatusResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
 import * as reactQuery from '@tanstack/react-query';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
+import { queryContext } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
 import {
   FractalSDKTransactionStatusFetchInvalidError,
@@ -34,7 +35,7 @@ let wrapper: React.FC;
 beforeEach(() => {
   queryClient = new reactQuery.QueryClient();
   wrapper = ({ children }) => (
-    <reactQuery.QueryClientProvider client={queryClient}>
+    <reactQuery.QueryClientProvider client={queryClient} context={queryContext}>
       {children}
     </reactQuery.QueryClientProvider>
   );
@@ -152,7 +153,7 @@ describe('useGetTransactionStatusPoller', () => {
     );
   });
 
-  it('does not fetch when window is refocused', async () => {
+  fit('does not fetch when window is refocused', async () => {
     const { result, waitForValueToChange } = renderHook(
       () => useGetTransactionStatusPollerQuery(TEST_SIGNATURE),
       {

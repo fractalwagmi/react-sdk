@@ -6,6 +6,7 @@ import {
 } from '@fractalwagmi/fractal-sdk-public-api';
 import { FractalWebsdkMarketplaceGetForSaleItemsResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryContext } from 'context/fractal-sdk-context';
 import { sdkApiClient, webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import {
@@ -80,6 +81,7 @@ export const useGetItemsQuery = () => {
     ItemApiKeys.getItems(user?.userId),
     async () => CoinApi.getItems(),
     {
+      context: queryContext,
       enabled: isNotNullOrUndefined(user),
     },
   );
@@ -97,6 +99,7 @@ export const useGetItemsForSaleQuery = (params: GetItemsForSaleParams) => {
     ItemApiKeys.getItemsForSale(params, user?.userId),
     async () => CoinApi.getItemsForSale(params),
     {
+      context: queryContext,
       // We require a user to be logged in to make this call because the API
       // requires an API access token.
       enabled: isNotNullOrUndefined(user),
@@ -130,6 +133,9 @@ export const useGenerateBuyTransactionMutation = () => {
         walletId,
       });
     },
+    {
+      context: queryContext,
+    },
   );
 };
 
@@ -155,6 +161,9 @@ export const useGenerateListTransactionMutation = () => {
         walletId,
       });
     },
+    {
+      context: queryContext,
+    },
   );
 };
 
@@ -177,6 +186,9 @@ export const useGenerateCancelListTransactionMutation = () => {
         tokenId,
         walletId,
       });
+    },
+    {
+      context: queryContext,
     },
   );
 };
