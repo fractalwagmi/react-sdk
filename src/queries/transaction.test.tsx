@@ -153,7 +153,7 @@ describe('useGetTransactionStatusPoller', () => {
     );
   });
 
-  fit('does not fetch when window is refocused', async () => {
+  it('does not fetch when window is refocused', async () => {
     const { result, waitForValueToChange } = renderHook(
       () => useGetTransactionStatusPollerQuery(TEST_SIGNATURE),
       {
