@@ -1,5 +1,6 @@
 import { FractalAuthPrivateWebSdkGetApprovalUrlResponse } from '@fractalwagmi/fractal-auth-private-web-sdk-api';
 import { useMutation } from '@tanstack/react-query';
+import { queryContext } from 'context/fractal-sdk-context';
 import { authPrivateWebSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import { FractalSDKAuthenticationUnknownError } from 'core/error';
@@ -20,8 +21,12 @@ export const useGetAuthUrlMutation = (
   clientId: string,
   scopes: Scope[] = DEFAULT_SCOPE,
 ) => {
-  return useMutation(AuthApiKeys.getAuthUrl(clientId, scopes), async () =>
-    AuthApi.getAuthUrl(clientId, scopes),
+  return useMutation(
+    AuthApiKeys.getAuthUrl(clientId, scopes),
+    async () => AuthApi.getAuthUrl(clientId, scopes),
+    {
+      context: queryContext,
+    },
   );
 };
 

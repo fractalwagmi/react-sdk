@@ -3,7 +3,8 @@ import { clearIdAndTokenInLS } from 'core/token';
 import { createContext, useCallback, useState } from 'react';
 import { User, UserWallet } from 'types';
 
-const queryClient = new QueryClient();
+export const queryContext = createContext<QueryClient | undefined>(undefined);
+export const queryClient = new QueryClient();
 
 interface FractalSDKContextState {
   clientId: string;
@@ -53,7 +54,9 @@ export function FractalSDKContextProvider({
         userWallet,
       }}
     >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient} context={queryContext}>
+        {children}
+      </QueryClientProvider>
     </FractalSDKContext.Provider>
   );
 }

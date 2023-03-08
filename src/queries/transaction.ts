@@ -1,5 +1,6 @@
 import { FractalWebsdkTransactionGetTransactionStatusResponse } from '@fractalwagmi/fractal-sdk-websdk-api';
 import { useQuery } from '@tanstack/react-query';
+import { queryContext } from 'context/fractal-sdk-context';
 import { webSdkApiClient } from 'core/api/client';
 import { ApiFeature } from 'core/api/types';
 import {
@@ -35,6 +36,7 @@ export const useGetTransactionStatusPollerQuery = (signature: string) => {
     TransactionApiKeys.getTransactionStatus(signature),
     async () => TransactionApi.getTransactionStatus(signature),
     {
+      context: queryContext,
       enabled: isNotNullOrUndefined(user),
       refetchInterval: shouldPoll ? secondsInMs(2) : false,
       refetchOnWindowFocus: false,

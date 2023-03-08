@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2023-03-08
+
+- Uses custom `context` for all react query calls. This will allow consumers to
+  use react query without having to worry about conflicting contexts used by
+  the underlying `QueryClientProvider` within the SDK as well as the one that a
+  consumer sets up in their app.
+
 ## [1.2.1] - 2023-02-13
 
 - Adds a `chain` field on exported `Item` and `Coin` type.
