@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2023-05-19
+
+- Adds a `useSignMessage` hook for signing arbitrary messages. This differs from
+  `useSignTransaction` since it takes in a raw message `Uint8Array` instead of
+  a serialized `Transaction` object and is mostly useful for callers that
+  want to use the react-sdk to sign messages without sending anything to the
+  network such that the caller can add subsequent signatures before sending it
+  to the network.
+
 ## [1.2.3] - 2023-03-08
 
 - Uses custom `context` for all react query calls. This will allow consumers to
