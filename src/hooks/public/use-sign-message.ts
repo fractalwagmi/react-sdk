@@ -14,7 +14,7 @@ import {
   FractalSDKInvalidTransactionError,
 } from 'core/error/transaction';
 import { createNonce } from 'lib/util/nonce';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const MIN_POPUP_HEIGHT_PX = DEFAULT_POPUP_HEIGHT_PX;
 const MAX_POPUP_WIDTH_PX = 850;
@@ -33,6 +33,7 @@ export const useSignMessage = () => {
     reject: (err: SignTransactionErrors) => void;
     resolve: (value: { encodedSignature: Uint8Array }) => void;
   } | null>(null);
+  const decodedMessageRef = useRef<string>('');
 
   const nonce = createNonce();
 
@@ -76,33 +77,49 @@ export const useSignMessage = () => {
     close();
   }, [close]);
 
-  const signMessage = useCallback(
-    async (encodedMessage: Uint8Array) => {
-      if (!connection) {
-        throw new FractalSDKSignTransactionUnknownError(
-          'Expected popup connection to be defined',
-        );
-      }
-      const decodedMessage = new TextDecoder().decode(encodedMessage);
-
-      const handleAuthLoaded = () => {
-        const payload: MessageSignatureNeededPayload = {
-          decodedMessage,
-        };
-        connection?.send({
-          event: PopupEvent.MESSAGE_SIGNATURE_NEEDED,
-          payload,
-        });
+  useEffect(() => {
+    if (!connection) {
+      return;
+    }
+    const handleAuthLoaded = () => {
+      const payload: MessageSignatureNeededPayload = {
+        decodedMessage: decodedMessageRef.current,
       };
+      connection?.send({
+        event: PopupEvent.MESSAGE_SIGNATURE_NEEDED,
+        payload,
+      });
+    };
 
-      open(`${SIGN_MESSAGE_PAGE_URL}/${nonce}`, nonce);
-      connection.on(
+    connection.on(
+      PopupEvent.MESSAGE_SIGNATURE_NEEDED_RESPONSE,
+      handleMessageSignatureNeededResponse,
+    );
+    connection.on(PopupEvent.TRANSACTION_DENIED, handleClosedOrDeniedByUser);
+    connection.on(PopupEvent.POPUP_CLOSED, handleClosedOrDeniedByUser);
+    connection.on(PopupEvent.AUTH_LOADED, handleAuthLoaded);
+
+    return () => {
+      connection.off(
         PopupEvent.MESSAGE_SIGNATURE_NEEDED_RESPONSE,
         handleMessageSignatureNeededResponse,
       );
-      connection.on(PopupEvent.TRANSACTION_DENIED, handleClosedOrDeniedByUser);
-      connection.on(PopupEvent.POPUP_CLOSED, handleClosedOrDeniedByUser);
-      connection.on(PopupEvent.AUTH_LOADED, handleAuthLoaded);
+      connection.off(PopupEvent.TRANSACTION_DENIED, handleClosedOrDeniedByUser);
+      connection.off(PopupEvent.POPUP_CLOSED, handleClosedOrDeniedByUser);
+      connection.off(PopupEvent.AUTH_LOADED, handleAuthLoaded);
+    };
+  }, [
+    connection,
+    handleClosedOrDeniedByUser,
+    handleMessageSignatureNeededResponse,
+  ]);
+
+  const signMessage = useCallback(
+    async (encodedMessage: Uint8Array) => {
+      const decodedMessage = new TextDecoder().decode(encodedMessage);
+      decodedMessageRef.current = decodedMessage;
+
+      open(`${SIGN_MESSAGE_PAGE_URL}/${nonce}`, nonce);
 
       return new Promise<{ encodedSignature: Uint8Array }>(
         (resolve, reject) => {
@@ -113,13 +130,7 @@ export const useSignMessage = () => {
         },
       );
     },
-    [
-      connection,
-      handleClosedOrDeniedByUser,
-      handleMessageSignatureNeededResponse,
-      nonce,
-      open,
-    ],
+    [nonce, open],
   );
 
   return {
