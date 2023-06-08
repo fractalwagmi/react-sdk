@@ -6,6 +6,7 @@ import {
   assertPayloadIsMessageSignatureNeededResponsePayload,
   MessageSignatureNeededPayload,
 } from '@fractalwagmi/popup-connection';
+import bs58 from 'bs58';
 import { FractalSDKApprovalOccurringError } from 'core/error/approve';
 import { FractalSDKAuthenticationError } from 'core/error/auth';
 import {
@@ -33,7 +34,7 @@ export const useSignMessage = () => {
     reject: (err: SignTransactionErrors) => void;
     resolve: (value: { encodedSignature: Uint8Array }) => void;
   } | null>(null);
-  const decodedMessageRef = useRef<string>('');
+  const serializedMessageB58Ref = useRef<string>('');
 
   const nonce = createNonce();
 
@@ -83,7 +84,7 @@ export const useSignMessage = () => {
     }
     const handleAuthLoaded = () => {
       const payload: MessageSignatureNeededPayload = {
-        decodedMessage: decodedMessageRef.current,
+        decodedMessage: serializedMessageB58Ref.current,
       };
       connection?.send({
         event: PopupEvent.MESSAGE_SIGNATURE_NEEDED,
@@ -115,9 +116,9 @@ export const useSignMessage = () => {
   ]);
 
   const signMessage = useCallback(
-    async (encodedMessage: Uint8Array) => {
-      const decodedMessage = new TextDecoder().decode(encodedMessage);
-      decodedMessageRef.current = decodedMessage;
+    async (messageUint8Array: Uint8Array) => {
+      const serializedMessageB58 = bs58.encode(messageUint8Array);
+      serializedMessageB58Ref.current = serializedMessageB58;
 
       open(`${SIGN_MESSAGE_PAGE_URL}/${nonce}`, nonce);
 
