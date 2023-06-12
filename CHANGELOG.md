@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2023-06-12
+
+- Fixes `useSignMessage` to use bs58 encoding for transmission to the Fractal.is
+  popup. This is an implementation detail, but fixes a bug where
+  `useSignMessage` only worked for utf-8 encoded strings and not serialized
+  `Message` objects.
+
 ## [1.3.1] - 2023-05-19
 
 - Adds a `useSignMessage` hook for signing arbitrary messages. This differs from
