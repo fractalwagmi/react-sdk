@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2023-06-12
+
+- Removes React@17 as a peer dependency. The build for React 17 host apps was
+  failing due to the missing jsx-runtime export from React, which has been fixed
+  in React 18.
+
 ## [1.3.2] - 2023-06-12
 
 - Fixes `useSignMessage` to use bs58 encoding for transmission to the Fractal.is
