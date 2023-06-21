@@ -148,17 +148,17 @@ meaning of the error state. Example:
 
 ```tsx
 import {
-  useSignTransaction,
+  useSignAndSendTransaction,
   FractalSDKSignTransactionDeniedError,
   FractalSDKApprovalOccurringError,
 } from '@fractalwagmi/react-sdk';
 
 const MyComponent = () => {
-  const { signTransaction } = useSignTransaction();
+  const { signAndSendTransaction } = useSignAndSendTransaction();
 
-  const doSignTransaction = async () => {
+  const doSignAndSendTransaction = async () => {
     try {
-      await signTransaction('some base58 transaction string');
+      await signAndSendTransaction('some base58 transaction string');
     } catch (err: unknown) {
       if (error instanceof FractalSDKApprovalOccurringError) {
         console.log('an approval is already occurring');
@@ -169,7 +169,7 @@ const MyComponent = () => {
     }
   };
 
-  return <button onClick={() => doSignTransaction()}>...</button>;
+  return <button onClick={() => doSignAndSendTransaction()}>...</button>;
 };
 ```
 
@@ -250,7 +250,7 @@ export function YourBuyButton({ tokenAddress }: Props) {
 ```
 
 This will generate a buy transaction and request user approval. Like the
-`useSignTransaction` hook, this hook returns the transaction signature and is
+`useSignAndSendTransaction` hook, this hook returns the transaction signature and is
 resolved as soon as the user approves the transaction, not when the transaction
 is posted to the chain.
 
@@ -294,7 +294,7 @@ export function YourListForSaleButton({
 ```
 
 This will generate a list-item-for-sale transaction and request user approval.
-Like the `useSignTransaction` hook, this hook returns the transaction signature
+Like the `useSignAndSendTransaction` hook, this hook returns the transaction signature
 and is resolved as soon as the user approves the transaction, not when the
 transaction is posted to the chain.
 
@@ -333,7 +333,7 @@ export function YourCancelListingButton({ tokenAddress }: Props) {
 ```
 
 This will generate a transaction for cancelling an item listing and request user
-approval. Like the `useSignTransaction` hook, this hook returns the transaction
+approval. Like the `useSignAndSendTransaction` hook, this hook returns the transaction
 signature and is resolved as soon as the user approves the transaction, not when
 the transaction is posted to the chain.
 
@@ -354,13 +354,13 @@ export function YourOnrampButtonComponent() {
 The `useOnramp` hook accepts several arguments for (optional) configuration:
 
 | Prop                    | Type / Description                                                                                                                                                                                       | Default     |
-|-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `onFulfillmentComplete` | `() => void`<br/>A callback function to call when an onramp session is fulfilled.<br />Fulfillment occurs when crypto has arrived in the user's wallet.                                                  | `undefined` |
 | `onRejected`            | `(err: OnrampErrors) => void`<br/>A callback to invoke after an onramp session was rejected for a known reason.<br />Possible reasons may include KYC failure, sanctions screening issues, fraud checks. | `undefined` |
-| `theme`                 | The theme variant to use for the onramp experience (can be `light` or `dark`).                                                                                                                           | `light`     | 
-
+| `theme`                 | The theme variant to use for the onramp experience (can be `light` or `dark`).                                                                                                                           | `light`     |
 
 For convenience, we have also exposed a Fractal-themed `Button` component: `<BuyCrypto />`:
+
 ```tsx
 import { BuyCrypto } from '@fractalwagmi/react-sdk';
 
@@ -386,7 +386,7 @@ some regions will not be eligible to buy crypto, or may have restrictions to a s
 region, which is based on IP detection + KYC verification. At the time of writing, only users in the US are eligible for
 the onramp feature, though we hope to expand on this in the near future.
 
-If you have any feedback on the current implementation or new feature requests, please reach out to us. We'd love to hear 
+If you have any feedback on the current implementation or new feature requests, please reach out to us. We'd love to hear
 from you!
 
 ## Other Functional Hooks
@@ -413,7 +413,7 @@ unsigned transaction and initialize an approval popup flow for the user to
 approve the transaction:
 
 ```tsx
-import { useSignTransaction } from '@fractalwagmi/react-sdk';
+import { useSignAndSendTransaction } from '@fractalwagmi/react-sdk';
 
 interface YourComponentProps {
   someTransactionB58: string | undefined;
@@ -424,7 +424,7 @@ export function YourComponent({ someTransactionB58 }: YourComponentProps) {
     // An async function to run which request's user approval to sign a
     // transaction.
     signTransaction,
-  } = useSignTransaction();
+  } = useSignAndSendTransaction();
 
   return (
     <div>
@@ -453,9 +453,9 @@ the chain yet. This hook only returns a transaction signature.
 If you need to know when a transaction completes, use the
 `useWaitForTransaction` or `useTransactionStatus` hooks described below.
 
-#### Error handling for `useSignTransaction`
+#### Error handling for `useSignAndSendTransaction`
 
-The `signTransaction` function returned by `useSignTransaction` will potentially
+The `signTransaction` function returned by `useSignAndSendTransaction` will potentially
 throw the following error classes:
 
 | Error class                             | Meaning                                                                                                                                                   |
@@ -470,7 +470,7 @@ throw the following error classes:
 
 A signed transaction that is sent to the chain can take a variable amount of
 time to post to the chain. All of the tranasction hooks we expose like
-`useSignTransaction` and `useBuyItem` return a callback that resolves to a
+`useSignAndSendTransaction` and `useBuyItem` return a callback that resolves to a
 transaction signature once the user has approved the transaction, not
 when the transaction has posted to the chain.
 
