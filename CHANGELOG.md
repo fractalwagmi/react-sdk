@@ -2,17 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Pending] - TBD
-
-- Renames `useSignTransaction` to `useSignAndSendTransaction`. This marks
-  `useSignTransaction` as deprecated with a `console.info` to inform the
-  developer of the upcoming breaking change in the next major version.
-
 ## [1.3.3] - 2023-06-12
 
 - Removes React@17 as a peer dependency. The build for React 17 host apps was
   failing due to the missing jsx-runtime export from React, which has been fixed
   in React 18.
+- Renames `useSignTransaction` to `useSignAndSendTransaction`. This marks
+  `useSignTransaction` as deprecated with a `console.info` to inform the
+  developer of the upcoming breaking change in the next major version.
+- Fixes a bug in safari where the sign in / sign transaction popups were being
+  blocked by default.
 
 ## [1.3.2] - 2023-06-12
 
