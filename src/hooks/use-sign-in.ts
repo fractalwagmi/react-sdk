@@ -43,9 +43,11 @@ export const useSignIn = ({
 
   const signIn = useCallback(async () => {
     try {
-      const { url } = await getAuthUrlMutation.mutateAsync();
+      const urlPromise = getAuthUrlMutation
+        .mutateAsync()
+        .then(({ url }) => url);
       if (!connection) {
-        openPopup(url);
+        openPopup(urlPromise);
         return;
       }
     } catch (err: unknown) {
