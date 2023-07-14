@@ -120,8 +120,10 @@ export const useSignTransaction = () => {
     async (unsignedTransactionB58: string) => {
       (async () => {
         try {
-          const { url } = await fetchAuthorizeUrl(unsignedTransactionB58);
-          open(url);
+          const urlPromise = fetchAuthorizeUrl(unsignedTransactionB58).then(
+            ({ url }) => url,
+          );
+          open(urlPromise);
         } catch (err: unknown) {
           if (err instanceof FractalSDKError) {
             throw err;
