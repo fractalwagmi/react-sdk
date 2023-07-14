@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.4.1] - 2023-06-21
+## [Pending] - TBD
 
 - Renames `useSignTransaction` to `useSignAndSendTransaction`. This marks
   `useSignTransaction` as deprecated with a `console.info` to inform the
